@@ -32,8 +32,8 @@ You must agree to [Developer's Certificate of Origin](DCO1.1.txt) prior to
 submitting code.
 
 ## Communication
-We will use mainly Slack for communication and Slack Hero for screen sharing
-between developers.
+We will use mainly our [Slack for communication](https://openchain.slack.com) and
+Slack Hero for screen sharing between developers. Register and get connected.
 
 There are twice weekly 15-min scrum calls to check in (standard scrum protocol)
 and a weekly 1-hour team playback meeting. We will limit the playback to
