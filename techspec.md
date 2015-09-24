@@ -8,46 +8,48 @@ Typically, applications that provide these services must apply Service Oriented 
 Blockchain promises to transform the integration model of many types of business applications, from banking and securities to supply-chain. The key ingredient is the shared ledger containing the necessary data locally for the applications to operate without having to call an external API, which would introduce additional complexity (access control, data transit security, trust). This is the basis of decentralization – all parties participate in the network of computer nodes to maintain the ledger such that they have exactly the same state with properties such as tamper-proof, and resilience to attacks.
 
 Based on this principle, Openchain will be built from ground up to enhance the blockchain protocol with enterprise features for private ledgers, where participants are registered and known to the network. The new protocol (Openchain protocol) must address the following key challenges:
-*  Privacy: Ability to protect the users from intrusions into personal matters (rights to privacy). The system must provide mechanisms to conceal identity from being publically identified by those who are not stakeholders or not authorized.
-*  Confidentiality: Ability to protect the data from unauthorized access. This is an ethical duty that the system must provide to maintain the confidential of the transactions such that third party or outsiders cannot view the content.
-*  Auditability: Ability to view and certify the truth of the transactions and data pertaining to a party. The system must provide sufficient knowledge about the transactions and their structures so that the auditors can determine the accuracy and reliability of accounting statement and reports [2].
+
+*  **Privacy:** Ability to protect the users from intrusions into personal matters (rights to privacy). The system must provide mechanisms to conceal identity from being publically identified by those who are not stakeholders or not authorized.
+*  **Confidentiality:** Ability to protect the data from unauthorized access. This is an ethical duty that the system must provide to maintain the confidential of the transactions such that third party or outsiders cannot view the content.
+*  **Auditability:** Ability to view and certify the truth of the transactions and data pertaining to a party. The system must provide sufficient knowledge about the transactions and their structures so that the auditors can determine the accuracy and reliability of accounting statement and reports [2].
 
 Besides above challenges, as a private network, security becomes a mater of the utmost importance: Nodes must be known; access must be controlled; and identity must be verified. This will enable the network to recognize and eliminate bad and malicious entities that might try to disrupt the functioning of the network.
 
-Beginning with a private network where nodes are known members, Openchain defines validators (via configuration) as nodes on the network responsible for maintaining the ledger; that means the validators, and only the validators, verify and process transactions then commit transactions to the ledger based on the result of the consensus. The rest of other nodes are none-validators; they receive the replicated ledger, but they don’t write to the ledger. The none-validators serve a very essential role in the network: Taking the workload off the validators in servicing the client requests.
+Beginning with a private network where nodes are known members, Openchain defines validators (via configuration) as nodes on the network responsible for maintaining the ledger; that means the validators, and only the validators, verify and process transactions then commit transactions to the ledger based on the result of the consensus. The rest of other nodes are non-validators; they receive the replicated ledger, but they don’t write to the ledger. The non-validators serve a very essential role in the network: Taking the workload off the validators in servicing the client requests.
 
-Openchain architecture allows pluggable consensus algorithm per deployment. That is each network may have a different consensus algorithm suitable for the requirements and usage scenarios of that network. Openchain protocol will provide a Practical Byzantine Fault Tolerance (PBFT) [4] implementation. The community or private development may supply other consensus algorithms.
+Openchain architecture allows a pluggable consensus algorithm per deployment. That is each network may have a different consensus algorithm suitable for the requirements and usage scenarios of that network. Openchain protocol will provide a Practical Byzantine Fault Tolerance (PBFT) [4] implementation. The community or private development may supply other consensus algorithms.
 Openchain protocol starts with an identity, which is a cryptographic certificate encapsulating the user’s registered confidential data managed by a Registration Authority, who can issue and revoke identities participating on the network. From this identity, the protocol will generate butterfly keys [3] for members to transact on the network. The butterfly keys conceal the identities of the transacting parties, providing the solution to the privacy requirement.
 
 Content confidentiality is achieved by encrypting the transactions such that only the counter-parties can decrypt and execute the transactions. The encryption also includes the transaction code in its final form being deployed to blockchain. So both code and transaction content, where confidentiality is required, will be cryptographically secured at rest. The code will only be loaded and decrypted at runtime.
-There are 2 types of transactions on an Openchain network: Deploying-code and invoking-function. Code running transactions is called chaincode, a decentralized transactional program, run by validators. A deploying-code transaction is to submit a chaincode to the validators, who will manage the authenticity and integrity of the code and execution. An invoking-function transaction is a call to a chaincode method (similar to a URI invoking a servlet in J2EE), which may change the state of the ledger.
+There are 2 types of transactions on an Openchain network: Deploying-code and invoking-function. Code running transactions is called chaincode, a decentralized transactional program, run by validators. A deploying-code transaction is to submit a chaincode to the validators, who will manage the authenticity and integrity of the code and execution. An invoking-function transaction is a call to a chaincode function (similar to a URI invoking a servlet in JEE), which may change the state of the ledger.
 
-The concept of chaincode is more general than that of smart contract as defined by Nick Szabo [5], to emphasize the goal of bringing what he calls the "highly evolved" practices of contract law and related business practices to the design of electronic commerce protocols between strangers on the Internet. Chaincode supports any mainstream programming languages, Turing complete. Execution environment is docker container with Openchain context layer. So chaincode provides capabilities to define smart contract templating language (similar to Velocity or Jade), which will restrict the functionality of the execution environment and the degree of flexibility in computing to satisfy the legal contractual requirements. Using template language, the skills required to code a smart contract may be lowered, enabling domain knowledge professionals to write smart contracts.
+The concept of chaincode is more general than that of smart contract as defined by Nick Szabo [5], to emphasize the goal of bringing what he calls the "highly evolved" practices of contract law and related business practices to the design of electronic commerce protocols between strangers on the Internet. Chaincode supports any mainstream programming languages, Turing complete. The execution environment is a Docker container with Openchain context layer. So chaincode provides capabilities to define smart contract templating languages (similar to Velocity or Jade), which will restrict the functionality of the execution environment and the degree of flexibility in computing to satisfy the legal contractual requirements. Using a template language, the skills required to code a smart contract may be lowered, enabling domain knowledge professionals to write smart contracts.
 
-Running a transaction on chaincode is always time bounded, which is configured during chaincode deployment. If transaction is timed out, it is considered as error and will not effect the state of the ledger. A chaincode may call another chaincode if the callee has the same or less restrictive confidentiality scope; that is, a confidential chaincode may call a public chaincode or another confidential chaincode with the same assigned validators. [TBD: Any potential issues here?]
-For confidential chaincode, when deploy, appropriate validators must be assigned since only these assigned validators can run the transactions on this chaincode. This creates quorums of validators during execution of transaction block. Validators can just request for the state of those transactions that they are not assigned and skip over. At the end of the successful block execution and consensus completed, the world state must be the same on all validators, whether a validator took part in executing any transaction or not.
+Running a transaction on chaincode is always time bounded, which is configured during chaincode deployment. If a transaction times out, it is considered an error and will not effect the state of the ledger. A chaincode may call another chaincode if the callee has the same or less restrictive confidentiality scope; that is, a confidential chaincode may call a public chaincode or another confidential chaincode with the same assigned validators. [TBD: Any potential issues here?]
+For confidential chaincode, when deployed, appropriate validators must be assigned since only these assigned validators can run the transactions on this chaincode. This creates quorums of validators during execution of a transaction block. Validators can make a request for the state of those transactions that they are not assigned. At the end of the successful block execution and consensus completion, the world state must be the same on all validators, whether a validator took part in executing any transaction or not.
 
-There are REST and JSON RPC APIs, events, and SDK for applications to communicate with Openchain. Typically applications interact with a peer node, which will require some form of authentication. Messages from client are signed by the client identity, and verified by the peer node.
+There are REST and JSON RPC APIs, events, and an SDK for applications to communicate with Openchain. Typically applications interact with a peer node, which will require some form of authentication. Messages from a client are signed by the client identity, and verified by the peer node.
 
-Even though Openchain doesn’t provide a native crypto-currency like Bitcoin or Ethereum, but it can be easily implemented with a chaincode. Similarly for any on-chain assets, they can be encoded with chaincodes.
+Even though Openchain doesn’t provide a native crypto-currency like Bitcoin or Ethereum, it can be easily implemented with a chaincode. Similarly for any on-chain assets, they can be encoded with chaincodes.
 
 ## Architecture
 Figure 1 below shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode. These catagories are logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
-Some of these components will be built from ground up, and some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
+Some of these components will be built from ground up, some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
 
 ![Reference architecture](refarch.png)
 Figure 1:  Reference architecture
 
 
-At the top, CLI is the command line interface to the network. Openchain provides a set of CLI to administer and manage the network. CLI can also be used in development and test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in JavaScript to start, and other languages to be determined.
+At the top, CLI is the command line interface to the network. Openchain provides a set of CLI to administer and manage the network. CLI can also be used in development and test chaincodes. REST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in JavaScript to start, and other languages to be determined.
 
-Event Hub in a decentralized network is complex in nature, as an event may appear to occur multiple times, each on a peer node. Callback would end up receiving multiple invocations for the same event. Therefore, a peer node (preferably none-validator and local) manages the event pub/sub that applications are interacting with. The peer node emits events as conditions satisfied in no particular order.
+Event Hub in a decentralized network is complex in nature, as an event may appear to occur multiple times, each on a peer node. Callbacks would end up receiving multiple invocations for the same event. Therefore, a peer node (preferably non-validator and local) manages the event pub/sub that applications are interacting with. The peer node emits events as conditions satisfied in no particular order.
 P2P Protocol uses [Google RPC](http://www.grpc.io/docs/), which is implemented over HTTP/2 standards, providing many capabilities including bidirectional streaming, flow control, multiplexing requests over a single connection. And most important of all, it works with existing Internet infrastructure – firewalls, proxies, and security. This component defines messages used by peer nodes, from point-to-point to broadcast.
 
 Chaincode Services use [Docker](https://github.com/docker/docker) to host the chaincode without relying on any particular virtual machine or language. Docker provides a lightweight to sandbox the chaincode execution on validators.
 
 Ledger component manages the blockchain and world state machine with 3 key attributes:
+
 *  Efficiently calculating a cryptographic hash of the entire dataset after each block
 *  Efficiently transmitting a minimal "delta" of changes to the dataset, when a peer is out of sync and needs to "catch up”
 *   Minimizing the amount of data kept around necessary for each peer to operate
@@ -89,9 +91,24 @@ Dockfile for each supported language:  Golang, Nodejs
 Chaincode context: How chaincode access data on ledger
 
 ## Ledger
-Database RocksDB
-Block structure
-World state and replication (full and partial)
+The ledger is comprised of two components. The blockchain and the world state. Both will be stored in RocksDB, an embeddable persistent key-value store for fast storage. All data will be stored as key-value byte arrays.
+
+### Blockchain
+The blockchain can be thought of very simply as an array of blocks. Each block contains the following pieces of information.
+
+* The ID of the peer that proposed the block.
+* An array of transactions contained in the block.
+* The hash of the previous block.
+* The hash of the state after running the transactions contained in the block.
+
+As mentioned previously, there are two types of transactions, transactions that deploy chaincode and transactions that invoke a function in chaincode. These transaction types contain the necessary information for a peer node to execute the transaction.
+
+All hashes are calculated using the SHA3 SHAKE256 algorihm with an output size of 512 bits.
+
+### State
+The world state reprsents the state for all chaincodes. Each chaincode is assigned its own state that can used to store data in a key-value format where both the key and value are an array of bytes. This state is persisted between each transaction, and commited to the database between each block assuming all peers agree during consensus.  If there is disagreement, the state is rolled back to the last agreed upon block. The state also contains the number of the block to which it corresponds. It should be noted that chaincodes can only access their own state and not the states of other chaincodes.
+
+An important function of the world state is that a hash can be taken very quickly of the entire data structure after changes are made. This is because the hash will be stored in each block commited to the blockchain. A peer that downloads the world state, can fetch the block number to which the state corresponds from the state, fetch that block from the blockchain, and then compare the state hash stored in the block to the hash of the state that was downloaded. This will verify that the state is in fact accurate and that no tampering or errors have occured during transmission.
 
 ## Security
 Authentication
