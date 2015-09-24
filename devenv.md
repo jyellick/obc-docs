@@ -15,16 +15,13 @@ This model is utilized to allow for developers to leverage their favorite OS/Edi
 
 ### Steps
 
-#### Cloning Golang projects
-First make sure you have setup your Host's GOPATH environment variable properly.  This allows for both building within the Host and the VM.
+#### Getting Golang projects
+First make sure you have setup your Host's GOPATH environment variable properly and have golang tooling properly installed (So that you can execute 'go get').  This allows for both building within the Host and the VM.
 
-You will then need to make sure the following directory exists within your Host's GOPATH.  If it does not, create it:
+NOTE: The following command may prompt you for your github credentials. The '-d' flag tells go NOT to build and install the package, simply get it.
 
->$GOPATH/src/github.com
+    go get -d github.com/apacheopenchain/obc-peer
 
-From your Host's **$GOPATH/src/github.com** directory, perform the following commoand:
-
-    git clone https://github.com/apacheopenchain/obc-peer
 
 #### Cloning the development environment project
 Choose another location (**NOT** within the GOPATH directory tree) which will be referred to as the WORKSPACE.  Change to this chosen WORKSPACE directory and clone the following project from within that directory. (**NOTE:** you may need to request access to the repositories)
