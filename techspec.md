@@ -91,7 +91,7 @@ Dockfile for each supported language:  Golang, Nodejs
 Chaincode context: How chaincode access data on ledger
 
 ## Ledger
-The ledger is comprised of two components. The blockchain and the world state. Both will be stored in RocksDB, an embeddable persistent key-value store for fast storage. All data will be stored as key-value byte arrays.
+The ledger is comprised of two components. The blockchain and the state. Both will be stored in RocksDB, an embeddable persistent key-value store for fast storage. All data will be stored as key-value byte arrays.
 
 ### Blockchain
 The blockchain can be thought of very simply as an array of blocks. Each block contains the following pieces of information.
@@ -103,12 +103,18 @@ The blockchain can be thought of very simply as an array of blocks. Each block c
 
 As mentioned previously, there are two types of transactions, transactions that deploy chaincode and transactions that invoke a function in chaincode. These transaction types contain the necessary information for a peer node to execute the transaction.
 
-All hashes are calculated using the SHA3 SHAKE256 algorihm with an output size of 512 bits.
+All hashes are calculated using the SHA3 SHAKE256 algorithm with an output size of 512 bits. [7]
 
 ### State
-The world state reprsents the state for all chaincodes. Each chaincode is assigned its own state that can used to store data in a key-value format where both the key and value are an array of bytes. This state is persisted between each transaction, and commited to the database between each block assuming all peers agree during consensus.  If there is disagreement, the state is rolled back to the last agreed upon block. The state also contains the number of the block to which it corresponds. It should be noted that chaincodes can only access their own state and not the states of other chaincodes.
+The state represents the state for all chaincodes. Each chaincode is assigned its own state that can used to store data in a key-value format where keys and values are arbitrary byte arrays. The state also contains the number of the block to which it corresponds.
 
-An important function of the world state is that a hash can be taken very quickly of the entire data structure after changes are made. This is because the hash will be stored in each block commited to the blockchain. A peer that downloads the world state, can fetch the block number to which the state corresponds from the state, fetch that block from the blockchain, and then compare the state hash stored in the block to the hash of the state that was downloaded. This will verify that the state is in fact accurate and that no tampering or errors have occured during transmission.
+As transactions are run in a new block, the delta from the state in the last block on the blockchain is maintained. If consensus is reached for the current block, the state changes are committed to the database and the state block number is incremented by one. If peers do not reach consensus, the delta is discarded and the database is not modified.
+
+An important function of the state is that a hash of the entire data structure can be quickly generated after changes are made. This is because the hash of the state needs to be stored in each block committed to the blockchain.
+
+A peer that downloads the state can fetch the block number to which the state corresponds from the state, fetch that block from the blockchain, and then compare the state hash stored in the block to the hash of the state that was downloaded. This will verify that the state is in fact accurate and that no tampering or errors have occurred during transmission.
+
+It should be noted that the state for blocks prior to the current block is not maintained in the database. To reconstruct the state for a previous block, it is necessary to run all transactions from the genesis block to the block for which the state is desired. Finally, chaincodes can only access their own state and not the state of other chaincodes.
 
 ## Security
 Authentication
@@ -188,3 +194,5 @@ Similar to cloud hosted multiple networks, using participants’ own networks al
 - [4] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
 - [5] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
 - [6] [“Tangaroa: a Byzantine Fault Tolerant Raft”] (http://www.scs.stanford.edu/14au-cs244b/labs/projects/copeland_zhong.pdf)
+- [7] [FIPS PUB 202 "SHA-3 Standard: Permutation-Based Hash and
+Extendable-Output Functions"] (http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.202.pdf)
