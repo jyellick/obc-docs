@@ -52,10 +52,10 @@ Blockchain services manage the distributed ledger through a peer-to-peer protoco
 Chaincode services provide a secured and lightweight to sandbox the chaincode execution on the validators. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required.
 
 
-### MEMBERSHIP
+#### MEMBERSHIP
 
 <table>
-<col width="30%">
+<col width="250">
 <col >
 <tr>
 <td><img src="refarch-memb.png"></td>
@@ -72,10 +72,10 @@ Reputation Manager allows authorized auditors to link butterfly keys to identity
 </table>
 
 
-### BLOCKCHAIN
+#### BLOCKCHAIN
 
 <table>
-<col width="40%">
+<col width="350">
 <col >
 <tr>
 <td><img src="refarch-block.png"></td>
@@ -108,9 +108,9 @@ Event Hub in a decentralized network is complex in nature, as an event may appea
 
 
 
-### CHAINCODE
+#### CHAINCODE
 <table>
-<col width="30%">
+<col width="250">
 <col >
 <tr>
 <td><img src="refarch-chain.png"></td>
