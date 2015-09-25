@@ -55,10 +55,10 @@ Chaincode services provide a secured and lightweight to sandbox the chaincode ex
 #### MEMBERSHIP
 
 <table border="0">
-<col width="250">
-<col >
+<col>
+<col>
 <tr>
-<td width="40%"><img src="refarch-memb.png"></td>
+<td width="30%"><img src="refarch-memb.png"></td>
 <td valign="top">
 Openchain is a private network, so all entities are required to register with membership services to get identity to access and to transact on the network. <p><p>
 
@@ -75,10 +75,10 @@ Reputation Manager allows authorized auditors to link butterfly keys to identity
 #### BLOCKCHAIN
 
 <table border="0">
-<col width="350">
-<col >
+<col>
+<col>
 <tr>
-<td><img src="refarch-block.png"></td>
+<td width="50%"><img src="refarch-block.png"></td>
 <td valign="top">
 Blockchain services consists of 3 key components: Distributed Ledger, Consensus Manager, and Peer-to-Peer (P2P) Protocol. <p><p>
 
@@ -110,10 +110,10 @@ Event Hub in a decentralized network is complex in nature, as an event may appea
 
 #### CHAINCODE
 <table border="0">
-<col width="250">
-<col >
+<col>
+<col>
 <tr>
-<td><img src="refarch-chain.png"></td>
+<td width="30%"><img src="refarch-chain.png"></td>
 <td valign="top">
 As defined in the Introduction section, chaincode is a decentralized transactional program, running on the validators, <p><p>
 
