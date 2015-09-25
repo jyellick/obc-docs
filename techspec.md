@@ -84,7 +84,7 @@ Blockchain services consists of 3 key components: Distributed Ledger, Consensus 
 
 P2P Protocol uses <a href="http://www.grpc.io/docs">Google RPC</a>, which is implemented over HTTP/2 standards, providing many capabilities including bidirectional streaming, flow control, multiplexing requests over a single connection. And most important of all, it works with existing Internet infrastructure – firewalls, proxies, and security. This component defines messages used by peer nodes, from point-to-point to multicast. <p><p>
 
-The Distributed  Ledger component manages the blockchain and the world state machine with 3 key attributes:
+The Distributed  Ledger component manages the blockchain and the world state with 3 key attributes:
 <ul>
   <li>Efficiently calculating a cryptographic hash of the entire dataset after each block</li>
   <li>Efficiently transmitting a minimal "delta" of changes to the dataset, when a peer is out of sync and needs to "catch up”</li>
@@ -96,7 +96,11 @@ The Distributed  Ledger component manages the blockchain and the world state mac
 
 The Ledger uses <a href="http://rocksdb.org"> RocksDB</a> to persist the dataset and builds an internal datas tructure to represent the state that satisfies the above 3 criteria. Large documents or files are not stored on the Ledger but off-chain storage. Their hashes may be stored on-chain as part of the transactions. This is necessary to maintain the integrity of the documents or files.
 
-Consensus Manager is an abstraction defining the interface between the consensus algorithm and the other components. Consensus receives transactions, and depending on the algorithm, decides how to organize the transactions and when to execute the transactions. Successful execution of transactions results in changes to the ledger. 
+The world state represents the state for all chaincodes. Each chaincode is assigned its own state that can be used to store data in a key-value format where keys and values are arbitrary byte arrays. The state also contains the number of the block to which it corresponds.
+
+As transactions are run in a new block, the delta from the state in the last block on the blockchain is maintained. If consensus is reached for the current block, the state changes are committed to the database, and the state block number is incremented by 1. If peers do not reach consensus, the delta is discarded and the database is not modified.
+
+Consensus Manager is an abstraction defining the interface between the consensus algorithm and the other components. Consensus receives transactions, and depending on the algorithm, decides how to organize the transactions and when to execute the transactions. Successful execution of transactions results in changes to the ledger.
 
 Openchain provides an implementation of Byzantine Agreement with advanced features in fault tolerance and scalability.
 
@@ -186,7 +190,7 @@ The API spans following categories:
 <tr>
 <td><img src="refarch-app.png"></td>
 <td valign="top">
-An Openchain application follows a MVC-B architecture – Model, View, Control, BlockChain. 
+An Openchain application follows a MVC-B architecture – Model, View, Control, BlockChain.
 <p><p>
 
 <ul>
