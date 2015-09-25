@@ -94,11 +94,11 @@ The Distributed  Ledger component manages the blockchain and the world state wit
 </tr>
 </table>
 
-The Ledger uses <a href="http://rocksdb.org"> RocksDB</a> to persist the dataset and builds an internal datas tructure to represent the state that satisfies the above 3 criteria. Large documents or files are not stored on the Ledger but off-chain storage. Their hashes may be stored on-chain as part of the transactions. This is necessary to maintain the integrity of the documents or files.
+The Ledger uses <a href="http://rocksdb.org"> RocksDB</a> to persist the dataset and builds an internal data structure to represent the state that satisfies the above 3 criteria. Large documents or files are not stored on the Ledger but off-chain storage. Their hashes may be stored on-chain as part of the transactions. This is necessary to maintain the integrity of the documents or files.
 
-The world state represents the state for all chaincodes. Each chaincode is assigned its own state that can be used to store data in a key-value format where keys and values are arbitrary byte arrays. The state also contains the number of the block to which it corresponds.
+The world state represents the state for all chaincodes. Each chaincode is assigned its own state that can be used to store data in a key-value format where keys and values are arbitrary byte arrays. The world state also contains the block number to which it corresponds.
 
-As transactions are run in a new block, the delta from the state in the last block on the blockchain is maintained. If consensus is reached for the current block, the state changes are committed to the database, and the state block number is incremented by 1. If peers do not reach consensus, the delta is discarded and the database is not modified.
+As transactions are run in a new block, a delta from the world state in the last block on the blockchain is maintained. If consensus is reached for the current block, the changes are committed to the database, and the world state block number is incremented by 1. If peers do not reach consensus, the delta is discarded and the database is not modified.
 
 Consensus Manager is an abstraction defining the interface between the consensus algorithm and the other components. Consensus receives transactions, and depending on the algorithm, decides how to organize the transactions and when to execute the transactions. Successful execution of transactions results in changes to the ledger.
 
