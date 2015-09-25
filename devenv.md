@@ -22,8 +22,8 @@ First make sure you have setup your Host's [GOPATH environment variable](https:/
 Create a fork of the github.com/openblockchain/obc-peer using the GitHub web interface. Next, you will clone your fork in the appropriate location.
 
     cd $GOPATH/src
-    mkdir openblockchain
-    cd openblockchain
+    mkdir -p github.com/openblockchain
+    cd github.com/openblockchain
     git clone https://github.com/<username>/obc-peer.git
 
 
