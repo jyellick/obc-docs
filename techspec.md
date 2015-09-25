@@ -185,10 +185,10 @@ The API spans following categories:
 
 ## Application Model
 <table>
-<col width="40%">
-<col >
+<col>
+<col>
 <tr>
-<td><img src="refarch-app.png"></td>
+<td width="50%"><img src="refarch-app.png"></td>
 <td valign="top">
 An Openchain application follows a MVC-B architecture – Model, View, Control, BlockChain.
 <p><p>
