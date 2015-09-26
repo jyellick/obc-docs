@@ -5,22 +5,53 @@ _This document is subject to change as development progresses_
 
 ## Background
 
-Enterprises today need to reduce frictions around their operations, both internal and external facing operations, to reduce their costs and lower the response times of their services to customers, employees, and suppliers.
-Typically, applications that provide these services must apply Service Oriented Architecture (SOA) to interconnect businesses via Application Programming Interface (API). This technique has facilitated the evolution of API Economy in the last decade, where businesses monetize capabilities through APIs. However, it has also introduced a level of complexity as the number of peer-2-peer connections grows and becoming difficult and expensive to manage.
+This paper describes the principles, high-level architecture and initial technical specifications of a blockchain suitable for industrial use cases. With Bitcoin popularizing the domain in 2009, awareness has now reached the point that demand for a solution suitable for industry is surging.
+
+The design presented here provides a platform to leverage blockchain technology for business-to-business and business-to-customer transactions. It is designed for public, private, protected and federated networks, and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
+
+The central elements of this specification are smart contracts, digital assets, record repository, and a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private transactions, and modular consensus protocols.
+
+####Why a new fabric:
+Blockchain technology is in its infancy and is often not well suited for the needs of the enterprise. Scalability challenges and the lack of support for confidential contracts and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
+
+####Proposed:
+In this paper, we describe what we believe are the technical features and initial priorities of a new industrial blockchain design. We list what we have found to be key requirements for industry use, based on experience with industry proofs of concept and on review of existing fabrics and innovations. 
+
+####Core principles:
+The focus of this design is to support decentralization (spreading the validation function across many whitelisted legal entities, but not to the point of including anonymous parties), digital assets, and logic (validated, immutable, executable instructions).
+
+####Your voice here:
+If you are reading this, then it means anything said in this document or done in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the specification and the implementation of Openchain should be taken forward. Don’t like something you see here? Help us all see your point of view (in a respectful and positive way) or even better, bring some code that shows a better way.
+
+##Design Goals
+
+####Decentralization
+Decentralization in this context means sharing state among all nodes in a network and making changes to it in lockstep. Equally, running distributed applications means running an application roughly at the same time on all validation nodes while coming to a consensus about the result immediately afterwards. 
+Decentralization allows industry players to communicate and enter into contracts without the need to create custom specifications to interface their IT landscapes. 
+
+####Digital Assets
+Digital assets are sets of numbers that represent actual value, tracked on a decentralized ledger. They are in effect numbers that hold bearer value like cash, thanks to decentralization and basic private/public key cryptography. They can be airline miles, fiat currency-backed units of account, securities, deeds, or of any other type. 
+
+####Logic
+Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Openchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent.  They cannot be revoked, denied or reversed, because decentralized execution removes them from the control of any one party. They are effectively run on every validating node at the same time and stopping one on one node just takes the node out of the communication.
+
+Blockchain logic is embodied in verifiable applications that enforce business rules between any parties or devices and can move real money, either by clearing transfers off-chain or settling digital assets on-chain. They can be used to co-ordinate devices in IoT or implement security derivatives with hard coded behavior; they can automate payments, effect conditional ownership change, or transfer permission to use a physical asset.
 
 
 ## Industry Use Cases
 
-We have compiled a set of initial blockchain requirements that are considered essential for supporting the following abstract use cases:
+We have compiled a set of initial blockchain requirements that are considered essential for supporting the following abstract use cases. (Note: use cases here help guide architecture and test-driven development. While still a work in progress, the use cases should be something all contributors agree on...both in the content and stack-ranked prioritization of them. Propose changes if you feel these miss the mark. It is best if there are no more than 4 abstract use cases, and three is preferred.):
 
 #### B2B Contract
 
 Business contracts can be codified to allow two or more parties to automate contractual agreements in a trusted way.  Although information on blockchain is naturally “public”, B2B contracts may require privacy control to protect sensitive business information from being disclosed to outside parties that also have access to the ledger. 
+
 While confidential agreements are a key business, case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
 #### Manufacturing Supply Chain
 
 Final assemblers, such as car manufactures, can create a supply chain network managed by its peers and suppliers so that a final assembler can better manage its suppliers and be more responsive to events that would require vehicle recalls (possibly triggered by faulty parts supplied by some supplier). Blockchain would be an ideal solution for this type of application as it provides a standard protocol to allow every participant on a supplychain network to input and track parts produced and used on a given vehicle.
+
 Why is this specific example an abstract use case? Because while all blockchain cases store immutable information, and some add the need for transfer of assets between parties, this case emphasizes the need to provide deep searchability back as many as 5-10 transaction layers. It is the core of establishing provenance of any manufactured good that is made up of other goods and supplies.
 
 #### Asset Depository 
@@ -28,17 +59,29 @@ Why is this specific example an abstract use case? Because while all blockchain 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
 
 
-## Why Blockchain
-
-Blockchain promises to transform the integration model of many types of business applications. The key ingredient is the shared ledger containing the necessary data so that applications can operate locally without having to call an external API that could introduce additional complexity (access control, data transit security, trust, etc.). 
-This is the basis of decentralization – all parties participate in a network of computer nodes that maintain the same ledger such that all parties will have the exact same state of properties that are tamper-proof, and resilience to attacks.
-
 ## Challenges
 
-Openchain will be built from ground up to enhance the blockchain protocol with enterprise features for permissoned networks, where participants are registered and known to the network. The new protocol (Openchain protocol) must address the following key challenges:
-*  **Privacy**: Ability to protect the users from malicious third party intrusions. The system must provide mechanisms to conceal user identities and protect from them being tracked by malicious individuals.
-*  **Confidentiality**: Ability to protect the data from unauthorized access. This is an ethical duty that the system must provide to maintain the confidentiality of transactions such that third party or unwanted individuals cannot interrogate their contents.
-*  **Auditability**: Ability to view and certify the truth of each transaction and data pertaining to a party. The system must provide sufficient knowledge about the transactions and their structures so that auditors investigate malicious activities [1].
+Openchain will be built from ground up to enhance the blockchain protocol with enterprise features for networks where validators are whitelisted, known parties who set whether transactors are private or public. The protocol (Openchain protocol) must address the following key challenges:
+
+####Private Transactions and Confidential Contracts
+Currently, transaction patterns are too easy to be observed and interpreted. Shared ledgers may give away details about a supplier relationship that should not be revealed. Therefore, a business ready blockchain must provide mechanisms to conceal identity from being publically identified by unauthorized third parties.
+
+####Identity and Auditability
+While privacy is important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate the identity or ascertain the party’s activities on the ledger. 
+
+####Finality
+Data stores for industrial use must provide finality, meaning simply that there must be certainty at what point a transaction is committed and that after this point, it will not change on its own.
+Many current blockchain networks offer only eventual consistency, rather than a firm promise of finality, and can suffer arbitrary loss of committed information as they are designed to allow for, and cope with, forks in their global state.
+Business ready blockchain network will instead require immediate and guaranteed finality, based on peer-reviewed and battle-hardened protocols. 
+
+####Transaction Order
+For industry use, transactions orders can be more efficiently managed and bring more market fairness to address the miner problems we see in the public blockchain world today, where minors can freely decide the order of transactions to include in the chain based on their own needs.
+
+####Performance and Scalability
+The level of performance for enterprise grade blockchain network may be much higher than that of public networks. For example, to allow real time settlement of financial securities, a blockchain network needs handle up to 100,000 transactions per second, with sub-second latency. Both requirements are difficult to achieve with the consensus protocols in use today, but nevertheless they are requirements for a business ready blockchain fabric.
+
+####Productivity
+Development of decentralised applications and smart contracts is a field where many of the traditional rules of software development hold. But new paths have to be beaten for debugging, testing and maintaining applications in a distributed setting, requiring a holistic approach to the creation of the development tools.
 
 
 ## Design Philosophy
@@ -61,7 +104,7 @@ Openchain protocol starts with an identity, which is a cryptographic certificate
 
 Content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logics can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. 
 
-#### Running Business Logics
+#### Running Business Logic
 
 Openchain protocol specifies 2 types of transactions: the code deploying transaction and code-invoking transaction. Business logic codes deployed and invoked on a ledger network are called chaincodes. A code-deploying transaction may submit, update, or terminate a piece of chaincode, and it would be validators’ responsibility to protect the authenticity and integrity of the code and its execution environment. On the other hand, a code-invoking transaction is an API call to a chaincode function. This process is similar to how URI invoke a servlet in JEE. Note that each chaincode maintains its own state, and function call is a common way to trigger state changes on chaincodes.
 
