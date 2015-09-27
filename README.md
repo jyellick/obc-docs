@@ -8,6 +8,9 @@ sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues)
 ## License
 This software is under [Apache License Version 2.0](LICENSE)
 
+## Memorandum of Understanding
+This project has specific intentions and guidelines that are provided in the [MOU](https://github.com/openblockchain/obc-getting-started/blob/master/MOU). If you do not agree with the provisions in the MOU, contact the Openchain project manager and do not proceed with accessing, reading or contributing to this project.
+
 ## Setting up the development environment
 We create a development environment for this project such that every developer
 would have the same set up and can be productive within a few minutes. Follow
