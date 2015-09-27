@@ -4,14 +4,14 @@
 Business contracts can be codified to allow two or more parties to automate contractual agreements in a trusted way.  Although information on blockchain is naturally “public”, B2B contracts may require privacy control to protect sensitive business information from being disclosed to outside parties that also have access to the ledger. 
 
 <table>
-<tr><td><img src="images/b2bcontract.png"></td></tr>
+<tr><td><img src="images/b2bcontract.png" style="width:400px;height:200px;"></td></tr>
 </table>
 
 While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
 
 <table>
-<tr><td><img src="images/exchange.png"></td></tr>
+<tr><td><img src="images/exchange.png" style="width:400px;height:200px;"></td></tr>
 </table>
 
 
