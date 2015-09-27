@@ -5,13 +5,13 @@ Business contracts can be codified to allow two or more parties to automate cont
 
 While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
-### Persona
+#### Persona
 
 *  Contract participant – Contract counter parties
 
 *  Third party participant – A third party stakeholder of a contract who plays the role of guaranteeing the integrity of the contract.
 
-### Key Components
+#### Key Components
 
 *  Multi-sig contract activation - When a contract is first deployed by one of the counter parties, it will be in pending activation state. To active a contract, signatures from other counterparties and/or third party participants are required.
 
