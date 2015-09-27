@@ -7,20 +7,20 @@ If you are reading this, then it means anything said in this document or done in
 
 ## Background
 
-This paper describes the principles, high-level architecture and initial technical specifications of a blockchain suitable for industrial use cases. With Bitcoin popularizing the domain, awareness since 2009 has now reached the point that demand for a solution suitable for industry is surging.
+This paper describes the principles, high-level architecture and initial technical specifications of a blockchain suitable for industrial use cases. 
 
-The design presented here describes a blockchain fabric, a protocol for business-to-business and business-to-customer transactions. It is intended for permissioned networks, and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network. We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (like getting a Gmail account) or very restrictive. A network can run very publicly, making it easy, for example, to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. But the protocol is not designed to allow the creation of a network of anonymous validators or miners operating outside regulatory oversight. 
+The design presented here describes a blockchain fabric called Openchain, a protocol for business-to-business and business-to-customer transactions. It is intended for permissioned networks, and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network. We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. But the protocol is not designed to allow the creation of a network of anonymous validators or miners operating outside regulatory oversight. 
 
-The central elements of this specification are smart contracts (we call it chaincode), digital assets, record repository, and a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private transactions, and modular consensus protocols.
+The central elements of this specification are smart contracts (we call it chaincode), digital assets, record repository, and a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private transactions, confidential chaincode, and modular consensus protocols.
 
 ####Why a new fabric:
-Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential contracts and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
+Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
 
 ####Proposed:
 In this paper, we describe what we believe are the technical features and initial priorities of a new industrial blockchain design. We list what we have found to be key requirements for industry use, based on experience with industry proofs of concept and on review of existing fabrics and innovations. 
 
 ####Core principles:
-The focus of this design is to support decentralization (spreading the validation function across many whitelisted legal entities, but not to the point of including anonymous parties), digital assets, and logic (validated, immutable, executable instructions).
+The focus of this design is to support decentralization (spreading the validation function across many whitelisted legal entities, but not to the point of including anonymous validators), digital assets, and logic (validated, immutable, executable instructions).
 
 ##Design Goals
 
@@ -28,12 +28,17 @@ The focus of this design is to support decentralization (spreading the validatio
 Decentralization in this context means sharing state among all nodes in a network and making changes to it in lockstep. Equally, running distributed applications means running an application roughly at the same time on all validation nodes while coming to a consensus about the result immediately afterwards. 
 Decentralization allows industry players to communicate and enter into contracts without the need to create custom specifications to interface their IT landscapes. 
 
-####Digital Assets
-Digital assets are sets of numbers that represent actual value, tracked on a decentralized ledger. They are in effect numbers that hold bearer value like cash, thanks to decentralization and basic private/public key cryptography. They can be airline miles, fiat currency-backed units of account, securities, deeds, or of any other type. 
-
 ####Logic
 Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Openchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent.  Blockchain logic is embodied in verifiable applications that enforce business rules between any parties or devices and can move real money, either by clearing transfers off-chain or settling digital assets on-chain. They can be used to co-ordinate devices in IoT or implement security derivatives with hard coded behavior; they can automate payments, effect conditional ownership change, or transfer permission to use a physical asset.
 
+####Digital Assets
+Digital assets are sets of numbers that represent actual value, tracked on a decentralized ledger. They are in effect numbers that hold bearer value like cash, thanks to decentralization and basic private/public key cryptography. They can be airline miles, fiat currency-backed units of account, securities, deeds, or any other type. 
+
+####Private Transactions
+The identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger.
+
+####Confidentiality
+In addition to privacy, the chaincode and all other attributes of a transaction must be able to be set to confidential, rendering it inaccessible to anyone other than the stakeholders to that contract or transaction. This is done with a form of concensus wherein chaincode can stipulate the parties and validators allowed to see (decrypt), sign, and execute the chaincode of the contract and other attributes of the transaction. For example, a startup that creates 10 million shares of private stock for its ten shareholders can commit that to the ledger and stipulate that all (or some) of those then shareholders must sign off on any changes to the number of shares, additions/subtractions to the shareholder group, or transfers of shares between them. Only the shareholders and their respective validators execute the chaincode for this agreement, so no other parties on the network can read the code and discover the number of shares or the nature of the startup's shareholder arrangement. The reason this is still done on the blockchain under this method is that the chaincode and associated transactions, once executed and committed to the ledger, are immutable, because they are hashed and replicated to the entire network. Only the 10 shareholders know what the transactions are, and only they can perform any operations on the contract, but the integrity of the agreement, the output of the operations, and the record of transactions is maintained by all.
 
 ## Industry Use Cases
 
@@ -53,7 +58,7 @@ Why is this specific example an abstract use case? Because while all blockchain 
 
 #### Asset Depository 
 
-Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
+Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic. The creator of the asset must be able to make the asset and any rules associated with the trading of that asset private and confidential or public as the use case warrants.
 
 _For more details about these use cases and their requirements, click [here] (usecases.md)_
 
