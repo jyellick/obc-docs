@@ -85,7 +85,7 @@ Why is this specific example an abstract use case? Because while all blockchain 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
 
 <table>
-<tr><td><img src="images/supplychain.png" height="300" width="500"></td></tr>
+<tr><td><img src="images/assetrepository.png" height="300" width="500"></td></tr>
 </table>
 
 #### Persona
