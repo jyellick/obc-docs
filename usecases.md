@@ -66,7 +66,6 @@ Why is this specific example an abstract use case? Because while all blockchain 
 *  View access – only accounts with view access right are allowed to interrogate balances of parts shipped & available.
 
  
-
 ## Asset Depository 
 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
@@ -81,7 +80,7 @@ Assets such as financial securities must be able to be dematerialized on a block
 
 *  Securities Depository – Depository of dematerialized assets (securities). Known as CSD (Central Securities Depository) in the financial market.  
 
-Key Components
+#### Key Components
 
 *  Asset to cash - Integration with off-chain payment system is necessary so that in the case of fixed income securities, issuers can make coupon payments to its investors.
 
