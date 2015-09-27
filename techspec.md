@@ -2,7 +2,7 @@
 
 _This document is subject to change as development progresses_
 
-####Your voice here:
+##Your voice here:
 If you are reading this, then it means anything said in this document or done in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the specification and the implementation of Openchain should be taken forward. Don’t like something you see here? Help us all see your point of view (in a respectful and positive way) or even better, bring some code that shows a better way.
 
 ## Background
