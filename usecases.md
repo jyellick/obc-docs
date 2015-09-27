@@ -4,14 +4,14 @@
 Business contracts can be codified to allow two or more parties to automate contractual agreements in a trusted way.  Although information on blockchain is naturally “public”, B2B contracts may require privacy control to protect sensitive business information from being disclosed to outside parties that also have access to the ledger. 
 
 <table>
-<tr><td><img src="images/b2bcontract.png"></td></tr>
+<tr><td><img src="images/b2bcontract.png" height="200" width="500"></td></tr>
 </table>
 
 While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
 
 <table>
-<tr><td><img src="images/exchange.png"></td></tr>
+<tr><td><img src="images/exchange.png" height="200" width="500"></td></tr>
 </table>
 
 
@@ -55,6 +55,10 @@ Final assemblers, such as car manufacturers, can create a supply chain network m
 
 Why is this specific example an abstract use case? Because while all blockchain cases store immutable information, and some add the need for transfer of assets between parties, this case emphasizes the need to provide deep searchability back as many as 5-10 transaction layers. It is the core of establishing provenance of any manufactured good that is made up of other goods and supplies.
 
+<table>
+<tr><td><img src="images/supplychain.png" height="200" width="500"></td></tr>
+</table>
+
 #### Persona
 
 *  Final Assembler – The business entity that performs the final assembly of a product.
@@ -79,6 +83,10 @@ Why is this specific example an abstract use case? Because while all blockchain 
 ## Asset Depository 
 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
+
+<table>
+<tr><td><img src="images/assetrepository.png" height="300" width="500"></td></tr>
+</table>
 
 #### Persona
 
