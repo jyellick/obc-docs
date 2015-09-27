@@ -2,9 +2,8 @@
 Welcome to Openchain development!
 
 You are strongly recommended to read the [project definition](techspec.md) to
-get an overview of what we are developing. We use agile methodology with weekly
-sprint, organized by [issues](https://github.com/issues) tags, so take a look
-at the issues to familiarize yourself with the open workitems.
+get an overview of what we are developing. We use agile methodology with a weekly
+sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues) and [milestones](https://github.com/openblockchain/obc-peer/milestones), so take a look to familiarize yourself with the current work.
 
 ## License
 This software is under [Apache License Version 2.0](LICENSE)
@@ -12,7 +11,7 @@ This software is under [Apache License Version 2.0](LICENSE)
 ## Setting up the development environment
 We create a development environment for this project such that every developer
 would have the same set up and can be productive within a few minutes. Follow
-the [instruction](devenv.md) to download and start.
+the [instructions](devenv.md) to download and start.
 
 ## Contribution
 We are using [Github Flow](https://guides.github.com/introduction/flow/) process
@@ -33,7 +32,7 @@ submitting code.
 
 ## Communication
 We will use mainly our [Slack for communication](https://openchain.slack.com) and
-Slack Hero for screen sharing between developers. Register and get connected.
+Screenhero for screen sharing between developers. Register and get connected.
 
 There are twice weekly 15-min scrum calls to check in (standard scrum protocol)
 and a weekly 1-hour team playback meeting. We will limit the playback to
