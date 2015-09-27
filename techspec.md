@@ -33,9 +33,7 @@ Decentralization allows industry players to communicate and enter into contracts
 Digital assets are sets of numbers that represent actual value, tracked on a decentralized ledger. They are in effect numbers that hold bearer value like cash, thanks to decentralization and basic private/public key cryptography. They can be airline miles, fiat currency-backed units of account, securities, deeds, or of any other type. 
 
 ####Logic
-Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Openchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent.  They cannot be revoked, denied or reversed, because decentralized execution removes them from the control of any one party. They are effectively run on every validating node at the same time and stopping one on one node just takes the node out of the communication.
-
-Blockchain logic is embodied in verifiable applications that enforce business rules between any parties or devices and can move real money, either by clearing transfers off-chain or settling digital assets on-chain. They can be used to co-ordinate devices in IoT or implement security derivatives with hard coded behavior; they can automate payments, effect conditional ownership change, or transfer permission to use a physical asset.
+Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Openchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent.  Blockchain logic is embodied in verifiable applications that enforce business rules between any parties or devices and can move real money, either by clearing transfers off-chain or settling digital assets on-chain. They can be used to co-ordinate devices in IoT or implement security derivatives with hard coded behavior; they can automate payments, effect conditional ownership change, or transfer permission to use a physical asset.
 
 
 ## Industry Use Cases
@@ -46,11 +44,11 @@ We have compiled a set of initial blockchain requirements that are considered es
 
 Business contracts can be codified to allow two or more parties to automate contractual agreements in a trusted way.  Although information on blockchain is naturally “public”, B2B contracts may require privacy control to protect sensitive business information from being disclosed to outside parties that also have access to the ledger. 
 
-While confidential agreements are a key business, case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
+While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
 #### Manufacturing Supply Chain
 
-Final assemblers, such as car manufactures, can create a supply chain network managed by its peers and suppliers so that a final assembler can better manage its suppliers and be more responsive to events that would require vehicle recalls (possibly triggered by faulty parts supplied by some supplier). Blockchain would be an ideal solution for this type of application as it provides a standard protocol to allow every participant on a supplychain network to input and track parts produced and used on a given vehicle.
+Final assemblers, such as car manufacturers, can create a supply chain network managed by its peers and suppliers so that a final assembler can better manage its suppliers and be more responsive to events that would require vehicle recalls (possibly triggered by faulty parts supplied by some supplier). The blockchain fabric must provide a standard protocol to allow every participant on a supplychain network to input and track parts produced and used on a given vehicle.
 
 Why is this specific example an abstract use case? Because while all blockchain cases store immutable information, and some add the need for transfer of assets between parties, this case emphasizes the need to provide deep searchability back as many as 5-10 transaction layers. It is the core of establishing provenance of any manufactured good that is made up of other goods and supplies.
 
@@ -58,27 +56,29 @@ Why is this specific example an abstract use case? Because while all blockchain 
 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
 
+[See LINK — Frank, add link here to Use Case Doc — for additional detail on requirements. Consider putting whole document here.] 
 
 ## Challenges
 
-Openchain will be built from ground up to enhance the blockchain protocol with enterprise features for networks where validators are whitelisted, known parties who set whether transactors are private or public. The protocol (Openchain protocol) must address the following key challenges:
+Openchain will be built to enhance the blockchain protocol with enterprise features for networks, where validators are whitelisted, known parties who set whether transactors are private or public. The protocol must address the following key challenges:
 
 ####Private Transactions and Confidential Contracts
-Currently, transaction patterns are too easy to be observed and interpreted. Shared ledgers may give away details about a supplier relationship that should not be revealed. Therefore, a business ready blockchain must provide mechanisms to conceal identity from being publically identified by unauthorized third parties.
+Currently, transaction patterns are too easy to be observed and interpreted. Shared ledgers may give away details about a supplier relationship that should not be revealed to their competitors. In tight supplier/buyer communities, even one party's relative volume of trade is something which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from being publically identified by unauthorized third parties.
 
 ####Identity and Auditability
-While privacy is important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate the identity or ascertain the party’s activities on the ledger. 
+While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger. 
 
 ####Finality
-Data stores for industrial use must provide finality, meaning simply that there must be certainty at what point a transaction is committed and that after this point, it will not change on its own.
-Many current blockchain networks offer only eventual consistency, rather than a firm promise of finality, and can suffer arbitrary loss of committed information as they are designed to allow for, and cope with, forks in their global state.
-Business ready blockchain network will instead require immediate and guaranteed finality, based on peer-reviewed and battle-hardened protocols. 
+Data stores for industrial use must provide finality, meaning simply that there must be certainty at what point a transaction is committed, and that after this point, it will not change on its own. Many current blockchain networks offer only eventual consistency, rather than a firm promise of finality, and can suffer arbitrary loss of committed information as they are designed to allow for, and cope with, forks in their global state. A business ready blockchain network will instead require immediate and guaranteed finality, based on peer-reviewed and battle-hardened protocols. 
 
 ####Transaction Order
-For industry use, transactions orders can be more efficiently managed and bring more market fairness to address the miner problems we see in the public blockchain world today, where minors can freely decide the order of transactions to include in the chain based on their own needs.
+For industry use, transactions orders must be more efficiently managed and bring more market fairness to address the miner problems seen in the public blockchain world today, where minors can freely decide the order of transactions to include in the chain based on their own needs.
 
 ####Performance and Scalability
-The level of performance for enterprise grade blockchain network may be much higher than that of public networks. For example, to allow real time settlement of financial securities, a blockchain network needs handle up to 100,000 transactions per second, with sub-second latency. Both requirements are difficult to achieve with the consensus protocols in use today, but nevertheless they are requirements for a business ready blockchain fabric.
+The level of performance for enterprise grade blockchain network may be much higher than that of public networks. For example, to allow real time settlement of financial securities, a blockchain network needs handle up to 100,000 transactions per second, with sub-second latency. Both requirements are difficult to achieve with the consensus protocols in use today, but nevertheless they are requirements for a business ready blockchain fabric. 
+
+####100-year Decisions
+If blockchain becomes the fabric of an economically aware Internet, then it must be designed for performance over the long haul. A ledger or set of ledgers must be able to operate continuously for 100+ years and still allow discoverability, search, identity resolution and other key functions in user-acceptable timeframes.
 
 ####Productivity
 Development of decentralised applications and smart contracts is a field where many of the traditional rules of software development hold. But new paths have to be beaten for debugging, testing and maintaining applications in a distributed setting, requiring a holistic approach to the creation of the development tools.
@@ -88,37 +88,36 @@ Development of decentralised applications and smart contracts is a field where m
 
 #### Assigning Roles
 
-Security is the utmost concern of a permissioned network: Nodes must be known; access must be controlled; and identity must be verified. This will enable the network to recognize and eliminate malicious entities that may try to disrupt the function of the network.
+Beginning with a private network, validating nodes are operated by whitelisted members responsible for maintaining the ledger (via configuration). They are the only entities that can verify, process, and commit transactions to the ledger, based on the application of a consensus algorithm (see modular design below). 
 
-Beginning with a private network where nodes are owned by verified members, Openchain validators  are nodes on the network responsible for maintaining the ledger (via configuration), they are the only entities that can verify, process, and commit transactions to the ledger based on consensus. Although non-validation nodes don’t write to the ledger, they serve a very essential role in the network: Taking the workload off the validators in servicing client requests.
+Non-validating nodes don’t write to the ledger, but they serve a very essential role in the network: Taking the workload off the validators in servicing client requests.
 
-#### Reaching Consensus 
+#### Modular Consensus 
 
-Consensus algorithm on Openchain protocol is pluggable, allowing users to select the consensus algorithm of their choices during deployment. Different networks may deploy different consensus algorithms fit their usage scenarios. Openchain protocol will provide a Practical Byzantine Fault Tolerance (PBFT) [4] implementation in its initial release, and we expect the community to contribute more consensus algorithm modules at later time.
+Consensus algorithms on the protocol are pluggable, allowing users to select the consensus algorithm of their choice during deployment. Different networks may deploy different consensus algorithms to fit their usage scenarios. The protocol will provide a Practical Byzantine Fault Tolerance (PBFT) [4] implementation in its initial release, and we expect the community to contribute more consensus algorithm modules later.
 
 #### Tracking & Validating Participants
 
-Openchain protocol starts with an identity, which is a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate butterfly keys [3] for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
+The protocol starts with an identity, which is a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate butterfly keys [3] for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
 
 #### Protecting Confidentiality
 
-Content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logics can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. 
+Content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, aka smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. 
 
 #### Running Business Logic
 
-Openchain protocol specifies 2 types of transactions: the code deploying transaction and code-invoking transaction. Business logic codes deployed and invoked on a ledger network are called chaincodes. A code-deploying transaction may submit, update, or terminate a piece of chaincode, and it would be validators’ responsibility to protect the authenticity and integrity of the code and its execution environment. On the other hand, a code-invoking transaction is an API call to a chaincode function. This process is similar to how URI invoke a servlet in JEE. Note that each chaincode maintains its own state, and function call is a common way to trigger state changes on chaincodes.
+The protocol specifies 2 types of transactions: code-deploying transactions and code-invoking transactions. Business logic that is deployed and invoked on a ledger network is called chaincode. A code-deploying transaction may submit, update, or terminate a piece of chaincode, and it is the validators’ responsibility to protect the authenticity and integrity of the code and its execution environment. On the other hand, a code-invoking transaction is an API call to a chaincode function. This process is similar to how URI invokes a servlet in JEE. Note that each chaincode maintains its own state, and a function call is a common way to trigger chaincode state changes.
 
-The chaincode concept is more general than the smart contract concept defined by Nick Szabo [4], which emphasizes on bringing what he called the "highly evolved" practices of contract law and related business practices to the design of electronic commerce protocols between strangers on the Internet.
+The chaincode concept is more general than the smart contract concept defined by Nick Szabo [4]. Chaincode can be written in any mainstream programming language and are executed in Docker containers inside the Openchain context layer. Chaincode provides the capability to define smart contract templating language (similar to Velocity or Jade) and to restrict the functionality of the execution environment and the degree of computing flexibility to satisfy the legal contractual requirements. 
 
-Chaincode can be written in any mainstream programming languages, which are executed in docker containers inside Openchain context layer. Chaincode provides the capability to define smart contract templating language (similar to Velocity or Jade) and to restrict the functionality of the execution environment and the degree of computing flexibility to satisfy the legal contractual requirements. 
+Chaincode transactions are time bounded and configured during chaincode deployment. This is similar to a database call or a Web service invocation. If a transaction times out, it is considered an error and will not cause state changes on the ledger. One chaincode function may call another chaincode function if the callee has the same or less restrictive confidentiality scope; that is, a confidential chaincode may call a public chaincode or another confidential chaincode if they share the same group of validators.
 
-Chaincode transactions are time bounded, which is configured during chaincode deployment. This is similar to a database call or a Web service invocation. If a transaction times out, it is considered an error and will not cause state changes on the ledger. A chaincode may call another chaincode if the callee has the same or less restrictive confidentiality scope; that is, a confidential chaincode may call a public chaincode or another confidential chaincode if they share the same group of validators.
-To meet the confidential requirement required by some chaincodes, (e.g. business logic that contain sensitive business information), appropriate validators must get assigned before deployment. This will create quorums of validators during execution of transaction blocks. Validation nodes not selected to validate a confidential chaincode can just request for the state updates from those who are. At the end of each successful block execution consensus, the world state must be consistent on all validating nodes.
+To meet the confidentiality requirement required by some business agreements written in chaincode, appropriate validators must get assigned before deployment. This will create quorums of validators during execution of transaction blocks. Validation nodes not selected to validate a confidential chaincode can just request for the state updates from those who are. At the end of each successful block execution consensus, the world state must be consistent on all validating nodes.
 
 
 #### Accessing Openchain
-Openchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with Openchain. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege to interact with the network. Messages from a client are signed by the client identity, and verified by the peer node.
-Note that Openchain fabric does not include any native crypto-currency like Bitcoin or Ethereum do. However, users can be easily implement them, just as implementing any digital assets, with chaincode.
+Openchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with Openchain. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege to interact with the network. Messages from a client are signed by the client identity and verified by the peer node.
+Note that the Openchain fabric does not include any native crypto-currency like Bitcoins or Ether. However, users can be easily implement them with chaincode.
 
 
 ## Architecture
@@ -129,11 +128,11 @@ Some of these components will be built from ground up; some will use existing op
 ![Reference architecture](refarch.png)
 Figure 1:  Openchain Reference architecture
 
-Membership category provides services for managing identity, privacy, and confidentialy on the network. Participants register to get identities, which will enable the Attribute Authority to issue butterfly keys to transact. Repulation Manager enables auditors to see transacations pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
+The Membership category provides services for managing identity, privacy, and confidentialy on the network. Participants register to get identities, which will enable the Attribute Authority to issue butterfly keys to transact. Reputation Manager enables auditors to see transacations pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
 
 Blockchain services manage the distributed ledger through a peer-to-peer protocol, built on HTTP/2. The data structures are highly optimized to provide the most efficient hash algorithm for maintaining the world state replication. Different consensus (PBFT, Raft, PoW, PoS) may be plugged in and configured per deployment.
 
-Chaincode services provide a secured and lightweight to sandbox the chaincode execution on the validators. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required.
+Chaincode services are a secured and lightweight way to sandbox the chaincode execution on the validators. The environment is a “locked down” and secured container along with a set of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required.
 
 
 #### MEMBERSHIP
@@ -144,11 +143,11 @@ Chaincode services provide a secured and lightweight to sandbox the chaincode ex
 <tr>
 <td width="30%"><img src="refarch-memb.png"></td>
 <td valign="top">
-Openchain is a private network, so all entities are required to register with membership services to get identity to access and to transact on the network. <p><p>
+Openchain is a private-validator network protocol, so all entities are required to register with membership services to get identity to access and to transact on the network. Validators at network setup can determine the level of permissioning required to transact. It is possible for a network to be very liberally permissioned, allowing ease of access supporting rapid and high adoption goals, and it is possible for a network to be very restricted. The validators that set up the network configure this.<p><p>
 
-Registration Authority issues enrollment certificate necessary to establish identity for a member. Once registered, the member has the required credentials to participate in the network, no needs for proof or work or proof of stake at this point. <p><p>
+Registration Authority issues enrollment certificate necessary to establish identity for a member. Once registered, the member has the required credentials to participate in the network, no need for proof-of-work or proof-of-stake at this point. <p><p>
 
-Attributes Authority issues butterfly keys to members to transact and to ensure the privacy of the members on the network. None-stakeholders can't link the transactions back to the members. Transactions appear to be coming from random addresses, completely shuffled by the system. <p><p>
+Attributes Authority issues butterfly keys to members to transact and to ensure the privacy of the members on the network. Non-stakeholders can't link the transactions back to the members. Transactions appear to be coming from random addresses, completely shuffled by the system. <p><p>
 
 Reputation Manager allows authorized auditors to link butterfly keys to identity, and consequently, prove the relationship between transactions and members.
 </td>
@@ -180,7 +179,7 @@ The Distributed  Ledger component manages the blockchain and the world state wit
 
 The Ledger uses <a href="http://rocksdb.org"> RocksDB</a> to persist the dataset and builds an internal data structure to represent the state that satisfies the above 3 criteria. Large documents or files are not stored on the Ledger but off-chain storage. Their hashes may be stored on-chain as part of the transactions. This is necessary to maintain the integrity of the documents or files.
 
-The world state represents the state for all chaincodes. Each chaincode is assigned its own state that can be used to store data in a key-value format where keys and values are arbitrary byte arrays. The world state also contains the block number to which it corresponds.
+The world state represents the state for all chaincodes. Each chaincode is assigned its own state that can be used to store data in a key-value format, where keys and values are arbitrary byte arrays. The world state also contains the block number to which it corresponds.
 
 As transactions are run in a new block, a delta from the world state in the last block on the blockchain is maintained. If consensus is reached for the current block, the changes are committed to the database, and the world state block number is incremented by 1. If peers do not reach consensus, the delta is discarded and the database is not modified.
 
@@ -188,7 +187,7 @@ Consensus Manager is an abstraction defining the interface between the consensus
 
 Openchain provides an implementation of Byzantine Agreement with advanced features in fault tolerance and scalability.
 
-Event Hub in a decentralized network is complex in nature, as an event may appear to occur multiple times, each on a peer node. Callbacks would end up receiving multiple invocations for the same event. Therefore, a peer node (preferably none-validator and local) manages the event pub/sub that applications are interacting with. The peer node emits events as conditions satisfied in no particular order. Events are not persisted but more of fire-and-forget, so applications should capture events if required.
+Event Hub in a decentralized network is complex in nature, as an event may appear to occur multiple times, each on a peer node. Callbacks can end up receiving multiple invocations for the same event. Therefore, a peer node (preferably non-validator and local) manages the event pub/sub that applications are interacting with. The peer node emits events as conditions satisfied in no particular order. Events are not persisted — fire-and-forget, so applications should capture events if required.
 
 
 
@@ -199,11 +198,11 @@ Event Hub in a decentralized network is complex in nature, as an event may appea
 <tr>
 <td width="30%"><img src="refarch-chain.png"></td>
 <td valign="top">
-As defined in the Introduction section, chaincode is a decentralized transactional program, running on the validators, <p><p>
+As defined in the previous sections, chaincode is a decentralized transactional program, running on the validators. <p><p>
 
-Chaincode Services use <a href="https://github.com/docker/"> Docker </a> to host the chaincode without relying on any particular virtual machine or computer language. Docker provides a secured lightweight to sandbox the chaincode execution. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required. <p><p>
+Chaincode Services use <a href="https://github.com/docker/"> Docker </a> to host the chaincode without relying on any particular virtual machine or computer language. Docker provides a secured, lightweight way to sandbox the chaincode execution. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required. <p><p>
 
-Secure Registry service enables Secured Docker Registry of base Openchain images and custom images containing chaincodes
+Secure Registry service enables Secured Docker Registry of base Openchain images and custom images containing chaincodes.
 
 </td>
 </tr>
@@ -212,9 +211,9 @@ Secure Registry service enables Secured Docker Registry of base Openchain images
 
 ## Application Programming Interface
 ![Reference architecture](refarch-api.png) <p>
-At the top, CLI is the command line interface to the network. Openchain provides a set of CLI to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
+At the top, CLI is the command line interface to the network. Openchain provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
 
-The API spans following categories:
+The API spans the following categories:
 *  Identity - Enrollment to get certificates or revoking a certificate
 *  Address - Target and source of a transaction
 *  Transaction - Unit of execution on the ledger
@@ -280,11 +279,11 @@ An Openchain application follows a MVC-B architecture – Model, View, Control, 
 <ul>
   <li>VIEW LOGIC – Mobile or Web UI interacting with control logic.</li>
   <li>CONTROL LOGIC – Coordinates between UI, Data Model and OpenChain APIs to drive transitions and chain-code.</li>
-  <li>DATA MODEL – Application Data Model – manages off chain data, including Documents and large files.</li>
-  <li>BLOCKCHAIN  LOGIC – Blockchain logic are extensions of the Controller Logic and Data Model, into the Blockchain realm.    Controller logic is enhanced by Chain-code, and the Data model is enhanced with transactions on the blockchain.</li>
+  <li>DATA MODEL – Application Data Model – manages off-chain data, including Documents and large files.</li>
+  <li>BLOCKCHAIN  LOGIC – Blockchain logic are extensions of the Controller Logic and Data Model, into the Blockchain realm.    Controller logic is enhanced by chaincode, and the data model is enhanced with transactions on the blockchain.</li>
 </ul>
 <p>
-For example, a Bluemix application using Node.js might have a Web front-end user interface or a native mobile app with backend model on Cloudant data service. The control logic may interact with 1 or more chaincodes to process transactions on the blockchain.
+For example, a Bluemix PaaS application using Node.js might have a Web front-end user interface or a native mobile app with backend model on Cloudant data service. The control logic may interact with 1 or more chaincodes to process transactions on the blockchain.
 
 </td>
 </tr>
@@ -294,11 +293,11 @@ For example, a Bluemix application using Node.js might have a Web front-end user
 ## Network Topology
 There are 3 potential deployment models: Cloud hosted 1 network, cloud hosted multiple networks, or within each participant’s intranet.
 
-The simplest and most efficient topology is cloud hosted 1 network, where each participant owes a number of peer nodes, including validators. Even though the network is in cloud, hosted by a vendor, who owes the physical boxes, but the participants contractually control the computing resource, making it a decentralized within a centralized environment.
+The simplest and most efficient topology is cloud hosted 1 network, where each participant owns a number of peer nodes, including validators. Even though the network is in cloud, hosted by a vendor, who owns the physical boxes, the participants contractually control the computing resources, making it decentralized within a centralized environment.
 
-Cloud hosted multiple networks allows participants to have their peer nodes hosted by any cloud providers, given that peer nodes can connect to one another over HTTPs channel.
+Cloud hosted multiple networks allow participants to have their peer nodes hosted by any cloud providers, given that peer nodes can connect to one another over HTTPs.
 
-Similar to cloud hosted multiple networks, using participants’ own networks also possible via HTTPs channel.
+Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
 
 ## References
 - [1] Mautz, R.K., H.A. Sharaf: The philosophy of auditing. Sarasota, Fl, American Accounting Association, 1961
