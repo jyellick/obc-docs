@@ -7,7 +7,7 @@ _This document is subject to change as development progresses_
 
 This paper describes the principles, high-level architecture and initial technical specifications of a blockchain suitable for industrial use cases. With Bitcoin popularizing the domain, awareness since 2009 has now reached the point that demand for a solution suitable for industry is surging.
 
-The design presented here provides a platform to leverage blockchain technology for business-to-business and business-to-customer transactions. It is designed for public, private, protected and federated networks, and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
+The design presented here describes a blockchain fabric, a protocol for business-to-business and business-to-customer transactions. It is intended for public, private, protected and federated networks, and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
 
 The central elements of this specification are smart contracts, digital assets, record repository, and a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private transactions, and modular consensus protocols.
 
