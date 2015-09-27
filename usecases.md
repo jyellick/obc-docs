@@ -5,6 +5,13 @@ Business contracts can be codified to allow two or more parties to automate cont
 
 While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
+<table>
+<tr>
+<td width="80%"><img src="refarch-app.png"></td>
+<tr/>
+</table>
+
+
 #### Persona
 
 *  Contract participant – Contract counter parties
