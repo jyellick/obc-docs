@@ -34,4 +34,4 @@ D.	**Costs** The cost incurred by each party in connection with the Project, inc
 
 This MOU supersedes all prior proposals and discussions and along with the NDA and the ASL is the complete and exclusive statement of the understanding between IBM and Supporter as to the subject matter.   This MOU cannot be modified except by a comprehensive writing signed by an authorized representative of each party that specifically amends this MOU.
 
-By clicking accessing, reading and contributing to this GitHub repository, you indicate agreement with this MOU on behalf of your company.   
+By accessing, reading and contributing to this GitHub repository, you indicate agreement with this MOU on behalf of your company.   
