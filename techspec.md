@@ -85,7 +85,7 @@ Figure 1 below shows the reference architecture aligned in 3 categories: Members
 
 Some of these components will be built from the ground up; some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
 
-![Reference architecture](refarch.png)
+![Reference architecture](images/refarch.png)
 Figure 1:  Openchain Reference architecture
 
 The Membership category provides services for managing identity, privacy, and confidentialy on the network. Participants register to get identities, which will enable the Attribute Authority to issue butterfly keys to transact. Reputation Manager enables auditors to see transacations pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
@@ -101,7 +101,7 @@ Chaincode services are a secured and lightweight way to sandbox the chaincode ex
 <col>
 <col>
 <tr>
-<td width="30%"><img src="refarch-memb.png"></td>
+<td width="30%"><img src="images/refarch-memb.png"></td>
 <td valign="top">
 Openchain is a private-validator network protocol, so all entities are required to register with membership services to get identity to access and to transact on the network. Validators at network setup can determine the level of permissioning required to transact. It is possible for a network to be very liberally permissioned, allowing ease of access supporting rapid and high adoption goals, and it is possible for a network to be very restricted. This is configured in network setup.<p><p>
 
@@ -121,7 +121,7 @@ Reputation Manager allows authorized auditors to link butterfly keys to identity
 <col>
 <col>
 <tr>
-<td width="50%"><img src="refarch-block.png"></td>
+<td width="50%"><img src="images/refarch-block.png"></td>
 <td valign="top">
 Blockchain services consists of 3 key components: Distributed Ledger, Consensus Manager, and Peer-to-Peer (P2P) Protocol. <p><p>
 
@@ -154,7 +154,7 @@ Event Hub in a decentralized network is complex in nature, as an event may appea
 <col>
 <col>
 <tr>
-<td width="30%"><img src="refarch-chain.png"></td>
+<td width="30%"><img src="images/refarch-chain.png"></td>
 <td valign="top">
 As defined in the previous sections, chaincode is a decentralized transactional program, running on the validators. <p><p>
 
@@ -181,7 +181,7 @@ To meet the confidentiality requirement required by some business agreements wri
 Openchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
 
 
-![Reference architecture](refarch-api.png) <p>
+![Reference architecture](images/refarch-api.png) <p>
 At the top, CLI is the command line interface to the network. Openchain provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
 
 The API spans the following categories:
@@ -242,7 +242,7 @@ The API spans the following categories:
 <col>
 <col>
 <tr>
-<td width="50%"><img src="refarch-app.png"></td>
+<td width="50%"><img src="images/refarch-app.png"></td>
 <td valign="top">
 An Openchain application follows a MVC-B architecture – Model, View, Control, BlockChain.
 <p><p>
