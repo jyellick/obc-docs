@@ -21,7 +21,7 @@ We are using [Github Flow](https://guides.github.com/introduction/flow/) process
 to contribute code.
 ####Here is the basic Github Flow:
 - Anything in the master branch is deployable
-- To work on something new, create a descriptively named branch off of master
+- To work on something new, create a descriptively named branch off of your fork
 (ie: new-oauth2-scopes)
 - Commit to that branch locally and regularly push your work to the same named
 branch on the server
