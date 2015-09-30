@@ -15,15 +15,30 @@ This model allows developers to leverage their favorite OS/editors and execute t
 
 ### Steps
 
+#### Set your GOPATH
+Make sure you have setup your Host's [GOPATH environment variable](https://github.com/golang/go/wiki/GOPATH) properly set. This allows for both building within the Host and the VM.
+
+#### Note to Windows users
+If you are running Windows, before running any `git clone` commands, run the following command.
+```
+git config --get core.autocrlf
+```
+If `core.autocrlf` is set to `true`, you must set it to `false` by running
+```
+git config --global core.autocrlf false
+```
+If you continue with `core.autocrlf` set to `true`, the `vagrant up` command will fail with the error `./setup.sh: /bin/bash^M: bad interpreter: No such file or directory`
+
 #### Cloning the Openchain Peer project
-First make sure you have setup your Host's [GOPATH environment variable](https://github.com/golang/go/wiki/GOPATH) properly set. This allows for both building within the Host and the VM.
 
 Create a fork of the github.com/openblockchain/obc-peer repository using the GitHub web interface. Next, clone your fork in the appropriate location.
 
-    cd $GOPATH/src
-    mkdir -p github.com/openblockchain
-    cd github.com/openblockchain
-    git clone https://github.com/<username>/obc-peer.git
+```
+cd $GOPATH/src
+mkdir -p github.com/openblockchain
+cd github.com/openblockchain
+git clone https://github.com/<username>/obc-peer.git
+```
 
 
 #### Cloning the Openchain Development Environment project
