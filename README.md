@@ -42,7 +42,11 @@ and a weekly 1-hour team playback meeting. We will limit the playback to
 these meetings. If you can't attend, kindly let someone know.
 
 ## Coding Golang
-We require a file [header](headers.txt) on all source code files. Just copy and
+- We require a file [header](headers.txt) on all source code files. Just copy and
 paste.
-We code in Golang and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
+- We code in Go and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
 and will not accept any deviation.
+- Before making a pull request, you must run the following tools against your code and fix all errors and warnings.
+	- [goimports](https://github.com/bradfitz/goimports)
+	- [golint](https://github.com/golang/lint)
+	- [go vet](https://golang.org/cmd/vet/)
