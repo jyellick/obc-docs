@@ -29,8 +29,14 @@ open a pull request
 - After your pull request has reviewed and signed off, a committer
 can merge it into master branch
 
-You must agree to [Developer's Certificate of Origin](DCO1.1.txt) prior to
-submitting code.
+We use the same approach - the [Developer's Certificate of Origin](DCO1.1.txt) - as the Linux Kernel [community](http://elinux.org/Developer_Certificate_Of_Origin) does to manage contributions.
+We simply ask that when submitting a pull request, that the developer include a sign-off statement in the pull request's description.
+
+Here is an example Signed-off-by line, that indicates that the submitter accepts the DCO:
+
+```
+Signed-off-by: John Doe <john.doe@hisdomain.com>
+```
 
 ## Communication
 We will use mainly our [Slack for communication](https://openchain.slack.com) and
