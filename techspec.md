@@ -169,7 +169,7 @@ The world state represents the state for every chaincode. Each chaincode is assi
 </tr>
 </table>
 
-Chaincode transactions are time bounded and configured during chaincode deployment. This is similar to a database call or a Web service invocation. If a transaction times out, it is considered an error and will not cause state changes on the ledger. One chaincode function may call another chaincode function if the callee has the same or less restrictive confidentiality scope; that is, a confidential chaincode may call a public chaincode or another confidential chaincode if they share the same group of validators.
+Chaincode transactions are time bounded and configured during chaincode deployment. This is similar to a database call or a Web service invocation. If a transaction times out, it is considered an error and will not cause state changes on the ledger. One chaincode function may call another chaincode function if the callee has the same restrictive confidentiality scope; that is, a confidential chaincode may call another confidential chaincode if they share the same group of validators.
 
 As transactions are run in a new block, a delta from the world state in the last block on the blockchain is maintained. If consensus is reached for the current block, the changes are committed to the database, and the world state block number is incremented by 1. If peers do not reach consensus, the delta is discarded and the database is not modified.
 
