@@ -66,7 +66,7 @@ Content confidentiality is achieved by encrypting the transactions such that onl
 
 #### Identity and Auditability
 While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger. 
-The protocol starts with a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate butterfly keys [1, 2] for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
+The protocol starts with a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate security keys for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
 
 #### Finality
 Data stores for industrial use must provide finality, meaning simply that there must be certainty at what point a transaction is committed, and that after this point, it will not change on its own. Many current blockchain networks offer only eventual consistency, rather than a firm promise of finality, and can suffer arbitrary loss of committed information as they are designed to allow for, and cope with, forks in their global state. 
@@ -88,7 +88,7 @@ Some of these components will be built from the ground up; some will use existin
 ![Reference architecture](images/refarch.png)
 Figure 1:  Openchain Reference architecture
 
-The Membership category provides services for managing identity, privacy, and confidentialy on the network. Participants register to get identities, which will enable the Attribute Authority to issue butterfly keys to transact. Reputation Manager enables auditors to see transacations pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
+The Membership category provides services for managing identity, privacy, and confidentialy on the network. Participants register to get identities, which will enable the Attribute Authority to issue security keys to transact. Reputation Manager enables auditors to see transacations pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
 
 Blockchain services manage the distributed ledger through a peer-to-peer protocol, built on HTTP/2. The data structures are highly optimized to provide the most efficient hash algorithm for maintaining the world state replication. Different consensus (PBFT, Raft, PoW, PoS) may be plugged in and configured per deployment.
 
@@ -107,9 +107,9 @@ Openchain is a private-validator network protocol, so all entities are required 
 
 Registration Authority issues enrollment certificate necessary to establish identity for a member. Once registered, the member has the required credentials to participate in the network, no need for proof-of-work or proof-of-stake at this point. <p><p>
 
-Attributes Authority issues butterfly keys to members to transact and to ensure the privacy of the members on the network. Non-stakeholders can't link the transactions back to the members. Transactions appear to be coming from random addresses, completely shuffled by the system. <p><p>
+Attributes Authority issues security keys to members to transact and to ensure the privacy of the members on the network. Non-stakeholders can't link the transactions back to the members. Transactions appear to be coming from random addresses, completely shuffled by the system. <p><p>
 
-Reputation Manager allows authorized auditors to link butterfly keys to identity, and consequently, prove the relationship between transactions and members.
+Reputation Manager allows authorized auditors to link security keys to identity, and consequently, prove the relationship between transactions and members.
 </td>
 </tr>
 </table>
@@ -201,7 +201,7 @@ The API spans the following categories:
 
 ### Address
 *  Get Addresses: Return addresses belongs to an identity
-*  Create Address: Create and return a butterfly address for an identity
+*  Create Address: Create and return a security address for an identity
 
 ### Transaction
 *  Get Transactions by Address: Return transactions of an address
@@ -271,7 +271,5 @@ Cloud hosted multiple networks allow participants to have their peer nodes hoste
 Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
 
 ## References
-- [1] Lorenz, E.N. Predictability; Does the Flap of a Butterfly’s Wings in Brazil Set Off a Tornado in Texas? J. Atmos. Sci. 1972, 20: 130–141.
-- [2] [A Security Credential Management System for Vehicle-to-Vehicle Communications](https://realworldcrypto.files.wordpress.com/2014/01/whyte.pdf)
-- [3] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
-- [4] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
+- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
+- [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
