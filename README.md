@@ -53,6 +53,5 @@ paste.
 - We code in Go and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
 and will not accept any deviation.
 - Before making a pull request, you must run the following tools against your code and fix all errors and warnings.
-	- [goimports](https://github.com/bradfitz/goimports)
 	- [golint](https://github.com/golang/lint)
 	- [go vet](https://golang.org/cmd/vet/)
