@@ -40,12 +40,7 @@ Signed-off-by: John Doe <john.doe@hisdomain.com>
 
 ## Communication
 We will use mainly our [Slack for communication](https://openchain.slack.com) and
-Screenhero for screen sharing between developers. Register and get connected.
-
-There are twice weekly 15-min scrum calls to check in (standard scrum protocol)
-and a weekly 1-hour team playback meeting. We will limit the playback to
-30 min, and the rest for discussion. You will receive the calendar invite for
-these meetings. If you can't attend, kindly let someone know.
+Screenhero or Google Hangouts for screen sharing between developers. Register and get connected.
 
 ## Coding Golang
 - We require a file [header](headers.txt) on all source code files. Just copy and
