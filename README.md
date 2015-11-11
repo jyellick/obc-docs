@@ -25,7 +25,7 @@ to contribute code.
 - Commit to that branch locally and regularly push your work to the same named
 branch on the server
 - When you need feedback or help, or you think the branch is ready for merging,
-open a pull request
+open a pull request (make sure successfully built and tested with the testsuite)
 - After your pull request has reviewed and signed off, a committer
 can merge it into master branch
 
@@ -46,7 +46,6 @@ Screenhero or Google Hangouts for screen sharing between developers. Register an
 - We require a file [header](headers.txt) on all source code files. Just copy and
 paste.
 - We code in Go and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
-and will not accept any deviation.
-- Before making a pull request, you must run the following tools against your code and fix all errors and warnings.
+and will not accept any deviation. You must run the following tools against your code and fix all errors and warnings.
 	- [golint](https://github.com/golang/lint)
 	- [go vet](https://golang.org/cmd/vet/)
