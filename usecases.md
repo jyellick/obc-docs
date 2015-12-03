@@ -1,6 +1,7 @@
 
 # Canonical Use Cases
 
+&nbsp;
 
 ### B2B Contract
 
@@ -50,7 +51,8 @@ While confidential agreements are a key business case, there are many scenarios 
 
 *  View access – B2B contracts may include confidential information, so only accounts with pre-defined access right are allowed to view/interrogate them
 
- 
+&nbsp;
+
 
 ### Manufacturing Supply Chain
 
@@ -82,7 +84,9 @@ Why is this specific example an abstract use case? Because while all blockchain 
 
 *  View access – only accounts with view access right are allowed to interrogate balances of parts shipped & available.
 
- 
+&nbsp;
+
+  
 ### Asset Depository 
 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
@@ -117,6 +121,9 @@ Assets such as financial securities must be able to be dematerialized on a block
 
 *  View access – only accounts with view access right are allowed to interrogate the chaincode that defines an asset type. If an asset represents shares of a publicly traded companies, then the view access right must be granted to every entity on the network.
 
+&nbsp;
+
+
 # Extended Use cases
 
 An ever expanding list of use cases
@@ -129,6 +136,8 @@ From the time a trade is captured by the Front Office till the trade is finally 
 <tr><td><img src="images/one_contract_per_trade.png" height="300" width="500"></td></tr>
 </table>
 
+&nbsp;
+
 ### Direct Communication
 
 Company A announced its intention to raise 2 Billion USD by way of right issue.  Since this is a voluntary action, company A needs to make sure the complete detail of this offer are sent to shareholders in real time regardless of how many intermediaries are involved in the process (such as receiving/paying agents, CSD, ICSD, local/global custodian banks, asset management firms, etc). Once a shareholder has made a decision, that decision will also be processed and settled (including the new issuance of shares) in real time. If a shareholder sold its rights to a third party, the securities depository must be able to record the new shares under the name of their new rightful owner.
@@ -136,6 +145,8 @@ Company A announced its intention to raise 2 Billion USD by way of right issue. 
 <table>
 <tr><td><img src="images/corporate_action.png" height="300" width="500"></td></tr>
 </table>
+
+&nbsp;
 
 ### Separation of asset ownership and custodian’s duties
 
