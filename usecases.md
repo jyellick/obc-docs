@@ -1,5 +1,8 @@
 
-## B2B Contract
+# Canonical Use Cases
+
+
+### B2B Contract
 
 Business contracts can be codified to allow two or more parties to automate contractual agreements in a trusted way.  Although information on blockchain is naturally “public”, B2B contracts may require privacy control to protect sensitive business information from being disclosed to outside parties that also have access to the ledger. 
 
@@ -19,37 +22,37 @@ While confidential agreements are a key business case, there are many scenarios 
 
 *  Contract participant – Contract counter parties
 
-*  Third party participant – A third party stakeholder of a contract who plays the role of guaranteeing the integrity of the contract.
+*  Third party participant – A third party stakeholder guaranteeing the integrity of the contract.
 
 #### Key Components
 
-*  Multi-sig contract activation - When a contract is first deployed by one of the counter parties, it will be in pending activation state. To active a contract, signatures from other counterparties and/or third party participants are required.
+*  Multi-sig contract activation - When a contract is first deployed by one of the counter parties, it will be in the pending activation state. To active a contract, signatures from other counterparties and/or third party participants are required.
 
 *  Multi-sig contract execution - Some contract will require one of many signatures to execute. (E.g. In trade finance, a payment instruction can only be executed if either the recipient or a authorized third party (e.g. UPS) confirms the shipment of the good)
 
-*  Discoverable contract offers - If a contract is a business offer seeking for counter parties (bids), it must also be made searchable. In addition, such contract shall have the intelligence to evaluate bids.
+*  Discoverability - If a contract is a business offer seeking for bids, it must be easily searchable. In addition, such contract needs to have the built-in intelligence to evaluate, select, and honor bids.
 
-*  Payment inside contract- Integration with off-chain payment system is necessary so that contract code can trigger payment transactions that are settled off chain
+*  Payment inside contract- Integration with off-chain payment system is a must so that contract code can initiate payment transactions that are processed and settled off chain
 
 *  Atomicity of contract execution - Atomicity of the contract is needed to guarantee asset transfers can only occur when payment is received (Delivery vs. Payment). If any step in the execution process fails, the entire transaction must be rolled back
 
-*  Contract to chain-code communication - Contracts must be able to communicate with chaincodes deployed on the ledger. E.g. Security lending contracts will call asset contracts to deliver digital assets to counter parties
+*  Contract to chain-code communication - Contracts must be able to communicate with chaincodes deployed on the same ledger. 
 
-*  Longer Duration contract - Timer is needed to because many B2B contracts may have long execution window.
+*  Longer Duration contract - Timer is needed to support B2B contracts that have long execution window.
 
-*  Reuseable contracts - Oftenly used contracts can be standardized so that they can be easily reused. In addition, standardization will improve searchability of contracts.
+*  Reuseable contracts - Oftenly used contracts can be standardized so that they can be reused. 
 
-*  Auditable contractual agreement -  Any contract can be made auditable to third parties. E.g. Lawyers may want to audit transactions for legal reasons
+*  Auditable contractual agreement -  Any contract can be made auditable to third parties. 
 
-*  Contract life-cycle management - B2B contracts are unique and not all of them can be standardized. An efficient contract management system is needed so that contracts will not bloat the system
+*  Contract life-cycle management - B2B contracts are unique and not all of them can be standardized. An efficient contract management system is needed to enchance the scalability of the ledger network
 
-*  Validation access – only nodes with validation right are allowed to validate transactions of a B2B contract, and that could be restricted to stake holders and authorized third party
+*  Validation access – only nodes with validation right are allowed to validate transactions of a B2B contract
 
-*  View access – B2B contracts may include confidential information, so only accounts with view access right are allowed to view/interrogate them
+*  View access – B2B contracts may include confidential information, so only accounts with pre-defined access right are allowed to view/interrogate them
 
  
 
-## Manufacturing Supply Chain
+### Manufacturing Supply Chain
 
 Final assemblers, such as car manufacturers, can create a supply chain network managed by its peers and suppliers so that a final assembler can better manage its suppliers and be more responsive to events that would require vehicle recalls (possibly triggered by faulty parts supplied by some supplier). The blockchain fabric must provide a standard protocol to allow every participant on a supplychain network to input and track parts produced and used on a given vehicle.
 
@@ -63,24 +66,24 @@ Why is this specific example an abstract use case? Because while all blockchain 
 
 *  Final Assembler – The business entity that performs the final assembly of a product.
 
-*  Part supplier – Suppliers of parts that are used by assemblers. Each supplier can also be an assembler itself, assembled parts it received from sub-suppliers and send the finished product to final assembler
+*  Part supplier – Suppliers of parts. Suppliers can also be an assemblers, assembling parts they received from their own sub-suppliers and send the finished product to the final (root) assembler
 
 #### Key Components
 
-*  Payment upon delivery of goods - Integration with off-chain payment system is necessary to instruct payment instructions upon delivery of a component to the assembler above.
+*  Payment upon delivery of goods - Integration with off-chain payment system is necessary so that payment instructions can be sent when parts are received.
 
-*  Third party Audit -  All supplied parts shall be auditable by third parties. E.g. regulators may need to track total number of parts supplied by a supplier for tax accounting purpose
+*  Third party Audit -  All supplied parts shall be auditable by third parties. E.g. regulators may need to track the total number of parts supplied by a supplier for tax accounting purpose
 
-*  Obfuscation of shipments - Balances shall be obfuscated so that no one supplier can deduce the exact amount other supplier supplies
+*  Obfuscation of shipments - Balances shall be obfuscated so that no one supplier can deduce the business activiteis of other suppliers 
 
-*  Obfuscation of market size - Total balance must be obfuscated so that part suppliers can’t deduce its market share and use that to seek for better term.
+*  Obfuscation of market size - Total balance must be obfuscated so that part suppliers can’t deduce its own market share and use that as a leverage to seek for better term.
 
 *  Validation Access – only nodes with validation right are allowed to validate transactions (shipment of parts)
 
 *  View access – only accounts with view access right are allowed to interrogate balances of parts shipped & available.
 
  
-## Asset Depository 
+### Asset Depository 
 
 Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
 
@@ -90,29 +93,55 @@ Assets such as financial securities must be able to be dematerialized on a block
 
 #### Persona
 
-*  Investor – Beneficial owner of securities. Openchain identity manager associates each key pair to a validated identity. Through identity manager, investors can also control and manage the delivery/payment instructions linked to their identity.
+*  Investor – Beneficial and leagal owner of an asset
 
-*  Issuer – Business entity that issued the security which is now dematerialized on the ledger network.
+*  Issuer – Business entity that issued the asset which is now dematerialized on the ledger network
 
-*  Custodian – Hired by investors for the safekeeping of their assets, and for providing other services such as asset servicing and optimization. Note that
+*  Custodian – Hired by investors to manage their assets, and offer other value add services on top of the assets being managed
 
-*  Securities Depository – Depository of dematerialized assets (securities). Known as CSD (Central Securities Depository) in the financial market.  
+*  Securities Depository – Depository of dematerialized assets
 
 #### Key Components
 
-*  Asset to cash - Integration with off-chain payment system is necessary so that in the case of fixed income securities, issuers can make coupon payments to its investors.
+*  Asset to cash - Integration with off-chain payment system is necessary so that issuers can make payments to and receive payments from its investors.
 
-*  Reference Rate - Some types of assets such as floating rate notes require access to the reference rates (e.g. LIBOR), such information must be feed into the ledger network.
+*  Reference Rate - Some types of assets (e.g. floating rate notes) may have attributes linked to external data (e.g. reference rate), and such information must be feed into the ledger network.
 
-*  Asset Timer - A timer is needed for many types of financial assets that has a life span and have to make periodic payments. E.g. fixed-income securities need to pay periodic payments its investors and need to know what to do do when it reaches maturity.
+*  Asset Timer - Many types of financial assets have pre-defined life span and are required to make periodic payments to their owners, so a timer is needed to automate operation management of these assets
 
-*  Asset Auditor -  Assets must be made auditable to third parties. E.g. regulator may want to audit transactions and movements of assets to measure market risks.
+*  Asset Auditor -  Asset transactions must be made auditable to third parties. E.g. regulator may want to audit transactions and movements of assets to measure market risks.
 
-*  Obfuscation of account balances - Individual account balances shall be obfuscated so that no one can deduce the exact amount an investor owns.
-
-*  Delegation of Control - In case of financial securities, assets (securities) are still registered under each investor’s name (instead of going through a nominee). However, custodian banks will have full control over its managed assets as long as they have access to their clients' keys.
+*  Obfuscation of account balances - Individual account balances shall be obfuscated so that no one can deduce the exact amount an investor own.
 
 *  Validation Access – only nodes with validation right are allowed to validate transactions updating the balances of an asset type (this could be restricted to CSD and/or issuer).
 
-*  View access – only accounts with view access right are allowed to interrogate the chaincode that defines an asset type. If an asset represents shares of a publicly traded companies, then the view access could be granted to everyone on the network.
+*  View access – only accounts with view access right are allowed to interrogate the chaincode that defines an asset type. If an asset represents shares of a publicly traded companies, then the view access right must be granted to every entity on the network.
+
+# Extended Use cases
+
+An ever expanding list of use cases
+
+### One Trade, One Contract
+
+From the time a trade is captured by the Front Office till the trade is finally settled, only one contract that specifies the trade will be created and used by all participants. Middle office will enrich the same electronic contract submitted by the front office, and that same contract will then be used by counterparties to confirm and affirm their trade. Finally, securities depository will settle the trade by executing the trading instructions specified on the contract. When dealing with bulk trades, the original contract can be broken down to sub-contracts that are always linked to the original parent contract.
+
+<table>
+<tr><td><img src="images/one_contract_per_trade.png" height="300" width="500"></td></tr>
+</table>
+
+### Direct Communication
+
+Company A announced its intention to raise 2 Billion USD by way of right issue.  Since this is a voluntary action, company A needs to make sure the complete detail of this offer are sent to shareholders in real time regardless of how many intermediaries are involved in the process (such as receiving/paying agents, CSD, ICSD, local/global custodian banks, asset management firms, etc). Once a shareholder has made a decision, that decision will also be processed and settled (including the new issuance of shares) in real time. If a shareholder sold its rights to a third party, the securities depository must be able to record the new shares under the name of their new rightful owner.
+
+<table>
+<tr><td><img src="images/corporate_action.png" height="300" width="500"></td></tr>
+</table>
+
+### Separation of asset ownership and custodian’s duties
+
+Assets should always be registered under their actual owners’ name, and third party professionals can manage and offer services over these assets without the need of taking legal the ownership of assets (through a nominee or street name). If an asset issuer needs to communicate with its listed owners (e.g. share holder list on its registrar), the issuer can do so directly with its owners. On the other hand, custodians can also buy, sell and lend assets under asset owner’s permission. Under this setup, Brokers/Custodians/CSDs can focus on providing value-add services to share owners while offloading operational duties in redirecting communication & payments from issuers to shareowners 
+
+<table>
+<tr><td><img src="images/separation_of_ownship_and_custodyservice.png" height="300" width="500"></td></tr>
+</table>
 
