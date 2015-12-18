@@ -33,8 +33,6 @@ While confidential agreements are a key business case, there are many scenarios 
 
 *  Discoverability - If a contract is a business offer seeking for bids, it must be easily searchable. In addition, such contract needs to have the built-in intelligence to evaluate, select, and honor bids.
 
-*  Payment inside contract- Integration with off-chain payment system is a must so that contract code can initiate payment transactions that are processed and settled off chain
-
 *  Atomicity of contract execution - Atomicity of the contract is needed to guarantee asset transfers can only occur when payment is received (Delivery vs. Payment). If any step in the execution process fails, the entire transaction must be rolled back
 
 *  Contract to chain-code communication - Contracts must be able to communicate with chaincodes deployed on the same ledger. 
