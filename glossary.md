@@ -19,7 +19,7 @@ Entities that own a stake of a chain network. Each chain validator has a voice i
 </td>
 </tr>
 <tr>
-<td width="20%"><b>Chain Transactor</b></td>
+<td width="20%"><b>Chain Auditor</b></td>
 <td>
 Entities with the permission to interrogate transactions.
 </td>
@@ -34,7 +34,7 @@ Entities with the permission to interrogate transactions.
 <tr>
 <td width="20%"><b>Solution User</b></td>
 <td>
-End users usually don’t care about the details of obc networks, they typically use applications provided by application owners to initiate transactions on a chain network.
+End users are agnostic about the details of chain networks, they typically initiate transactions on a chain network through applications provided by solutions providers.
 <p><p>
 <span style="text-decoration:underline">Roles:</span> None
 </td>
@@ -42,7 +42,7 @@ End users usually don’t care about the details of obc networks, they typically
 <tr>
 <td width="20%"><b>Solution Provider</b></td>
 <td>
-Organizations that develop mobile and/or browser based application for end users to use services offered on business chains. Some application owners may also be network owners.
+Organizations that develop mobile and/or browser based applications for end (solution) users to access chain networks. Some application owners may also be network owners.
 <p><p>
 Roles: Chain Transactor
 </td>
@@ -50,7 +50,7 @@ Roles: Chain Transactor
 <tr>
 <td width="20%"><b>Network Proprietor</b></td>
 <td>
-Proprietor(s) setup and define the purpose of a business network. They are the stakeholders of a network.
+Proprietor(s) setup and define the purpose of a chain network. They are the stakeholders of a network.
 <p><p>
 Roles: Chain Transactor, Chain Validator
 </td>
@@ -58,7 +58,7 @@ Roles: Chain Transactor, Chain Validator
 <tr>
 <td width="20%"><b>Network Auditors</b></td>
 <td>
-Individuals or organizations with the permission to interrogate transactions
+Individuals or organizations with the permission to interrogate transactions. 
 <p><p>
 Roles: Chain Auditor
 </td>
@@ -67,7 +67,7 @@ Roles: Chain Auditor
 
 &nbsp;
 
-## Chain Network
+## Business Network
 
 #### _Types of Networks (Business View)_
 ---
@@ -77,19 +77,19 @@ Roles: Chain Auditor
 <tr>
 <td width="20%"><b>Industry Network</b></td>
 <td>
-Chain network that services applications built for a particular industry.
+A chain network that services solutions built for a particular industry.
 </td>
 </tr>
 <tr>
 <td width="20%"><b>Regional Industry Network</b></td>
 <td>
-Chain network that services applications built for a particular region and industry.
+A chain network that services applications built for a particular industry and region.
 </td>
 </tr>
 <tr>
 <td width="20%"><b>Application Network</b></td>
 <td>
-Chain network only built for one application or solution.
+A chain network that only services a single solution.
 </td>
 </tr>
 </table>
@@ -102,13 +102,13 @@ Chain network only built for one application or solution.
 <tr>
 <td width="20%"><b>Main Chain</b></td>
 <td>
-Usually represents one business network, Main chain operates one or multiple applications/solutions validated by the same group of organizations.
+A business network; each main chain operates one or multiple applications/solutions validated by the same group of organizations.
 </td>
 </tr>
 <tr>
 <td width="20%"><b>Confidential Chain</b></td>
 <td>
-A special purpose chain made to run confidential business logics that only contract stakeholders are allowed to access.
+A special purpose chain created to run confidential business logics that are only accessable by contract stakeholders.
 </td>
 </tr>
 </table>
@@ -145,13 +145,13 @@ Transactions that invoke a function on a chaincode.
 <tr>
 <td width="20%"><b>Public transaction</b></td>
 <td>
-Transactions with its payload in the open. Anyone with access to a chain network can interrogate the details of public transaction.
+A transaction with its payload in the open. Anyone with access to a chain network can interrogate the details of public transaction.
 </td>
 </tr>
 <tr>
 <td width="20%"><b>Confidential transaction</b></td>
 <td>
-Transaction with its payload encrypted. If the transaction is a deployment transaction, then all subsequent invocation transactions calling the chaincode deployed by the first transaction must also be confidential.
+A transaction with encrypted payload. If the transaction is a deployment transaction, then all subsequent invocation transactions calling that chaincode deployed must also be confidential.
 </td>
 </tr>
 </table>
@@ -165,7 +165,7 @@ Transaction with its payload encrypted. If the transaction is a deployment trans
 <tr>
 <td width="20%"><b>Inter-Network Transaction</b></td>
 <td>
-Transactions between two business networks (or main chains).
+Transactions between two business networks (main chains).
 </td>
 </tr>
 <tr>
@@ -191,9 +191,9 @@ Transactions between confidential chains and main chains. Chaincodes in a confid
   Purpose: Backend application service that supports associated mobile and/or browser based applications.
   <p><p>
   Key Roles:<p>
-  1)	Manages end users and register them with membership service
+  1)	Manages end users and registers them with membership service
   <p>
-  2)	Initiates transactions requests, and sends the request to either a peer node or a validating node
+  2)	Initiates transactions requests, and sends the request to a node
   <p><p>
   Owned by: Solution Provider, Network Proprietor
 </td>
@@ -214,12 +214,12 @@ Transactions between confidential chains and main chains. Chaincodes in a confid
 <tr>
 <td width="20%"><b>Validating Node (Peer)</b></td>
 <td>
-  Purpose: Creates and validates transactions, and maintains the state<p><p>
+  Purpose: Creates and validates transactions, and maintains the states of chaincodes<p><p>
   Key Roles:<p>
   1)	Manages and maintains user certificates issued by membership service<p>
   2)	Creates transactions<p>
   3)	Executes and validates transactions with other validating nodes on the network<p>
-  4)	Maintains a local copy of all transaction data & chaincode states.<p>
+  4)	Maintains a local copy of ledger<p>
   5)	Participates in consensus and update ledger
   <p><p>
   Owned by: Network Proprietor, Solution Provider (if they belong to the same entity)
@@ -228,7 +228,7 @@ Transactions between confidential chains and main chains. Chaincodes in a confid
 <tr>
 <td width="20%"><b>Membership Service</b></td>
 <td>
-  Purpose: Issues and manage the identity of end users and organizations<p><p>
+  Purpose: Issues and manages the identity of end users and organizations<p><p>
   Key Roles:<p>
   1)	Issues enrollment certificate to each end user and organization<p>
   2)	Issues transaction certificates associated to each end user and organization<p>
@@ -249,7 +249,7 @@ Transactions between confidential chains and main chains. Chaincodes in a confid
 <tr>
 <td width="20%"><b>Registration Authority</b></td>
 <td>
-Assigns username password pairs to network participants. This username/password pair will be need when acquiring enrollment certificate from ECA.
+Assigns username & password pairs to network participants. This username/password pair will be used to acquire enrollment certificate from ECA.
 </td>
 </tr>
 <tr>
@@ -267,7 +267,7 @@ Issues transactions certificates (TCerts) to ECert owners.  An infinite number o
 <tr>
 <td width="20%"><b>TLS-Certificate Authority (TLS-CA)</b></td>
 <td>
-Issues TLS certificates to systems that transmit messages in a chain network. TLS certificates are used to secure the communication between system interactions.
+Issues TLS certificates to systems that transmit messages in a chain network. TLS certificates are used to secure the communication line between systems.
 </td>
 </tr>
 </table>
