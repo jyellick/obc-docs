@@ -154,7 +154,14 @@ Assets should always be owned by their actual owners, and asset owners must be a
 <tr><td><img src="images/separation_of_ownship_and_custodyservice.png" height="300" width="500"></td></tr>
 </table>
 
+&nbsp;
+
 ### Interoperability of assets
 
-If an organization wants to trade 10k units of asset A for 20k units of asset B, the market may not offer enough liquidity to fulfill this trade directly. However, there might be plenty of liquidity available between asset A and asset C, and then between asset C and asset B. Instead of only getting what’s available in direct trading (A for B), chain network will automatically connect
-buyers to “buried” sellers, and find the best match that maybe buried under several layers. 
+If an organization needs 20k units of asset B but instead owns10k units of asset A, it needs a way to exchange his asset A for asset B. However, the market may not offer enough liquidity to fulfill this trade quickly, yet there might be plenty of liquidity available between asset A and asset C, and then between asset C and asset B. Instead of only getting what’s available in direct trading (A for B), chain network will automatically connect buyers to “buried” sellers, and find the best match, which could be buried under several layers, and execute the transaction.
+
+<table>
+<tr><td><img src="images/interoperability_of_assets.png" height="300" width="500"></td></tr>
+</table>
+
+
