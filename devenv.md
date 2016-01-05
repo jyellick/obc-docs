@@ -7,13 +7,13 @@ The current development environment utilizes Vagrant running an Ubuntu image, wh
 
 This model allows developers to leverage their favorite OS/editors and execute the system in a controlled environment that is consistent amongst the development team.
 
-- Note that your Host should not run within a VM. If you attempt this, the VM within your Host may fail to boot with a message indicating that VT-x is not available. 
+- Note that your Host should not run within a VM. If you attempt this, the VM within your Host may fail to boot with a message indicating that VT-x is not available.
 
 ### Prerequisites
 * [Git client](https://git-scm.com/downloads)
-* [Go](https://golang.org/)
-* [Vagrant](https://www.vagrantup.com/)
-* [VirtualBox](https://www.virtualbox.org/)
+* [Go](https://golang.org/) - 1.5.2 or later
+* [Vagrant](https://www.vagrantup.com/) - 1.7.4 or later
+* [VirtualBox](https://www.virtualbox.org/) - 5.0 or later
 
 ### Steps
 
