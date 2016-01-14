@@ -13,6 +13,8 @@ The design presented here describes a blockchain fabric called Openchain, a prot
 
 The central elements of this specification are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private transactions, confidential chaincode, and modular consensus protocols.
 
+_For questions regarding terminologies used in OBC, check out our [glossary] (glossary.md)_
+
 #### Why a new fabric:
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
 
