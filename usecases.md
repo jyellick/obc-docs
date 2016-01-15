@@ -29,34 +29,34 @@ While confidential agreements are a key business case, there are many scenarios 
 
 *  Multi-sig contract activation - When a contract is first deployed by one of the counter parties, it will be in the pending activation state. To active a contract, signatures from other counterparties and/or third party participants are required.
 
-*  Multi-sig contract execution - Some contract will require one of many signatures to execute. (E.g. In trade finance, a payment instruction can only be executed if either the recipient or a authorized third party (e.g. UPS) confirms the shipment of the good)
+*  Multi-sig contract execution - Some contracts will require one of many signatures to execute. For example, in trade finance, a payment instruction can only be executed if either the recipient or an authorized third party (e.g. UPS) confirms the shipment of the good. 
 
-*  Discoverability - If a contract is a business offer seeking for bids, it must be easily searchable. In addition, such contract needs to have the built-in intelligence to evaluate, select, and honor bids.
+*  Discoverability - If a contract is a business offer seeking bids, it must be easily searchable. In addition, such contracts must have the built-in intelligence to evaluate, select and honor bids.
 
-*  Atomicity of contract execution - Atomicity of the contract is needed to guarantee asset transfers can only occur when payment is received (Delivery vs. Payment). If any step in the execution process fails, the entire transaction must be rolled back
+*  Atomicity of contract execution - Atomicity of the contract is needed to guarantee that asset transfers can only occur when payment is received (Delivery vs. Payment). If any step in the execution process fails, the entire transaction must be rolled back.
 
-*  Contract to chain-code communication - Contracts must be able to communicate with chaincodes deployed on the same ledger. 
+*  Contract to chain-code communication - Contracts must be able to communicate with chaincodes that are deployed on the same ledger. 
 
-*  Longer Duration contract - Timer is needed to support B2B contracts that have long execution window.
+*  Longer Duration contract - Timer is required to support B2B contracts that have long execution windows.
 
-*  Reuseable contracts - Oftenly used contracts can be standardized so that they can be reused. 
+*  Reuseable contracts - Often-used contracts can be standardized for reuse. 
 
-*  Auditable contractual agreement -  Any contract can be made auditable to third parties. 
+*  Auditable contractual agreement - Any contract can be made auditable to third parties. 
 
-*  Contract life-cycle management - B2B contracts are unique and not all of them can be standardized. An efficient contract management system is needed to enchance the scalability of the ledger network
+*  Contract life-cycle management - B2B contracts are unique and cannot always be standardized. An efficient contract management system is needed to enhance the scalability of the ledger network.
 
-*  Validation access – only nodes with validation right are allowed to validate transactions of a B2B contract
+*  Validation access – Only nodes with validation rights are allowed to validate transactions of a B2B contract.
 
-*  View access – B2B contracts may include confidential information, so only accounts with pre-defined access right are allowed to view/interrogate them
+*  View access – B2B contracts may include confidential information, so only accounts with predefined access rights are allowed to view and interrogate them.
 
 &nbsp;
 
 
 ### Manufacturing Supply Chain
 
-Final assemblers, such as car manufacturers, can create a supply chain network managed by its peers and suppliers so that a final assembler can better manage its suppliers and be more responsive to events that would require vehicle recalls (possibly triggered by faulty parts supplied by some supplier). The blockchain fabric must provide a standard protocol to allow every participant on a supplychain network to input and track parts produced and used on a given vehicle.
+Final assemblers, such as automobile manufacturers, can create a supply chain network managed by its peers and suppliers so that a final assembler can better manage its suppliers and be more responsive to events that would require vehicle recalls (possibly triggered by faulty parts provided by a supplier). The blockchain fabric must provide a standard protocol to allow every participant on a supply chain network to input and track numbered parts that are produced and used on a specific vehicle.
 
-Why is this specific example an abstract use case? Because while all blockchain cases store immutable information, and some add the need for transfer of assets between parties, this case emphasizes the need to provide deep searchability back as many as 5-10 transaction layers. It is the core of establishing provenance of any manufactured good that is made up of other goods and supplies.
+Why is this specific example an abstract use case? Because while all blockchain cases store immutable information, and some add the need for transfer of assets between parties, this case emphasizes the need to provide deep searchability backwards through as many as 5-10 transaction layers. This backwards search capability is the core of establishing provenance of any manufactured good that is made up of other component goods and supplies.
 
 <table>
 <tr><td><img src="images/supplychain.png" height="200" width="500"></td></tr>
@@ -66,28 +66,28 @@ Why is this specific example an abstract use case? Because while all blockchain 
 
 *  Final Assembler – The business entity that performs the final assembly of a product.
 
-*  Part supplier – Suppliers of parts. Suppliers can also be an assemblers, assembling parts they received from their own sub-suppliers and send the finished product to the final (root) assembler
+*  Part supplier – Supplier of parts. Suppliers can also be assemblers by assembling parts that they receive from their  sub-suppliers, and then sending their finished product to the final (root) assembler.
 
 #### Key Components
 
-*  Payment upon delivery of goods - Integration with off-chain payment system is necessary so that payment instructions can be sent when parts are received.
+*  Payment upon delivery of goods - Integration with off-chain payment systems is required, so that payment instructions can be sent when parts are received.
 
-*  Third party Audit -  All supplied parts shall be auditable by third parties. E.g. regulators may need to track the total number of parts supplied by a supplier for tax accounting purpose
+*  Third party Audit -  All supplied parts must be auditable by third parties. For example, regulators might need to track the total number of parts supplied by a specific supplier, for tax accounting purposes.
 
-*  Obfuscation of shipments - Balances shall be obfuscated so that no one supplier can deduce the business activiteis of other suppliers 
+*  Obfuscation of shipments - Balances must be obfuscated so that no supplier can deduce the business activities of any other supplier. 
 
-*  Obfuscation of market size - Total balance must be obfuscated so that part suppliers can’t deduce its own market share and use that as a leverage to seek for better term.
+*  Obfuscation of market size - Total balances must be obfuscated so that part suppliers cannot deduce their own market share to use as leverage when negotiating contractual terms.
 
-*  Validation Access – only nodes with validation right are allowed to validate transactions (shipment of parts)
+*  Validation Access – Only nodes with validation rights are allowed to validate transactions (shipment of parts).
 
-*  View access – only accounts with view access right are allowed to interrogate balances of parts shipped & available.
+*  View access – Only accounts with view access rights are allowed to interrogate balances of shipped parts and available parts.
 
 &nbsp;
 
   
 ### Asset Depository 
 
-Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermeidaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, further reducing operating cost with automation logic.
+Assets such as financial securities must be able to be dematerialized on a blockchain network so that all stakeholders of an asset type will have direct access to that asset, allowing them to initiate trades and acquire information on an asset without going through layers of intermediaries. Trades should be settled in near real time and all stakeholders must be able to access asset information in near real time. A stakeholder should be able to add business rules on any given asset type, as one example of using automation logic to further reduce operating costs.
 
 <table>
 <tr><td><img src="images/assetrepository.png" height="300" width="500"></td></tr>
@@ -95,40 +95,40 @@ Assets such as financial securities must be able to be dematerialized on a block
 
 #### Persona
 
-*  Investor – Beneficial and leagal owner of an asset
+*  Investor – Beneficial and legal owner of an asset.
 
-*  Issuer – Business entity that issued the asset which is now dematerialized on the ledger network
+*  Issuer – Business entity that issued the asset which is now dematerialized on the ledger network.
 
-*  Custodian – Hired by investors to manage their assets, and offer other value add services on top of the assets being managed
+*  Custodian – Hired by investors to manage their assets, and offer other value-add services on top of the assets being managed.
 
-*  Securities Depository – Depository of dematerialized assets
+*  Securities Depository – Depository of dematerialized assets.
 
 #### Key Components
 
-*  Asset to cash - Integration with off-chain payment system is necessary so that issuers can make payments to and receive payments from its investors.
+*  Asset to cash - Integration with off-chain payment systems is necessary so that issuers can make payments to and receive payments from investors.
 
-*  Reference Rate - Some types of assets (e.g. floating rate notes) may have attributes linked to external data (e.g. reference rate), and such information must be feed into the ledger network.
+*  Reference Rate - Some types of assets (such as floating rate notes) may have attributes linked to external data (such as  reference rate), and such information must be fed into the ledger network.
 
-*  Asset Timer - Many types of financial assets have pre-defined life span and are required to make periodic payments to their owners, so a timer is needed to automate operation management of these assets
+*  Asset Timer - Many types of financial assets have predefined life spans and are required to make periodic payments to their owners, so a timer is required to automate the operation management of these assets.
 
-*  Asset Auditor -  Asset transactions must be made auditable to third parties. E.g. regulator may want to audit transactions and movements of assets to measure market risks.
+*  Asset Auditor - Asset transactions must be made auditable to third parties. For example, regulators may want to audit transactions and movements of assets to measure market risks.
 
-*  Obfuscation of account balances - Individual account balances shall be obfuscated so that no one can deduce the exact amount an investor own.
+*  Obfuscation of account balances - Individual account balances must be obfuscated so that no one can deduce the exact amount that an investor owns.
 
-*  Validation Access – only nodes with validation right are allowed to validate transactions updating the balances of an asset type (this could be restricted to CSD and/or issuer).
+*  Validation Access – Only nodes with validation rights are allowed to validate transactions that update the balances of an asset type (this could be restricted to CSD and/or the issuer).
 
-*  View access – only accounts with view access right are allowed to interrogate the chaincode that defines an asset type. If an asset represents shares of a publicly traded companies, then the view access right must be granted to every entity on the network.
+*  View access – Only accounts with view access rights are allowed to interrogate the chaincode that defines an asset type. If an asset represents shares of publicly traded companies, then the view access right must be granted to every entity on the network.
 
 &nbsp;
 
 
-# Extended Use cases
+# Extended Use Cases
 
-An ever expanding list of use cases
+The following extended use cases examine additional requirements and scenarios.
 
 ### One Trade, One Contract
 
-From the time a trade is captured by the Front Office till the trade is finally settled, only one contract that specifies the trade will be created and used by all participants. Middle office will enrich the same electronic contract submitted by the front office, and that same contract will then be used by counterparties to confirm and affirm their trade. Finally, securities depository will settle the trade by executing the trading instructions specified on the contract. When dealing with bulk trades, the original contract can be broken down to sub-contracts that are always linked to the original parent contract.
+From the time that a trade is captured by the front office until the trade is finally settled, only one contract that specifies the trade will be created and used by all participants. The middle office will enrich the same electronic contract submitted by the front office, and that same contract will then be used by counter parties to confirm and affirm the trade. Finally, securities depository will settle the trade by executing the trading instructions specified on the contract. When dealing with bulk trades, the original contract can be broken down into sub-contracts that are always linked to the original parent contract.
 
 <table>
 <tr><td><img src="images/one_contract_per_trade.png" height="300" width="500"></td></tr>
@@ -138,7 +138,7 @@ From the time a trade is captured by the Front Office till the trade is finally 
 
 ### Direct Communication
 
-Company A announced its intention to raise 2 Billion USD by way of right issue.  Since this is a voluntary action, company A needs to make sure the complete detail of this offer are sent to shareholders in real time regardless of how many intermediaries are involved in the process (such as receiving/paying agents, CSD, ICSD, local/global custodian banks, asset management firms, etc). Once a shareholder has made a decision, that decision will also be processed and settled (including the new issuance of shares) in real time. If a shareholder sold its rights to a third party, the securities depository must be able to record the new shares under the name of their new rightful owner.
+Company A announces its intention to raise 2 Billion USD by way of right issue. Because this is a voluntary action, Company A needs to ensure that complete details of the offer are sent to shareholders in real time, regardless of how many intermediaries are involved in the process (such as receiving/paying agents, CSD, ICSD, local/global custodian banks, asset management firms, etc). Once a shareholder has made a decision, that decision will also be processed and settled (including the new issuance of shares) in real time. If a shareholder sold its rights to a third party, the securities depository must be able to record the new shares under the name of their new rightful owner.
 
 <table>
 <tr><td><img src="images/corporate_action.png" height="300" width="500"></td></tr>
@@ -146,9 +146,9 @@ Company A announced its intention to raise 2 Billion USD by way of right issue. 
 
 &nbsp;
 
-### Separation of asset ownership and custodian’s duties
+### Separation of Asset Ownership and Custodian’s Duties
 
-Assets should always be owned by their actual owners, and asset owners must be able to allow third party professionals to manage their assets without the need of passing the legal ownership of assets to third parties (e.g. nominee or street name entities). If issuers need to send messages or payments to asset owners (e.g. listed share holders), issuers send them directly to asset owners. For third party asset managers and/or custodians, they can always buy, sell, and lend assets on their owners’ behalf. Under this setup, asset custodians can focus on providing value-add services to share owners without worrying about asset ownership duties such as managing/redirecting payments from issuers to shareowners.
+Assets should always be owned by their actual owners, and asset owners must be able to allow third-party professionals to manage their assets without having to pass legal ownership of assets to third parties (such as nominee or street name entities). If issuers need to send messages or payments to asset owners (for example, listed share holders), issuers send them directly to asset owners. Third-party asset managers and/or custodians can always buy, sell, and lend assets on behalf of their owners. Under this arrangement, asset custodians can focus on providing value-add services to shareowners, without worrying about asset ownership duties such as managing and redirecting payments from issuers to shareowners.
 
 <table>
 <tr><td><img src="images/separation_of_ownship_and_custodyservice.png" height="300" width="500"></td></tr>
@@ -156,9 +156,9 @@ Assets should always be owned by their actual owners, and asset owners must be a
 
 &nbsp;
 
-### Interoperability of assets
+### Interoperability of Assets
 
-If an organization needs 20k units of asset B but instead owns10k units of asset A, it needs a way to exchange his asset A for asset B. However, the market may not offer enough liquidity to fulfill this trade quickly, yet there might be plenty of liquidity available between asset A and asset C, and then between asset C and asset B. Instead of only getting what’s available in direct trading (A for B), chain network will automatically connect buyers to “buried” sellers, and find the best match, which could be buried under several layers, and execute the transaction.
+If an organization requires 20,000 units of asset B, but instead owns 10,000 units of asset A, it needs a way to exchange asset A for asset B. Though the current market might not offer enough liquidity to fulfill this trade quickly, there might be plenty of liquidity available between asset A and asset C, and also between asset C and asset B. Instead of settling for market limits on direct trading (A for B) in this case, a chain network connects buyers with "buried" sellers, finds the best match (which could be buried under several layers of assets), and executes the transaction.
 
 <table>
 <tr><td><img src="images/interoperability_of_assets.png" height="300" width="500"></td></tr>
