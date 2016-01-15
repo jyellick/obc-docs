@@ -11,7 +11,7 @@ Business contracts can be codified to allow two or more parties to automate cont
 <tr><td><img src="images/b2bcontract.png" height="200" width="500"></td></tr>
 </table>
 
-While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking for bids. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
+While confidential agreements are a key business case, there are many scenarios where contracts can and should be easily discoverable by all parties on a ledger. For example, a ledger used to create offers (asks) seeking bids, by definition, requires access without restriction. This type of contract may need to be standardized so that bidders can easily find them, effectively creating an electronic trading platform with smart contracts (aka chaincode).
 
 
 <table>
