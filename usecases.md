@@ -148,9 +148,20 @@ Company A announced its intention to raise 2 Billion USD by way of right issue. 
 
 ### Separation of asset ownership and custodian’s duties
 
-Assets should always be registered under their actual owners’ name, and third party professionals can manage and offer services over these assets without the need of taking legal the ownership of assets (through a nominee or street name). If an asset issuer needs to communicate with its listed owners (e.g. share holder list on its registrar), the issuer can do so directly with its owners. On the other hand, custodians can also buy, sell and lend assets under asset owner’s permission. Under this setup, Brokers/Custodians/CSDs can focus on providing value-add services to share owners while offloading operational duties in redirecting communication & payments from issuers to shareowners 
+Assets should always be owned by their actual owners, and asset owners must be able to allow third party professionals to manage their assets without the need of passing the legal ownership of assets to third parties (e.g. nominee or street name entities). If issuers need to send messages or payments to asset owners (e.g. listed share holders), issuers send them directly to asset owners. For third party asset managers and/or custodians, they can always buy, sell, and lend assets on their owners’ behalf. Under this setup, asset custodians can focus on providing value-add services to share owners without worrying about asset ownership duties such as managing/redirecting payments from issuers to shareowners.
 
 <table>
 <tr><td><img src="images/separation_of_ownship_and_custodyservice.png" height="300" width="500"></td></tr>
 </table>
+
+&nbsp;
+
+### Interoperability of assets
+
+If an organization needs 20k units of asset B but instead owns10k units of asset A, it needs a way to exchange his asset A for asset B. However, the market may not offer enough liquidity to fulfill this trade quickly, yet there might be plenty of liquidity available between asset A and asset C, and then between asset C and asset B. Instead of only getting what’s available in direct trading (A for B), chain network will automatically connect buyers to “buried” sellers, and find the best match, which could be buried under several layers, and execute the transaction.
+
+<table>
+<tr><td><img src="images/interoperability_of_assets.png" height="300" width="500"></td></tr>
+</table>
+
 
