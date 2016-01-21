@@ -234,3 +234,5 @@ Similar to cloud hosted multiple networks, using participants’ own networks is
 ## References
 - [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
 - [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
+- [3] Satoshi Nakamoto, [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
+- [4] [Ethereum Whitepaper] (https://github.com/ethereum/wiki/wiki/White-Paper)
