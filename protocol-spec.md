@@ -242,3 +242,4 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 - [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
 - [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
 
+			

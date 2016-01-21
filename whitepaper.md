@@ -1,19 +1,18 @@
-# Openchain Technical Specification
+# Open Blockchain Whitepaper
 
-_This document is subject to change as development progresses_
 
 ## Your voice here:
-If you are reading this, then it means anything said in this document or done in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the specification and the implementation of Openchain should be taken forward. Don’t like something you see here? Help us all see your point of view (in a respectful and positive way) or even better, bring some code that shows a better way.
+If you are reading this, then it means anything said in this document or done in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the specification and the implementation of Open Blockchain should be taken forward. Don’t like something you see here? Help us all see your point of view (in a respectful and positive way) or even better, bring some code that shows a better way.
 
 ## Background
 
-This paper describes the principles, high-level architecture and initial technical specifications of a blockchain suitable for industrial use cases.
+This paper describes the principles, high-level architecture and initial technical direction of a blockchain suitable for industrial use cases.
 
-The design presented here describes a blockchain fabric called Openchain, a protocol for business-to-business and business-to-customer transactions. It is intended for permissioned networks (important: see definition below), and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
+The design presented here describes a blockchain fabric called Open Blockchain, a protocol for business-to-business and business-to-customer transactions. It is intended for permissioned networks (important: see definition below), and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
 
-The central elements of this specification are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private transactions, confidential chaincode, and modular consensus protocols.
+The central elements of this specification are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private and confidential transactions, and pluggable consensus model.
 
-_For questions regarding terminologies used in OBC, check out our [glossary] (glossary.md)_
+_For questions regarding terminologies used in OBC, check out our [glossary] (biz/glossary.md)_
 
 #### Why a new fabric:
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
@@ -39,20 +38,20 @@ Assets such as financial securities must be able to be dematerialized on a block
 The blockchain fabric must provide a means to allow every participant on a supplychain network to input and track sourcing of raw materials, record parts manufacturing telemetry, track provenance of goods through shipping, and maintain immutable records of all aspects of the production and storage of a finished good through to sale and afterwards. In addition to employing both Business Contracts and Asset Depository patterns above, this case emphasizes the need to provide deep searchability back many transaction layers. It is the core of establishing provenance of any manufactured good that is made up of other goods and supplies.
 
 
-_For more details about these use cases and their requirements, click [here] (usecases.md)_
+_For more details about these use cases and their requirements, click [here] (biz/usecases.md)_
 
 ## Definitions
 
 #### InterLedger
-Openchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
+Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
 
 #### Permissioned Network
 We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. But the protocol is not designed to allow the creation of a network of anonymous validators or miners operating outside regulatory oversight.
 
 #### Logic = Chaincode = Smart Contracts
-Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Openchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent. (This term is still under review and may change.)  
+Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Open Blockchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent. (This term is still under review and may change.)  
 
-The chaincode concept is more general than the smart contract concept defined by Nick Szabo [2]. Chaincode can be written in any mainstream programming language and executed in Docker containers inside the Openchain context layer. Chaincode provides the capability to define smart contract templating language (similar to Velocity or Jade) and to restrict the functionality of the execution environment and the degree of computing flexibility to satisfy the legal contractual requirements.
+The chaincode concept is more general than the smart contract concept defined by Nick Szabo [2]. Chaincode can be written in any mainstream programming language and executed in Docker containers inside the Open Blockchain context layer. Chaincode provides the capability to define smart contract templating language (similar to Velocity or Jade) and to restrict the functionality of the execution environment and the degree of computing flexibility to satisfy the legal contractual requirements.
 
 ####Private Transactions
 The identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger.
@@ -88,7 +87,7 @@ Figure 1 below shows the reference architecture aligned in 3 categories: Members
 Some of these components will be built from the ground up; some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
 
 ![Reference architecture](images/refarch.png)
-Figure 1:  Openchain Reference architecture
+Figure 1:  Open Blockchain Reference architecture
 
 The Membership category provides services for managing identity, privacy, and confidentiality on the network. Participants register to get identities, which will enable the Attribute Authority to issue security keys to transact. Reputation Manager enables auditors to see transactions pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
 
@@ -105,7 +104,7 @@ Chaincode services are a secured and lightweight way to sandbox the chaincode ex
 <tr>
 <td width="30%"><img src="images/refarch-memb.png"></td>
 <td valign="top">
-Openchain is a private-validator network protocol, so all entities are required to register with membership services to get identity to access and to transact on the network. Validators at network setup can determine the level of permission required to transact. It is possible for a network to be very liberally permissive, allowing ease of access supporting rapid and high adoption goals, and it is possible for a network to be very restricted. This is configured in network setup.<p><p>
+Open Blockchain is a private-validator network protocol, so all entities are required to register with membership services to get identity to access and to transact on the network. Validators at network setup can determine the level of permission required to transact. It is possible for a network to be very liberally permissive, allowing ease of access supporting rapid and high adoption goals, and it is possible for a network to be very restricted. This is configured in network setup.<p><p>
 
 Registration Authority issues enrollment certificate necessary to establish identity for a member. Once registered, the member has the required credentials to participate in the network, no need for proof-of-work or proof-of-stake at this point. <p><p>
 
@@ -145,7 +144,7 @@ There are 2 types of transactions: code-deploying transactions and code-invoking
 
 Consensus Manager is an abstraction defining the interface between the consensus algorithm and the other components. Consensus receives transactions, and depending on the algorithm, decides how to organize the transactions and when to execute them. Successful execution of transactions results in changes to the ledger.
 
-Openchain provides an implementation of Byzantine Agreement with advanced features in fault tolerance and scalability.
+Open Blockchain provides an implementation of Byzantine Agreement with advanced features in fault tolerance and scalability.
 
 Event Hub in a decentralized network is complex in nature, as an event may appear to occur multiple times, each on a peer node. Callbacks can end up receiving multiple invocations for the same event. Therefore, a peer node (preferably non-validator and local) manages the event pub/sub that applications are interacting with. The peer node emits events as conditions satisfied in no particular order. Events are not persisted — fire-and-forget, so applications should capture events if required.
 
@@ -162,7 +161,7 @@ As defined in the previous sections, chaincode is a decentralized transactional 
 
 Chaincode Services use <a href="https://github.com/docker/"> Docker </a> to host the chaincode without relying on any particular virtual machine or computer language. Docker provides a secured, lightweight way to sandbox the chaincode execution. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required. <p><p>
 
-Secure Registry service enables Secured Docker Registry of base Openchain images and custom images containing chaincodes.<p><p>
+Secure Registry service enables Secured Docker Registry of base Open Blockchain images and custom images containing chaincodes.<p><p>
 
 The world state represents the state for every chaincode. Each chaincode is assigned its own state that can be used to store data in a key-value format, where keys and values are arbitrary byte arrays. The world state also contains the block number to which it corresponds.
 
@@ -180,13 +179,14 @@ To meet the confidentiality requirement required by some business agreements wri
 
 
 ## Application Programming Interface
-Openchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
+Open Blockchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
 
 
 ![Reference architecture](images/refarch-api.png) <p>
-At the top, CLI is the command line interface to the network. Openchain provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
+At the top, CLI is the command line interface to the network. Open Blockchain provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
 
 The API spans the following categories:
+
 *  Identity - Enrollment to get certificates or revoking a certificate
 *  Address - Target and source of a transaction
 *  Transaction - Unit of execution on the ledger
@@ -196,51 +196,6 @@ The API spans the following categories:
 *  Storage - External store for files or documents
 *  Event - Sub/pub events on blockchain
 
-When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20API.md) page.
-
-### Identity
-*  Register: Register a user or endpoint for identity
-*  Revoke an Identity: The identity will no long be valid in the network
-*  Get Identity from Address: Return the identity owning the address
-
-### Address
-*  Get Addresses: Return addresses belongs to an identity
-*  Create Address: Create and return a security address for an identity
-
-### Transaction
-*  Get Transactions by Address: Return transactions of an address
-*  Get Transaction by Hash: Return transaction identified by the hash
-*  Get Transactions by Identity: Return transactions belong to identity
-
-### Chaincode
-*  Deploy (optional multisig): Deploy a chaincode to the ledger. In the multisig case, the chaincode is only active when all the signatures are present; otherwise, calling the chaincode will result in errors.
-*  Undeploy: Mark the chaincode as invalid; call any function return error
-*  List: Return all visible chaincodes
-*  Run a Function: Call a chaincode function as a transaction
-*  Test a Function: Call a chaincode function without a transaction. Any changes to the state will not be persisted
-*  Set stakeholders: List of members or groups who can run the chaincode. Default is everyone
-*  Get stakeholders: Return the list of stakeholders
-
-### Blockchain
-*  Get Blockchain: Return info about the ledger such as height, current block hash, etc
-*  Get Block by Number: Return info about a block (JSON data structure)
-*  Get Block Count
-
-### Network
-*  Get Network: Return number of nodes, ports, version, timestamp
-*  Shutdown: Begin the network shutdown procedure
-
-### Storage
-*  Store Document: Store and return the hash of the document
-*  Store Documents: Store an array of documents and return the array of hashes
-*  Get Document: Return the document identified by the hash
-*  Get Documents: Return the documents identified by the array of hashes
-
-### Event
-*  Transaction Committed: Triggered on new transaction satisfied a condition (filter)
-*  Block Added: Triggered when a new block added, including block height
-
-When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20API.md) page.
 
 
 ## Application Model
@@ -250,12 +205,12 @@ When you are ready to start interacting with the Openchain peer node through the
 <tr>
 <td width="50%"><img src="images/refarch-app.png"></td>
 <td valign="top">
-An Openchain application follows a MVC-B architecture – Model, View, Control, BlockChain.
+An Open Blockchain application follows a MVC-B architecture – Model, View, Control, BlockChain.
 <p><p>
 
 <ul>
   <li>VIEW LOGIC – Mobile or Web UI interacting with control logic.</li>
-  <li>CONTROL LOGIC – Coordinates between UI, Data Model and OpenChain APIs to drive transitions and chain-code.</li>
+  <li>CONTROL LOGIC – Coordinates between UI, Data Model and Open Blockchain APIs to drive transitions and chain-code.</li>
   <li>DATA MODEL – Application Data Model – manages off-chain data, including Documents and large files.</li>
   <li>BLOCKCHAIN  LOGIC – Blockchain logic are extensions of the Controller Logic and Data Model, into the Blockchain realm.    Controller logic is enhanced by chaincode, and the data model is enhanced with transactions on the blockchain.</li>
 </ul>
