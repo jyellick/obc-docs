@@ -17,14 +17,14 @@ These are the authors who wrote various sections of this document:  Binh Q Nguye
 
 _add your name if you write any sections of the doc_
 
-### Reviews 
+### Reviews
 Frank Lu, John Wolpert, Bishop Brock, Nitin Gaur, Sharon Weed
 DAH folks, LSEG folks
 _add your name if you contribute to the doc_
 
 
 ### Acknowledgements
-List those who influenced the project: Jerry, John c, Joe Latone, Christian C, Donna, 
+List those who influenced the project: Jerry, John c, Joe Latone, Christian C, Donna,
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -34,7 +34,7 @@ List those who influenced the project: Jerry, John c, Joe Latone, Christian C, D
    - 1.3 Terminology
 
 3. [Fabric](#fabric)
-  
+
 4. [Protocol](#protocol)
    - Messages: Handshake, Transact, Sync
 	Transaction Types and Structures
@@ -73,7 +73,7 @@ List those who influenced the project: Jerry, John c, Joe Latone, Christian C, D
 	Samples to illustrate
 
 10. [Future Directions](#futuredirections)
- 
+
 11. [References](#references)
    - bitcoin
 	pbft
@@ -122,7 +122,7 @@ Data stores for industrial use must provide finality, meaning simply that there 
 
 ## 2. Fabric
 
-The fabric is made up of the core components described in the subsections below. 
+The fabric is made up of the core components described in the subsections below.
 
 ### 2.1 Architecture
 Figure 1 shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode services. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
@@ -210,7 +210,7 @@ The API spans the following categories:
 *  Storage - External store for files or documents
 *  Event - Sub/pub events on blockchain
 
-When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20API.md) page.
+When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md) page.
 
 ## 8. Application Model
 <table>
@@ -237,9 +237,7 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 
 
 ## 9. Future Directions
- 
-## 10. References
-- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
-- [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
 
-			
+## 10. References
+- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
+- [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
