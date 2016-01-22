@@ -20,7 +20,14 @@ To set up the local development environment with security enabled, you must firs
     go build -o obcca-server
     ./obcca-server
 
-Running the above commands builds and runs the CA server with the default setup, which is defined in the  [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) configuration file. The default configuration includes multiple users who are already registered with the CA; these users are listed in the 'users' section of the configuration file. To register additional users with the CA for testing, modify the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file to add enrollmentID and enrollmentPW pairs.
+Running the above commands builds and runs the CA server with the default setup, which is defined in the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) configuration file. The default configuration includes multiple users who are already registered with the CA; these users are listed in the 'users' section of the configuration file. To register additional users with the CA for testing, modify the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file to add enrollmentID and enrollmentPW pairs. Note the integer that precedes the enrollmentPW. That integer indicates the role of the user per [ca.proto](https://github.com/angrbrd/obc-peer/blob/master/obc-ca/protos/ca.proto)
+
+  enum Role {
+    NONE = 0;
+    CLIENT = 1; // powers of 2 to | different roles
+    PEER = 2;
+    VALIDATOR = 4;
+  }
 
 ###Window 1 (validating peer)
 **Note:** To run with security enabled, first modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.enabled</b> value to 'true' before building the peer executable. Alternatively, you can enable security by running the peer with OPENCHAIN_SECURITY_ENABLED=true. To enable privacy and confidentiality of transactions (requires security to be enabled), modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.privacy</b> value to 'true' as well. Alternatively, you can enable pricacy by running the peer with OPENCHAIN_SECURITY_PRIVACY=true.
@@ -51,13 +58,13 @@ The chaincode console will display the message "Received REGISTERED, ready for i
 
 ###Window 3 (CLI or REST API)
 
-# **Note on REST API port**
+#### **Note on REST API port**
 
 The Openchain REST interface port is defined as port 5000 in the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file. If you are sending REST requests to the peer node from the same machine, use port 5000. If you are sending REST requests through Swagger, then the port specified in the Swagger file is port 3000. The different ports emphasizes that Swagger will likely not run on the same machine as the peer process, or outside Vagrant. To send requests from the Swagger-UI or Swagger-Editor interface, set up port forwarding from port 3000 to port 5000 on your machine, or edit the Swagger configuration file to specify the port number of your choice.
 
-# **Note on security functionality**
+#### **Note on security functionality**
 
-Current security implementation assumes that end user authentication takes place at the application layer and is not handled by the fabric. Authentication may be performed through any means considered appropriate for the target application. Upon successful user authentication, the application will perform user registration with the CA exactly once. If registration is attempted a second time for the same user, an error will result. During registration, the application sends a request to the certificate authority to verify the user registration and if successful, the CA responds with the user certificates and keys. The enrollment and transaction certificates received from the CA will be stored locally inside <b>/var/openchain/production/crypto/client/</b> directory. This directory resides on a specific peer node which allows the user to transact only through this specific peer while using the stored crypto material. If the end user may need to perform transactions through more then one peer node, the application is responsible for replicating the crypto material to other peer nodes. This is necessary as registering a given user with the CA a second time will fail.
+Current security implementation assumes that end user authentication takes place at the application layer and is not handled by the fabric. Authentication may be performed through any means considered appropriate for the target application. Upon successful user authentication, the application will perform user registration with the CA exactly once. If registration is attempted a second time for the same user, an error will result. During registration, the application sends a request to the certificate authority to verify the user registration and if successful, the CA responds with the user certificates and keys. The enrollment and transaction certificates received from the CA will be stored locally inside <b>/var/openchain/production/crypto/client/</b> directory. This directory resides on a specific peer node which allows the user to transact only through this specific peer while using the stored crypto material. If the end user needs to perform transactions through more then one peer node, the application is responsible for replicating the crypto material to other peer nodes. This is necessary as registering a given user with the CA a second time will fail.
 
 With security enabled, the CLI commands and REST payloads must be modified to include the <b>enrollmentID</b> of a registered user who is logged in; otherwise an error will result. A registered user can be logged in through the CLI or the REST API by following the instructions below. To log in through the CLI, issue the following commands, where 'username' is one of the <b>enrollmentID</b> values listed in the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file:
 
@@ -136,7 +143,7 @@ The deploy transaction initializes the chaincode by executing a target initializ
 	2015/11/15 15:19:31 Received INIT(uuid:005dea42-d57f-4983-803e-3232e551bf61), initializing chaincode
 	Aval = 100, Bval = 200
 
-#### Chaincode invoked via CLI and REST
+#### Chaincode invoke via CLI and REST
 
 Run the chaincode invoking transaction on the CLI as many times as desired:
 
