@@ -1,9 +1,10 @@
 ## Getting Started
 Welcome to Open Blockchain (OBC) development!
 
-You are strongly recommended to read the [protocol specifications](protocol-spec.md) to
-get an overview of what we are developing. We use agile methodology with a weekly
-sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues) and [milestones](https://github.com/openblockchain/obc-peer/milestones), so take a look to familiarize yourself with the current work.
+
+If you are new to OBC and want to learn about our position and the scope of the project, please start with our [whitepaper](whitepaper.md). In addition, we encourage you to go over our [glossary](biz/glossary.md) to understand the terms we use throughout the site
+
+When you are ready to start using OBC to build your applications or wish to contribute to the project, we strongly recommend you to read the [protocol specifications](protocol-spec.md) to get an overview of what we are developing. We use agile methodology with a weekly sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues) and [milestones](https://github.com/openblockchain/obc-peer/milestones), so take a look to familiarize yourself with the current work.
 
 ## License
 This software is under [Apache License Version 2.0](LICENSE)

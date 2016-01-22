@@ -4,7 +4,7 @@
 ## Your voice here:
 If you are reading this, then it means anything said in this document or done in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the specification and the implementation of Open Blockchain should be taken forward. Don’t like something you see here? Help us all see your point of view (in a respectful and positive way) or even better, bring some code that shows a better way.
 
-## Background
+## Abstract
 
 This paper describes the principles, high-level architecture and initial technical direction of a blockchain suitable for industrial use cases.
 
@@ -13,6 +13,19 @@ The design presented here describes a blockchain fabric called Open Blockchain, 
 The central elements of this specification are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private and confidential transactions, and pluggable consensus model.
 
 _For questions regarding terminologies used in OBC, check out our [glossary] (biz/glossary.md)_
+
+## Background
+
+Blockchain is an emerging technology pattern that can radically improve banking, supply-chain, and other transaction networks, creating new opportunities for innovation and growth while reducing the cost and risk of business operations.
+
+With Bitcoin popularizing the domain since 2009, many businesses and industries have invested significant resources in investigating the underlying technology that powers the popular, yet controversial, cryptocurrency.
+
+Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconsolidate transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
+
+As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. It can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
+
+Entering 2016, Blockchain awareness has now reached the point that the demand for a solution suitable for industry is surging.
+
 
 #### Why a new fabric:
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
@@ -232,7 +245,7 @@ Cloud hosted multiple networks allow participants to have their peer nodes hoste
 Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
 
 ## References
-- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
+- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
 - [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
 - [3] Satoshi Nakamoto, [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
 - [4] [Ethereum Whitepaper] (https://github.com/ethereum/wiki/wiki/White-Paper)

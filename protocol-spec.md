@@ -23,7 +23,6 @@ The following individuals have provided invaluable technical input to the specif
 Gennaro Cuomo, Joseph A Latone, Christian Cachin
 
 
-
 ## Table of Contents
 #### 1. Introduction
 
@@ -124,7 +123,6 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
 #### 9. Future Directions
 
 #### 10. References
-
 
 
 ## 1. Introduction
@@ -1444,7 +1442,7 @@ The API spans the following categories:
 *  Storage - External store for files or documents
 *  Event - Sub/pub events on blockchain
 
-When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20API.md) page.
+When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md) page.
 
 ## 8. Application Model
 <table>
@@ -1473,5 +1471,5 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 ## 9. Future Directions
 
 ## 10. References
-- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824) 
+- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
 - [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
