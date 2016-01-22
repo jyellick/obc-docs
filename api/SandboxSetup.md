@@ -32,9 +32,9 @@ enum Role {
 ```
 
 ###Window 1 (validating peer)
-**Note:** To run with security enabled, first modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.enabled</b> value to 'true' before building the peer executable. Alternatively, you can enable security by running the peer with OPENCHAIN_SECURITY_ENABLED=true. To enable privacy and confidentiality of transactions (requires security to be enabled), modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.privacy</b> value to 'true' as well. Alternatively, you can enable pricacy by running the peer with OPENCHAIN_SECURITY_PRIVACY=true.
+**Note:** To run with security enabled, first modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.enabled</b> value to 'true' before building the peer executable. Alternatively, you can enable security by running the peer with OPENCHAIN_SECURITY_ENABLED=true. To enable privacy and confidentiality of transactions (requires security to be enabled), modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.privacy</b> value to 'true' as well. Alternatively, you can enable privacy by running the peer with OPENCHAIN_SECURITY_PRIVACY=true.
 
-Build and run the peer process to enable security:
+Build and run the peer process to enable security and privacy:
 
     cd $GOPATH/src/github.com/openblockchain/obc-peer
     go build
@@ -197,7 +197,7 @@ POST localhost:5000/devops/invoke
 }
 ```
 
-The invoke transaction runs the specified transaction name "invoke" with the arguments. This transaction transfers 10 units from A to B. You should see the following output in the chaincode window:
+The invoke transaction runs the specified chaincode function name "invoke" with the arguments. This transaction transfers 10 units from A to B. You should see the following output in the chaincode window:
 
 	2015/11/15 15:39:11 Received RESPONSE. Payload 200, Uuid 075d72a4-4d1f-4a1d-a735-4f6f60d597a9
 	Aval = 90, Bval = 210
