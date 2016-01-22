@@ -232,7 +232,7 @@ Cloud hosted multiple networks allow participants to have their peer nodes hoste
 Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
 
 ## References
-- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://www.pmg.lcs.mit.edu/papers/osdi99.pdf)
+- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
 - [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
 - [3] Satoshi Nakamoto, [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
 - [4] [Ethereum Whitepaper] (https://github.com/ethereum/wiki/wiki/White-Paper)
