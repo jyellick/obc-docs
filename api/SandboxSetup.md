@@ -1,6 +1,6 @@
 #Writing, Building, and Running Chaincode in a Development Environment
 
-Chaincode developers need a way to test and debug their chaincode without having to set up a complete Openchain network. This document contains instructions on how to write, build, and test chaincode in a local development environment.
+Chaincode developers need a way to test and debug their chaincode without having to set up a complete Openchain network. This document describes how to write, build, and test chaincode in a local development environment.
 
 Multiple terminal windows are required: one terminal runs the validating peer; another terminal runs the chaincode; the third terminal runs the CLI or REST API commands to execute transactions. When running with security enabled, an additional fourth terminal window is required to run the <b>Certificate Authority (CA)</b> server. Detailed instructions are provided in the sections below:
 
@@ -23,7 +23,7 @@ To set up the local development environment with security enabled, you must firs
 Running the above commands builds and runs the CA server with the default setup, which is defined in the  [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) configuration file. The default configuration includes multiple users who are already registered with the CA; these users are listed in the 'users' section of the configuration file. To register additional users with the CA for testing, modify the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file to add enrollmentID and enrollmentPW pairs.
 
 ###Window 1 (validating peer)
-**Note:** To run with security enabled, first modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.enabled</b> value to 'true' before building the peer executable. Alternatively, you can enable security by running the peer with OPENCHAIN_SECURITY_ENABLED=true.
+**Note:** To run with security enabled, first modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.enabled</b> value to 'true' before building the peer executable. Alternatively, you can enable security by running the peer with OPENCHAIN_SECURITY_ENABLED=true. To enable privacy and confidentiality of transactions (requires security to be enabled), modify the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file to set the <b>security.privacy</b> value to 'true' as well. Alternatively, you can enable pricacy by running the peer with OPENCHAIN_SECURITY_PRIVACY=true.
 
 Build and run the peer process to enable security:
 
@@ -31,9 +31,9 @@ Build and run the peer process to enable security:
     go build
     ./obc-peer peer --peer-chaincodedev   
 
-Alternatively, enable security on the peer:
+Alternatively, enable security and privacy on the peer:
 
-    OPENCHAIN_SECURITY_ENABLED=true ./obc-peer peer --peer-chaincodedev
+    OPENCHAIN_SECURITY_ENABLED=true OPENCHAIN_SECURITY_PRIVACY=true ./obc-peer peer --peer-chaincodedev
 
 ###Window 2 (chaincode)
 Build the <b>chaincode_example02</b> code, which is provided in the source code repository:
@@ -51,22 +51,22 @@ The chaincode console will display the message "Received REGISTERED, ready for i
 
 ###Window 3 (CLI or REST API)
 
-**Note on REST API port**
+# **Note on REST API port**
 
 The Openchain REST interface port is defined as port 5000 in the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml) configuration file. If you are sending REST requests to the peer node from the same machine, use port 5000. If you are sending REST requests through Swagger, then the port specified in the Swagger file is port 3000. The different ports emphasizes that Swagger will likely not run on the same machine as the peer process, or outside Vagrant. To send requests from the Swagger-UI or Swagger-Editor interface, set up port forwarding from port 3000 to port 5000 on your machine, or edit the Swagger configuration file to specify the port number of your choice.
 
-**Note on security functionality**
+# **Note on security functionality**
 
-When security is enabled, the CLI commands and REST payloads must be modified to include the <b>enrollmentID</b> of a registered user who is logged in; otherwise an error will result. A registered user can be logged in through the CLI or the REST API by following the instructions below. Any user who is registered with the CA can register their enrollmentID and enrollmentPW only once; if registration is attempted a second time, an error will result. This process requires that the authentication process takes place at the application layer, with the application handling the user registration with the CA on behalf of an authenticated user exactly once, while storing the enrollment certificate.
+Current security implementation assumes that end user authentication takes place at the application layer and is not handled by the fabric. Authentication may be performed through any means considered appropriate for the target application. Upon successful user authentication, the application will perform user registration with the CA exactly once. If registration is attempted a second time for the same user, an error will result. During registration, the application sends a request to the certificate authority to verify the user registration and if successful, the CA responds with the user certificates and keys. The enrollment and transaction certificates received from the CA will be stored locally inside <b>/var/openchain/production/crypto/client/</b> directory. This directory resides on a specific peer node which allows the user to transact only through this specific peer while using the stored crypto material. If the end user may need to perform transactions through more then one peer node, the application is responsible for replicating the crypto material to other peer nodes. This is necessary as registering a given user with the CA a second time will fail.
 
-To log in through the CLI, issue the following commands, where 'username' is one of the <b>enrollmentID</b> values listed in the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file:
+With security enabled, the CLI commands and REST payloads must be modified to include the <b>enrollmentID</b> of a registered user who is logged in; otherwise an error will result. A registered user can be logged in through the CLI or the REST API by following the instructions below. To log in through the CLI, issue the following commands, where 'username' is one of the <b>enrollmentID</b> values listed in the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file:
 
     cd $GOPATH/src/github.com/openblockchain/obc-peer
     ./obc-peer login <username>
 
 The command will prompt for a password, which must match the <b>enrollmentPW</b> listed for the target user in the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file. If the password entered does not match the <b>enrollmentPW</b>, an error will result.
 
-To log in through the REST API, send a POST request to the <b>/registrar<b> endpoint, containing the <b>enrollmentID</b> and <b>enrollmentPW</b> listed in the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file.
+To log in through the REST API, send a POST request to the <b>/registrar</b> endpoint, containing the <b>enrollmentID</b> and <b>enrollmentPW</b> listed in the 'users' section of the [obcca.yaml](https://github.com/openblockchain/obc-peer/blob/master/obc-ca/obcca.yaml) file.
 
 ```
 POST localhost:3000/registrar
@@ -111,7 +111,7 @@ POST localhost:5000/devops/deploy
 }
 ```
 
-**Note:** When security is enabled, modify the CLI command and the REST API payload to pass the <b>enrollmentID</b> of a logged in user. To log in a registered user through the CLI or the REST API, follow the instructions in the [note on security functionality](#window-3-cli-or-rest-api). In the CLI, the <b>enrollmentID</b> is passed with the <b>-u</b> parameter; in the REST API, the <b>enrollmentID</b> is passed with the </b>'secureContext'</b> element.
+**Note:** When security is enabled, modify the CLI command and the REST API payload to pass the <b>enrollmentID</b> of a logged in user. To log in a registered user through the CLI or the REST API, follow the instructions in the [note on security functionality](#note-on-security-functionality). On the CLI, the <b>enrollmentID</b> is passed with the <b>-u</b> parameter; in the REST API, the <b>enrollmentID</b> is passed with the <b>'secureContext'</b> element.
 
  	  ./obc-peer chaincode deploy -u jim -n mycc -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
 
@@ -166,7 +166,7 @@ POST localhost:5000/devops/invoke
 }
 ```
 
-**Note:** When security is enabled, modify the CLI command and REST API payload to pass the <b>enrollmentID</b> of a logged in user. To log in a registered user through the CLI or the REST API, follow the instructions in the [note on security functionality](#window-3-cli-or-rest-api). In the CLI, the <b>enrollmentID</b> is passed with the <b>-u</b> parameter; in the REST API, the <b>enrollmentID</b> is passed with the </b>'secureContext'</b> element.
+**Note:** When security is enabled, modify the CLI command and REST API payload to pass the <b>enrollmentID</b> of a logged in user. To log in a registered user through the CLI or the REST API, follow the instructions in the [note on security functionality](#note-on-security-functionality). On the CLI, the <b>enrollmentID</b> is passed with the <b>-u</b> parameter; in the REST API, the <b>enrollmentID</b> is passed with the <b>'secureContext'</b> element.
 
 	 ./obc-peer chaincode invoke -u jim -l golang -n mycc -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
 
@@ -234,7 +234,7 @@ POST localhost:5000/devops/query
 }
 ```
 
-**Note:** When security is enabled, modify the CLI command and REST API payload to pass the <b>enrollmentID</b> of a logged in user. To log in a registered user through the CLI or the REST API, follow the instructions in the [note on security functionality](#window-3-cli-or-rest-api). In the CLI, the <b>enrollmentID</b> is passed with the <b>-u</v> parameter; in the REST API, the <b>enrollmentID</b> is passed with the <b>'secureContext'</b> element:
+**Note:** When security is enabled, modify the CLI command and REST API payload to pass the <b>enrollmentID</b> of a logged in user. To log in a registered user through the CLI or the REST API, follow the instructions in the [note on security functionality](#note-on-security-functionality). On the CLI, the <b>enrollmentID</b> is passed with the <b>-u</b> parameter; in the REST API, the <b>enrollmentID</b> is passed with the <b>'secureContext'</b> element:
 
     ./obc-peer chaincode query -u jim -l golang -n mycc -c '{"Function": "query", "Args": ["b"]}'
 
