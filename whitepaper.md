@@ -5,7 +5,7 @@
 
 ## Abstract
 
-&nbsp;
+
 
 This paper describes the principles, high-level architecture and initial technical direction of a blockchain suitable for industrial use cases.
 
@@ -19,13 +19,12 @@ _For questions regarding terminologies used in OBC, check out our [glossary] (bi
 
 ## Background
 
-&nbsp;
 
 Blockchain is an emerging technology pattern that can radically improve banking, supply-chain, and other transaction networks, creating new opportunities for innovation and growth while reducing the cost and risk of business operations.
 
 With Bitcoin popularizing the domain since 2009, many businesses and industries have invested significant resources in investigating the underlying technology that powers the popular, yet controversial, cryptocurrency.
 
-Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconsolidate transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
+Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
 
 As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. It can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
 
@@ -35,15 +34,40 @@ Entering 2016, Blockchain awareness has now reached the point that the demand fo
 
 ## Why a new fabric:
 
-&nbsp;
 
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
+
+
+&nbsp;
+
+## Hypothesis 
+
+We have made some hypothesis on how blockchain technology would evolve and change our lives in the future, and based on these hypotheses, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
+
+_Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
+
+
+#### A world of many networks
+Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
+
+&nbsp;
+<img src="images/world_view.png" width="748">
+&nbsp;
+
+_Figure 1:  A world of many blockchain networks_
+
+
+#### Increasing demand for permissioned Network
+We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. 
+
+#### Importance for both privacy & confidentiality 
+We believe one of the fundamental requirements for any blockchain fabric is that the identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. Furthermore, we also expect there will be demands for allowing blockchain users to set certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders to that contract or the asset being transferred. 
+
 
 &nbsp;
 
 ## Industry Use Cases
 
-&nbsp;
 
 We have compiled a set of initial blockchain requirements that are considered essential for supporting the following abstract use cases.
 
@@ -66,36 +90,11 @@ The blockchain fabric must provide a means to allow every participant on a suppl
 
 _For more details about use cases and their requirements, and to visualize how these use cases can be plugged into a blockchain based system, please click [here] (biz/usecases.md)_
 
-&nbsp;
-
-## Hypothesis 
-
-_Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
-
-&nbsp;
-
-
-#### A world of many networks
-Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
-
-&nbsp;
-<img src="images/world_view.png" width="748">
-&nbsp;
-
-_Figure 1:  A world of many blockchain networks_
-
-
-#### Increasing demand for permissioned Network
-We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. 
-
-#### Importance for both privacy & confidentiality 
-We believe one of the fundamental requirements for any blockchain fabric is that the identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. Furthermore, we also expect there will be demands for allowing blockchain users to set certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders to that contract or the asset being transferred. 
 
 &nbsp;
 
 ## Featured Requirements  
 
-&nbsp;
 
 #### Identity and Auditability
 While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger.
@@ -132,7 +131,7 @@ _Still have usage related questions? Check out the [usage section] (FAQ/usage_FA
 &nbsp;
 
 ## Architecture
-&nbsp;
+
 
 Figure 2 below shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
@@ -232,7 +231,6 @@ To meet the confidentiality requirement required by some business agreements wri
 &nbsp;
 
 ## Application Programming Interface
-&nbsp;
 
 Open Blockchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
 
