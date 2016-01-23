@@ -24,7 +24,7 @@ Blockchain is an emerging technology pattern that can radically improve banking,
 
 With Bitcoin popularizing the domain since 2009, many businesses and industries have invested significant resources in investigating the underlying technology that powers the popular, yet controversial, cryptocurrency.
 
-Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconsolidate transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
+Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
 
 As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. It can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
 
@@ -41,6 +41,8 @@ Blockchain technology is in its infancy and is often not well suited for the nee
 &nbsp;
 
 ## Hypothesis 
+
+We have made some hypothesis on how blockchain technology would evolve and change our lives in the future, and based on these hypotheses, we developed our targeted use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
 
 _Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
 
