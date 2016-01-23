@@ -5,6 +5,8 @@
 
 ## Abstract
 
+&nbsp;
+
 This paper describes the principles, high-level architecture and initial technical direction of a blockchain suitable for industrial use cases.
 
 The design presented here describes a blockchain fabric called Open Blockchain, a protocol for business-to-business and business-to-customer transactions. It is intended for permissioned networks (important: see definition below), and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
@@ -16,6 +18,8 @@ _For questions regarding terminologies used in OBC, check out our [glossary] (bi
 &nbsp;
 
 ## Background
+
+&nbsp;
 
 Blockchain is an emerging technology pattern that can radically improve banking, supply-chain, and other transaction networks, creating new opportunities for innovation and growth while reducing the cost and risk of business operations.
 
@@ -30,11 +34,16 @@ Entering 2016, Blockchain awareness has now reached the point that the demand fo
 &nbsp;
 
 ## Why a new fabric:
+
+&nbsp;
+
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
 
 &nbsp;
 
 ## Industry Use Cases
+
+&nbsp;
 
 We have compiled a set of initial blockchain requirements that are considered essential for supporting the following abstract use cases.
 
@@ -59,14 +68,19 @@ _For more details about use cases and their requirements, and to visualize how t
 
 &nbsp;
 
-
 ## Hypothesis 
+
+&nbsp;
+
 
 #### A world of many networks
 Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
 
-![World of chains](images/world_view.png)
-Figure 1:  World of blockchain networks
+&nbsp;
+<img src="images/world_view.png" width="748">
+&nbsp;
+
+_Figure 1:  A world of many blockchain networks_
 
 
 #### Increasing demand for permissioned Network
@@ -77,7 +91,9 @@ We believe one of the fundamental requirements for any blockchain fabric is that
 
 &nbsp;
 
-## Featured Requirements of OBC – Creating a Business Ready Blockchain Fabric 
+## Featured Requirements  
+
+&nbsp;
 
 #### Identity and Auditability
 While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger.
@@ -114,6 +130,8 @@ _Still have usage related questions? Check out the [usage section] (FAQ/usage_FA
 &nbsp;
 
 ## Architecture
+&nbsp;
+
 Figure 2 below shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
 Some of these components will be built from the ground up; some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
@@ -209,8 +227,11 @@ As transactions are run in a new block, a delta from the world state in the last
 To meet the confidentiality requirement required by some business agreements written in chaincode, appropriate validators must be assigned before deployment. This will create quorums of validators during execution of transaction blocks. Validation nodes not selected to validate a confidential chaincode can just request for the state updates from those who are. At the end of each successful block execution consensus, the world state must be consistent on all validating nodes.
 
 
+&nbsp;
 
 ## Application Programming Interface
+&nbsp;
+
 Open Blockchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
 
 
@@ -253,8 +274,12 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 </tr>
 </table>
 
+&nbsp;
 
 ## Network Topology
+
+&nbsp;
+
 There are 3 potential deployment models: Cloud hosted 1 network, cloud hosted multiple networks, or within each participant’s intranet.
 
 The simplest and most efficient topology is cloud hosted 1 network, where each participant owns a number of peer nodes, including validators. Even though the network is in cloud, hosted by a vendor, who owns the physical boxes, the participants contractually control the computing resources, making it decentralized within a centralized environment.
@@ -262,6 +287,9 @@ The simplest and most efficient topology is cloud hosted 1 network, where each p
 Cloud hosted multiple networks allow participants to have their peer nodes hosted by any cloud providers, given that peer nodes can connect to one another over HTTPs.
 
 Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
+
+&nbsp;
+
 
 ## References
 - [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
