@@ -42,7 +42,7 @@ Blockchain technology is in its infancy and is often not well suited for the nee
 
 ## Hypothesis 
 
-We have made some hypothesis on how blockchain technology would evolve and change our lives in the future, and based on these hypotheses, we developed our targeted use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
+We have made some hypothesis on how blockchain technology would evolve and change our lives in the future, and based on these hypotheses, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
 
 _Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
 
@@ -66,7 +66,7 @@ We believe one of the fundamental requirements for any blockchain fabric is that
 
 &nbsp;
 
-## Targeted Industry Use Cases
+## Industry Use Cases
 
 
 We have compiled a set of initial blockchain requirements that are considered essential for supporting the following abstract use cases.
