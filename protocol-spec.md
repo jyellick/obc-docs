@@ -3,7 +3,7 @@
 _Draft 0.01_
 
 ## Preface
-This document is not intended to be a complete explanation of the Open Blockchain implementation, but a protocol specification for understanding the interfaces between the pluggable components of the system and the application.
+This document is the protocol specification of Open Blockchain (OBC), a permission blockchain implementation for industry use-case. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
 
 ### Intended Audience
 The intended audience for this specification includes the following groups:
@@ -13,7 +13,7 @@ The intended audience for this specification includes the following groups:
 * Application developers who want to leverage blockchain technologies to enrich their applications
 
 ### Authors
-These are the authors who wrote various sections of this document:  Binh Q Nguyen, David Kravitz, Elli Androulaki, Angelo De Carol, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniottil, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan
+These are the authors who wrote various sections of this document:  Binh Q Nguyen, David Kravitz, Elli Androulaki, Angelo De Carol, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniottil, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova
 
 ### Reviewers
 Frank Lu, John Wolpert, Bishop Brock, Nitin Gaur, Sharon Weed
@@ -44,9 +44,9 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
 #### 3. Protocol
 
    - 3.1 Message
-   - 3.1.1 Discovery
-   - 3.1.2 Transaction
-   - 3.1.3 Synchronization
+   - 3.1.1 Discovery Messages
+   - 3.1.2 Transaction Messages
+   - 3.1.3 Synchronization Messages
    - 3.2 Transaction
    - 3.2.1 Types
    - 3.2.2 Data Structure
@@ -62,21 +62,21 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
    - 3.3.2.1.1 Bucket-tree
    - 3.4 Chaincode
    - 3.5 Pluggable Consensus Framework
-   - 3.5.1 `Consenter` interface
-   - 3.5.2 `CPI` interface
-   - 3.5.3 `Communicator` interface
-   - 3.5.4 `BlockchainPackage` interface
-   - 3.5.5 `Executor` interface
+   - 3.5.1 Consenter interface
+   - 3.5.2 Consensus Programming Interface
+   - 3.5.3 Communicator interface
+   - 3.5.4 BlockchainPackage interface
+   - 3.5.5 Executor interface
    - 3.5.5.1 Beginning a transaction batch
    - 3.5.5.2 Executing transactions
    - 3.5.5.3 Committing and rolling-back transactions
-   - 3.5.6 `Ledger` interface
-   - 3.5.6.1 `ReadOnlyLedger` interface
-   - 3.5.6.2 `UtilLedger` interface
-   - 3.5.6.3 `WritableLedger` interface
-   - 3.5.7 `RemoteLedgers` interface
-   - 3.5.8 `controller` package
-   - 3.5.9 `helper` package
+   - 3.5.6 Ledger interface
+   - 3.5.6.1 ReadOnlyLedger interface
+   - 3.5.6.2 UtilLedger interface
+   - 3.5.6.3 WritableLedger interface
+   - 3.5.7 RemoteLedgers interface
+   - 3.5.8 Controller package
+   - 3.5.9 Helper package
 
 #### 4. Security
    - 4.1 Business security requirements(audit, linkability, reputation)
@@ -209,10 +209,10 @@ Similar to cloud hosted multiple networks, using participants’ own networks is
 
 
 ## 3. Protocol
-Open Blockchain peer-to-peer communication uses [Protocol Buffers](https://developers.google.com/protocol-buffers) to serialize data structures for both data transfer between peers and hashing. Protocol buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data. Data structures in this document will be described using the [proto3 language](https://developers.google.com/protocol-buffers/docs/proto3).
+Open Blockchain peer-to-peer communication is built on [gRPC](http://www.grpc.io/docs/), which allows bi-directional stream-based messaging. It uses [Protocol Buffers](https://developers.google.com/protocol-buffers) to serialize data structures for both data transfer between peers. Protocol buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data. OBC data structures, messages, and services are described using [proto3 language](https://developers.google.com/protocol-buffers/docs/proto3) notation.
 
 ### 3.1 Message
-Message flowed between nodes is described by `OpenchainMessage` proto, which consists of 4 types of messages: Discovery, Transaction, Synchronization, and Consensus.
+Message flowed between nodes is capsulated by `OpenchainMessage` proto, which consists of 4 types of messages: Discovery, Transaction, Synchronization, and Consensus. Each type may define more subtypes.
 
 ```
 message OpenchainMessage {
@@ -248,10 +248,10 @@ message OpenchainMessage {
     google.protobuf.Timestamp timestamp = 4;
 }
 ```
-The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response`.
+The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response` depending on the type of the message. For example, if the `type` is `CHAIN_TRANSACTION`, the `payload` is `Transaction`.
 
-### 3.1.1 Discovery
-Upon start up, a peer runs discovery protocol if `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is specified. `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is the IP address of another peer on the network. The protocol sequence begins with `DISC_HELLO`, whose `payload` is a `HelloMessage` object, containing its endpoint shown below:
+### 3.1.1 Discovery Messages
+Upon start up, a peer runs discovery protocol if `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is specified. `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is the IP address of another peer on the network (any peer) that serves as the starting point for discovering all the peers on the network. The protocol sequence begins with `DISC_HELLO`, whose `payload` is a `HelloMessage` object, containing its endpoint shown below:
 
 ```
 message HelloMessage {
@@ -269,24 +269,214 @@ message PeerEndpoint {
     Type type = 3;
     bytes pkiID = 4;
 }
+
 message PeerID {
     string name = 1;
 }
 ```
 
-The `PeerEndpoint` indicates whether it's a validating or non-vadating node, which is configured in `openchain..yaml`.
+**Definition of fields:**
 
-### 3.1.2 Transaction
+- `PeerEndpoint` indicates whether it's a validating or non-validating node
+- `blockNumber` is the height of the blockchain the peer current has
+- `pkiID` is the cryptographic ID of the peer
+- `PeerID` is any name given to the peer at start up or defined in config file
+- `address` is host or IP address and port of the peer in the format ip:port
 
-### 3.1.3 Synchronization
+If the block height received upon `DISC_HELLO` is higher than the current block height of the peer, it immediately initiates synchronization protocol to catch up with the network.
 
-### 3.2 Transaction
+After `DISC_HELLO`, peer sends `DISC_GET_PEERS` periodically to discover any additional peers joining the network. Response to `DISC_GET_PEERS`, peer sends `DISC_PEERS` with `payload` containing an array of `PeerEndpoint`. Other discorvery message types are not used at this point.
 
-### 3.2.1 Types
+### 3.1.2 Transaction Messages
+There are 3 types of transactions: Deploy, Invoke, and Query transactions. Deploy transaction installs the specified chaincode on the chain, invoke and query transactions call a function of a chaincode. Another type in consideration is Create transaction where a deployed chaincode may be instantiated on the chain and is addressable. This type has not been implemented as of this writing.
 
-### 3.2.2 Data Structure
+### 3.1.2.1 Transaction Data Structure
 
-### 3.2.3 Life-cycle (publish, create, invoke)
+Messages with type `CHAIN_TRANSACTION` or `CHAIN_QUERY` carry in the `payload` a `Transaction` object:
+
+```
+message Transaction {
+    enum Type {
+        UNDEFINED = 0;
+        CHAINCODE_NEW = 1;
+        CHAINCODE_UPDATE = 2;
+        CHAINCODE_EXECUTE = 3;
+        CHAINCODE_QUERY = 4;
+        CHAINCODE_TERMINATE = 5;
+    }
+    Type type = 1;
+    string uuid = 5;
+    bytes chaincodeID = 2;
+    bytes payload = 3;
+
+    ConfidentialityLevel confidentialityLevel = 7;
+    bytes nonce = 8;
+    bytes cert = 9;
+    bytes signature = 10;
+
+    bytes metadata = 4;
+    google.protobuf.Timestamp timestamp = 6;
+}
+
+enum ConfidentialityLevel {
+    PUBLIC = 0;
+    CONFIDENTIAL = 1;
+}
+
+```
+**Definition of fields:**
+- `type` - The type of transaction, which is 1 of the following:
+	- `UNDEFINED` - Reserved for future use.
+    - `CHAINCODE_NEW` - Represents the deployment of a new chaincode.
+	- `CHAINCODE_UPDATE` - Reserved for future use.
+	- `CHAINCODE_EXECUTE` - Represents a chaincode function execution that may read and modify the world state.
+	- `CHAINCODE_QUERY` - Represents a chaincode function execution that may only read the world state.
+	- `CHAINCODE_TERMINATE` - Marks a chaincode as inactive so that future functions of the chaincode can no longer be invoked.
+
+- `chaincodeID` - The ID of a chaincode which is a hash of the chaincode source, path to the source code, constructor function, and parameters.
+
+- `payload` - Bytes defining the payload of the transaction.
+
+- `metadata` - Bytes defining any associated transaction metadata that the application may use.
+
+- `uuid` - A unique ID for the transaction.
+
+- `timestamp` - A timestamp of when the transaction request was received by the peer.
+
+- `confidentialityLevel` - Level of data confidentiality. There are 2 levels currently. Future releases may define more levels.
+
+- `nonce` - Used for security
+
+- `cert` - Certificate of the transactor
+
+- `signature` - Signature of the transactor
+
+More detail on transaction security in section 4.
+
+### 3.1.2.2 Transaction Specification
+A transaction is always associated with a chaincode specification which defines the chaincode and the execution environment such as language and security context. Currently only golang is supported for writing chaincode; other languages may be added in the future.
+
+```
+message ChaincodeSpec {
+    enum Type {
+        UNDEFINED = 0;
+        GOLANG = 1;
+        NODE = 2;
+    }
+    Type type = 1;
+    ChaincodeID chaincodeID = 2;
+    ChaincodeInput ctorMsg = 3;
+    int32 timeout = 4;
+    string secureContext = 5;
+    ConfidentialityLevel confidentialityLevel = 6;
+    bytes metadata = 7;
+}
+
+message ChaincodeID {
+    string path = 1;
+    string name = 2;
+}
+
+message ChaincodeInput {
+    string function = 1;
+    repeated string args  = 2;
+}
+```
+**Definition of fields:**
+- `chaincodeID` - The chaincode source code path and name.
+- `ctorMsg` - Function name and argument parameters to call.
+- `timeout` - Time in millis to execute the transaction. The default is 30000.
+- `confidentialityLevel` - Confidentiality level of this transaction.
+- `secureContext` - Security context of the transactor.
+- `metadata` - Any data the application wants to pass along.
+
+The peer receiving the `chaincodeSpec` wraps it in an appropriate transaction message and broadcasts to the network.
+
+### 3.1.2.3 Deploy Transaction
+A deploy transaction `type` is `CHAINCODE_NEW` and the payload contains an object of `ChaincodeDeploymentSpec`.
+
+```
+message ChaincodeDeploymentSpec {
+    ChaincodeSpec chaincodeSpec = 1;
+    google.protobuf.Timestamp effectiveDate = 2;
+    bytes codePackage = 3;
+}
+```
+**Definition of fields:**
+- `chaincodeSpec` - See section 3.1.2.2 above.
+- `effectiveDate` - Time when the chaincode is ready to accept invocations.
+- `codePackage` - gzip of the chaincode source.
+
+TODO: Show an example of ChaincodeDeploymentSpec
+`./obc-peer chaincode deploy -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'`
+
+
+### 3.1.2.4 Invoke Transaction
+An invoke transaction `type` is `CHAINCODE_EXECUTE` and the `payload` contains an object of `ChaincodeInvocationSpec`.
+```
+message ChaincodeInvocationSpec {
+    ChaincodeSpec chaincodeSpec = 1;
+}
+```
+
+### 3.1.2.5 Query Transaction
+A query transaction is similar to an invoke transaction, but the message `type` is `CHAINCODE_QUERY`.
+
+### 3.1.3 Synchronization Messages
+Synchronization protocol starts with discovery, described above in section 3.1.1, when a peer realizes that it's behind or its current block is not the same with others. A peer broadcasts either `SYNC_GET_BLOCKS`, `SYNC_STATE_GET_SNAPSHOT`, or `SYNC_STATE_GET_DELTAS` and receives `SYNC_BLOCKS`, `SYNC_STATE_SNAPSHOT`, or `SYNC_STATE_DELTAS` respectively.
+
+The installed consensus plugin (eg pbft) dictates how synchronization protocol is being applied. Each message is designed for specific situation:
+
+**SYNC_GET_BLOCKS** requests for a range of contiguous blocks expressed in the message `payload`, which is an object of `SyncBlockRange`.
+```
+message SyncBlockRange {
+    uint64 start = 1;
+    uint64 end = 2;
+}
+```
+A receiving peer responds with a `SYNC_BLOCKS` message whose `payload` contains an object of `SyncBlocks`
+```
+message SyncBlocks {
+    SyncBlockRange range = 1;
+    repeated Block blocks = 2;
+}
+```
+The `start` and `end` indicate the starting and ending blocks inclusively. The order in which blocks are returned is defined by the `start` and `end` values. For example, if `start`=3 and `end`=5, the order of blocks will be 3, 4, 5. If `start`=5 and `end`=3, the order will be 5, 4, 3.
+
+**SYNC_STATE_GET_SNAPSHOT** requests for the snapshot of the current world state. The `payload` is an object of `SyncStateSnapshotRequest`
+```
+message SyncStateSnapshotRequest {
+  uint64 correlationId = 1;
+}
+```
+The `correlationId` is used by the requesting peer to keep track of the response messages. A receiving peer replies with `SYNC_BLOCKS` message whose `payload` is an instance of `SyncStateSnapshot`
+```
+message SyncStateSnapshot {
+    bytes delta = 1;
+    uint64 sequence = 2;
+    uint64 blockNumber = 3;
+    SyncStateSnapshotRequest request = 4;
+}
+```
+This message contains the snapshot or a chunk of the snapshot on the stream, and in which case, the sequence indicate the order starting at 0.  The terminating message will have len(delta) == 0.
+
+**SYNC_STATE_GET_DELTAS** requests for the state deltas of a range of contiguous blocks. By default, the Ledger maintains 500 transition deltas. A delta(j) is a state transition between block(i) and block(j) where i = j-1. The message `payload` contains an instance of `SyncStateDeltasRequest`
+```
+message SyncStateDeltasRequest {
+    SyncBlockRange range = 1;
+}
+```
+A receiving peer responds with `SYNC_STATE_DELTAS`, whose `payload` is an instance of `SyncStateDeltas`
+```
+message SyncStateDeltas {
+    SyncBlockRange range = 1;
+    repeated bytes deltas = 2;
+}
+```
+A delta may be applied forward (from i to j) or backward (from j to i) in the state transition.
+
+### 3.1.4 Consensus Messages
+Consensus deals with transactions, so a `CONSENSUS` message is initiated internally by the consensus framework when it receives a `CHAIN_TRANSACTION` message. The framework converts `CHAIN_TRANSACTION` into `CONSENSUS` then broadcasts to the validating nodes with the same `payload`.
 
 
 ### 3.3 Ledger
@@ -361,63 +551,10 @@ message TransactionResult {
 * error - A string that can be used to log errors associated with the transaction.
 
 
-#### 3.3.1.4 Transaction
+#### 3.3.1.4 Transaction Execution
 
 A transaction defines either the deployment of a chaincode or the execution of a chaincode. All transactions within a block are run before recording a block in the ledger. When chaincodes execute, they may modify the world state. The hash of the world state is then recorded in the block.
 
-```
-message Transaction {
-  enum Type {
-    UNDEFINED = 0;
-    CHAINCODE_NEW = 1;
-    CHAINCODE_UPDATE = 2;
-    CHAINCODE_EXECUTE = 3;
-    CHAINCODE_QUERY = 4;
-    CHAINCODE_TERMINATE = 5;
-  }
-  Type type = 1;
-  bytes chaincodeID = 2;
-  bytes payload = 3;
-  bytes metadata = 4;
-  string uuid = 5;
-  google.protobuf.Timestamp timestamp = 6;
-  ConfidentialityLevel confidentialityLevel = 7;
-  bytes nonce = 8;
-  bytes cert = 9;
-  bytes signature = 10;
-}
-```
-
-* type - Defines the type of transaction.
-	* UNDEFINED - Reserved for future use.
-
-	* CHAINCODE_NEW - Represents the deployment of a new chaincode.
-
-	* CHAINCODE_UPDATE - Reserved for future use.
-
-	* CHAINCODE_EXECUTE - Represents a chaincode function execution that may read and modify the world state.
-
-	* CHAINCODE_QUERY - Represents a chaincode function execution that may only read the world state.
-
-	* CHAINCODE_TERMINATE - Marks a chaincode as inactive so that future functions of the chaincode can no longer be invoked.
-
-* chaincodeID - The ID of a chaincode.
-
-* payload - Bytes defining the payload of the transaciton.
-
-* metadata - Bytes defining any associated transaction metadata.
-
-* uuid - A unique ID for the transaction.
-
-* timestamp - A timestamp of when the transaction was received.
-
-* confidentialityLevel - TODO
-
-* nonce - TODO
-
-* cert - TODO
-
-* signature - TODO
 
 ### 3.3.2 World State
 
