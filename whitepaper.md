@@ -65,6 +65,10 @@ _For more details about use cases and their requirements, and to visualize how t
 #### A world of many networks
 Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
 
+![World of chains](images/world_view.png)
+Figure 1:  World of blockchain networks
+
+
 #### Increasing demand for permissioned Network
 We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. 
 
@@ -110,12 +114,12 @@ _Still have usage related questions? Check out the [usage section] (FAQ/usage_FA
 &nbsp;
 
 ## Architecture
-Figure 1 below shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
+Figure 2 below shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
 Some of these components will be built from the ground up; some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
 
 ![Reference architecture](images/refarch.png)
-Figure 1:  Open Blockchain Reference architecture
+Figure 2:  Open Blockchain Reference architecture
 
 The Membership category provides services for managing identity, privacy, and confidentiality on the network. Participants register to get identities, which will enable the Attribute Authority to issue security keys to transact. Reputation Manager enables auditors to see transactions pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
 
