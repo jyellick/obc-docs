@@ -70,6 +70,8 @@ _For more details about use cases and their requirements, and to visualize how t
 
 ## Hypothesis 
 
+_Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
+
 &nbsp;
 
 
