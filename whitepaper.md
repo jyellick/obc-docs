@@ -91,7 +91,7 @@ We believe one of the fundamental requirements for any blockchain fabric is that
 
 &nbsp;
 
-## Featured Requirements of OBC – Creating a Business Ready Blockchain Fabric 
+## Featured Requirements  
 
 &nbsp;
 
