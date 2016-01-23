@@ -5,7 +5,7 @@
 
 ## Abstract
 
-&nbsp;
+
 
 This paper describes the principles, high-level architecture and initial technical direction of a blockchain suitable for industrial use cases.
 
@@ -19,7 +19,6 @@ _For questions regarding terminologies used in OBC, check out our [glossary] (bi
 
 ## Background
 
-&nbsp;
 
 Blockchain is an emerging technology pattern that can radically improve banking, supply-chain, and other transaction networks, creating new opportunities for innovation and growth while reducing the cost and risk of business operations.
 
@@ -35,7 +34,6 @@ Entering 2016, Blockchain awareness has now reached the point that the demand fo
 
 ## Why a new fabric:
 
-&nbsp;
 
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
 
@@ -45,8 +43,6 @@ Blockchain technology is in its infancy and is often not well suited for the nee
 ## Hypothesis 
 
 _Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
-
-&nbsp;
 
 
 #### A world of many networks
@@ -68,7 +64,7 @@ We believe one of the fundamental requirements for any blockchain fabric is that
 
 &nbsp;
 
-## Industry Use Cases
+## Targeted Industry Use Cases
 
 &nbsp;
 
