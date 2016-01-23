@@ -66,7 +66,6 @@ We believe one of the fundamental requirements for any blockchain fabric is that
 
 ## Targeted Industry Use Cases
 
-&nbsp;
 
 We have compiled a set of initial blockchain requirements that are considered essential for supporting the following abstract use cases.
 
@@ -94,7 +93,6 @@ _For more details about use cases and their requirements, and to visualize how t
 
 ## Featured Requirements  
 
-&nbsp;
 
 #### Identity and Auditability
 While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger.
@@ -131,7 +129,7 @@ _Still have usage related questions? Check out the [usage section] (FAQ/usage_FA
 &nbsp;
 
 ## Architecture
-&nbsp;
+
 
 Figure 2 below shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
@@ -231,7 +229,6 @@ To meet the confidentiality requirement required by some business agreements wri
 &nbsp;
 
 ## Application Programming Interface
-&nbsp;
 
 Open Blockchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
 
