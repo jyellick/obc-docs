@@ -2,6 +2,10 @@
 Welcome to Open Blockchain (OBC) development!
 
 
+## Your voice here:
+If you are reading this, then it means anything said in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the specification and the implementation of Open Blockchain should be taken forward. Don’t like something you see here? Help us all see your point of view (in a respectful and positive way) or even better, bring some code that shows a better way.
+
+
 If you are new to OBC and want to learn about our position and the scope of the project, please start with our [whitepaper](whitepaper.md). In addition, we encourage you to go over our [glossary](biz/glossary.md) to understand the terms we use throughout the site
 
 When you are ready to start using OBC to build your applications or wish to contribute to the project, we strongly recommend you to read the [protocol specifications](protocol-spec.md) to get an overview of what we are developing. We use agile methodology with a weekly sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues) and [milestones](https://github.com/openblockchain/obc-peer/milestones), so take a look to familiarize yourself with the current work.
