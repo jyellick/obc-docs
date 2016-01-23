@@ -9,13 +9,6 @@ Furthermore, the design of the system allows transaction certificates to both ex
 
 Finally, like most other modules on OBC, you can always replace the default membership service implementation with another option.
 
-&nbsp;
-##### How and by whom is the KYC/AML (control who can open accounts on the ledger) managed?
-The security module works in conjunction with the membership service module to provide access control service to any data recorded and business logic deployed on a chain network. 
-
-When a code is deployed on a chain network, whether it is used to define a business contract or an asset, its creator can put access control on it so that only transactions issued by authorized entities will be processed and validated by chain validators.
-
-Raw transaction records are permanently stored in the ledger. While the contents of non-confidential transactions are open to all participants, the contents of confidential transactions are encrypted with secret keys known only to their originators, and only validators and authorized auditors can interpret them.
 
 &nbsp;
 ##### Would its membership service make OBC a centralized solution?
