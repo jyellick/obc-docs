@@ -76,7 +76,7 @@ _For more details about use cases and their requirements, and to visualize how t
 #### A world of many networks
 Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While there may be a popular single instance of a general-use network, there is no requirement for any ledger to rely upon any other network for core functionality. However, there must be an addressing system to allow transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
 
-
+&nbsp;
 <img src="images/world_view.png" width="748">
 &nbsp;
 
