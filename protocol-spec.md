@@ -783,7 +783,6 @@ type ReadOnlyLedger interface {
 
 `ReadOnlyLedger` interface is intended to query the local copy of the ledger without the possibility of modifying it.  It is comprised of the following functions.
 
-  -
 ```
 GetBlockchainSize() (uint64, error)
 ```
@@ -792,14 +791,13 @@ This call returns the current length of the blockchain ledger.  In general, this
 
 Note that in the event that the local copy of the blockchain ledger is corrupt or incomplete, this call will return the highest block number in the chain, plus one.  This allows for a node to continue operating from the current state/block even when older blocks are corrupt or missing.
 
-  -
 ```
 GetBlock(id uint64) (block *pb.Block, err error)
 ```
 
 This call returns the block from the blockchain with block number `id`.  In general, this call should not fail, except when the block queried exceeds the current blocklength, or when the underlying blockchain has somehow become corrupt.  A failure of `GetBlock` has a possible resolution of using the state transfer mechanism to retrieve it.
 
-  -
+
 ```
 GetCurrentStateHash() (stateHash []byte, err error)
 ```
@@ -820,17 +818,17 @@ type UtilLedger interface {
 
 `UtilLedger`  interface defines some useful utility functions which are provided by the local ledger.  Overriding these functions in a mock interface can be useful for testing purposes.  This interface is comprised of two functions.
 
-  - ```
-    HashBlock(block *pb.Block) ([]byte, error)
-    ```
+```
+HashBlock(block *pb.Block) ([]byte, error)
+```
 
 Although `*pb.Block` has a `GetHash` method defined, for mock testing, overriding this method can be very useful.  Therefore, it is recommended that the `GetHash` method never be directly invoked, but instead invoked via this `UtilLedger.HashBlock` interface.  In general, this method should never fail, but the error is still passed to the caller to decide what if any recovery is appropriate.
-  -
+
 ```
 VerifyBlockchain(start, finish uint64) (uint64, error)
 ```
 
-	This utility method is intended for verifying large sections of the blockchain.  It proceeds from a high block `start` to a lower block `finish`, returning the block number of the first block whose `PreviousBlockHash` does not match the block hash of the previous block as well as an error.  Note, this generally indicates the last good block number, not the first bad block number.
+This utility method is intended for verifying large sections of the blockchain.  It proceeds from a high block `start` to a lower block `finish`, returning the block number of the first block whose `PreviousBlockHash` does not match the block hash of the previous block as well as an error.  Note, this generally indicates the last good block number, not the first bad block number.
 
 
 
