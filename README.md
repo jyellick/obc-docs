@@ -6,9 +6,19 @@ If you are reading this, then it means anything said in this open source reposit
 ## Getting Started
 Welcome to Open Blockchain (OBC) development!
 
-If you are new to OBC and want to learn about our position and the scope of the project, please start with our [whitepaper](whitepaper.md). In addition, we encourage you to go over our [glossary](biz/glossary.md) to understand the terms we use throughout the site
+If you are new to OBC and want to learn about our position and the scope of the project, please start with our [whitepaper](whitepaper.md). In addition, we encourage you to go over our [glossary](glossary.md) to understand the terms we use throughout the site.
 
 When you are ready to start using OBC to build your applications or wish to contribute to the project, we strongly recommend you to read the [protocol specifications](protocol-spec.md) to get an overview of what we are developing. We use agile methodology with a weekly sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues) and [milestones](https://github.com/openblockchain/obc-peer/milestones), so take a look to familiarize yourself with the current work.
+
+## Documentation
+To find documentation on a specific topic please browse the documentation directories within this repository:
+- [Openchain FAQs](https://github.com/openblockchain/obc-docs/tree/master/FAQ)
+- [Canonical Use Cases](https://github.com/openblockchain/obc-docs/blob/master/biz/usecases.md)
+- [Development Environment Setup](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/devenv.md)
+- [Chaincode Development Environment](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md)
+- [Openchain APIs](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md)
+- [Openchain Network Setup](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/DevnetSetup.md)
+- [Technical Implementation Details](https://github.com/openblockchain/obc-docs/tree/master/tech)
 
 ## License
 This software is under [Apache License Version 2.0](LICENSE)
@@ -31,7 +41,7 @@ open a pull request (make sure successfully built and tested with the test-suite
 - After your pull request has reviewed and signed off, a committer
 can merge it into the master branch
 
-We use the same approach - the [Developer's Certificate of Origin](DCO1.1.txt) - as the Linux Kernel [community](http://elinux.org/Developer_Certificate_Of_Origin) does to manage contributions.
+We use the same approach - the [Developer's Certificate of Origin](https://github.com/openblockchain/obc-docs/blob/master/biz/DCO1.1.txt) - as the Linux Kernel [community](http://elinux.org/Developer_Certificate_Of_Origin) does to manage contributions.
 We simply ask that when submitting a pull request, that the developer include a sign-off statement in the pull request's description.
 
 Here is an example Signed-off-by line, that indicates that the submitter accepts the DCO:
@@ -45,7 +55,7 @@ We will use mainly our [Slack for communication](https://openchain.slack.com) an
 Screenhero or Google Hangouts for screen sharing between developers. Register and get connected.
 
 ## Coding Golang
-- We require a file [header](headers.txt) on all source code files. Just copy and
+- We require a file [header](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/headers.txt) on all source code files. Just copy and
 paste.
 - We code in Go and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
 and will not accept any deviation. You must run the following tools against your code and fix all errors and warnings.

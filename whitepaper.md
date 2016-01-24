@@ -13,7 +13,7 @@ The design presented here describes a blockchain fabric called Open Blockchain, 
 
 The central elements of this specification are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private and confidential transactions, and pluggable consensus model.
 
-_For questions regarding terminologies used in OBC, check out our [glossary] (biz/glossary.md)_
+_For questions regarding terminologies used in OBC, check out our [glossary] (glossary.md)_
 
 &nbsp;
 
@@ -24,9 +24,9 @@ Blockchain is an emerging technology pattern that can radically improve banking,
 
 With Bitcoin popularizing the domain since 2009, many businesses and industries have invested significant resources in investigating the underlying technology that powers the popular, yet controversial, cryptocurrency.
 
-Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
+Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows.
 
-As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. It can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
+As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. It can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively.
 
 Entering 2016, Blockchain awareness has now reached the point that the demand for a solution suitable for industry is surging.
 
@@ -40,7 +40,7 @@ Blockchain technology is in its infancy and is often not well suited for the nee
 
 &nbsp;
 
-## Hypothesis 
+## Hypothesis
 
 We have made some hypothesis on how blockchain technology would evolve and change our lives in the future, and based on these hypotheses, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
 
@@ -58,10 +58,10 @@ _Figure 1:  A world of many blockchain networks_
 
 
 #### Increasing demand for permissioned Network
-We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. 
+We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning.
 
-#### Importance for both privacy & confidentiality 
-We believe one of the fundamental requirements for any blockchain fabric is that the identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. Furthermore, we also expect there will be demands for allowing blockchain users to set certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders to that contract or the asset being transferred. 
+#### Importance for both privacy & confidentiality
+We believe one of the fundamental requirements for any blockchain fabric is that the identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. Furthermore, we also expect there will be demands for allowing blockchain users to set certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders to that contract or the asset being transferred.
 
 
 &nbsp;
