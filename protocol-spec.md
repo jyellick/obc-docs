@@ -13,7 +13,7 @@ The intended audience for this specification includes the following groups:
 * Application developers who want to leverage blockchain technologies to enrich their applications
 
 ### Authors
-These are the authors who wrote various sections of this document:  Binh Q Nguyen, David Kravitz, Elli Androulaki, Angelo De Carol, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniottil, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova
+These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Carol, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniottil, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova, Dulce Ponceleon, David Kravitz
 
 ### Reviewers
 Frank Lu, John Wolpert, Bishop Brock, Nitin Gaur, Sharon Weed
@@ -153,9 +153,9 @@ These terminologies are defined within the limited scope of this specification t
 
 **Chaincode** is an application-level code (a.k.a smart contract) stored on the ledger part of a transaction. Chaincode runs transactions that may modify the world state
 
-**Validating Node** A computer on blockchain network responsible for running consensus and maintaining the ledger (node and peer are synonymously in this document)
+**Validating Peer** A computer node on OBC network responsible for running consensus, validating transactions, and maintaining the ledger.
 
-**Non-validating Node** A computer node functions as a proxy connecting transactors to the validating node. Non-validating node provides event stream and hosts REST API service
+**Non-validating Peer** A computer node on OBC network functions as a proxy connecting transactors to the neighboring validating peers. Non-validating peer doesn't execute transactions but does verify transactions. It also hosts event stream and REST API service
 
 **Permissioned Ledger** Each entity or node on the blockchain network is required to be a member of the network. Anonymous nodes are not allowed to connect
 
