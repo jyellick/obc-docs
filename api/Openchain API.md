@@ -8,7 +8,7 @@ This document covers the available APIs to interact with an Openchain peer node.
 2. [REST Interface](#openchain-rest-api)
 3. [Node.js Application](#nodejs)
 
-**Note:**: If you are working with APIs with security enabled, please review the [security setup instructions](https://github.com/openblockchain/obc-peer/blob/master/docs/SandboxSetup.md#security-setup-optional) before proceeding.
+**Note:** If you are working with APIs with security enabled, please review the [security setup instructions](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md#security-setup-optional) before proceeding.
 
 ## Openchain CLI:
 
@@ -17,7 +17,7 @@ To see what CLI commands are available, execute the following:
     cd $GOPATH/src/github.com/openblockchain/obc-peer
     ./obc-peer
 
-You will see output similar to below (**NOTE:** rootcommand below is hardcoded in the [main.go](https://github.com/openblockchain/obc-peer/blob/master/main.go). Currently, the build will create an *obc-peer* executable file).
+You will see output similar to below (**NOTE:** rootcommand below is hardcoded in [main.go](https://github.com/openblockchain/obc-peer/blob/master/main.go). Currently, the build will create an *obc-peer* executable file).
 
 ```
     Usage:
@@ -41,9 +41,9 @@ You will see output similar to below (**NOTE:** rootcommand below is hardcoded i
 
 ### Deploy a Chaincode
 
-Deploy creates the docker image and subsequently deploys the chaincode package to the validating peer. An example is below.
+Deploy creates the docker image for the chaincode and subsequently deploys the package to the validating peer. An example is below.
 
-`./obc-peer chaincode deploy --path=github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example01 --version=0.1.0`
+`./obc-peer chaincode deploy --path=github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example01`
 
 The response to the chaincode deploy command is defined by ChaincodeDeploymentSpec inside [chaincode.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/chaincode.proto).
 
@@ -58,7 +58,7 @@ message ChaincodeDeploymentSpec {
 
 With security enabled, modify the command to include the -u parameter passing the username of a logged in user as follows:
 
-`./obc-peer chaincode deploy -u jim --path=github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example01 --version=0.1.0`
+`./obc-peer chaincode deploy -u jim --path=github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example01`
 
 ### Verify Results
 
@@ -97,7 +97,6 @@ The response to this query will be quite large, on the order of 20Mb, as it cont
 
 ```
 {
-    "proposerID":"proposerID string",
     "transactions":[{
         "type":1,
         "chaincodeID": {
@@ -114,7 +113,7 @@ The Block message is defined inside [openchain.proto](https://github.com/openblo
 
 ```
 message Block {
-    string proposerID = 1;
+    uint32 version = 1;
     google.protobuf.Timestamp timestamp = 2;
     repeated Transaction transactions = 3;
     bytes stateHash = 4;
@@ -126,9 +125,9 @@ message Block {
 
 ## Openchain REST API:
 
-You can experiment with the Openchain REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. However, if you choose to work with the REST API directly through [Swagger](http://swagger.io/), please set up the Swagger-UI package locally on your machine per the instructions [here](#to-set-up-swagger-ui). The APIs we are developing are not public at this time and therefore we can not upload them directly to Swagger.io.
+You can work with the Openchain REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. You can likewise trigger REST requests directly through [Swagger](http://swagger.io/). However, until these APIs become public, we ask that you set up the Swagger-UI package locally on your machine instead of uploading them directly to the Swagger service. To set up Swagger locally, follow the instructions [here](#to-set-up-swagger-ui).
 
-**Note:** The Openchain REST interface port is defined as port 5000 inside the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml). If you are sending REST requests to the peer node from the same machine, use port 5000. If you are sending REST requests through Swagger, the port specified in the Swagger file is port 3000. This is done to emphasize that Swagger will likely not run on the same machine as the peer process or outside Vagrant. In order to send requests from the Swagger-UI or Swagger-Editor interface, set up port forwarding from port 3000 to 5000 on your machine or edit the Swagger file to the port number of your choice.
+**Note:** The Openchain REST interface port is defined as port 5000 inside the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml). If you are sending REST requests to the peer node from the same machine, use port 5000. If you are sending REST requests through Swagger, the port specified in the Swagger file is port 3000. This is done to emphasize that Swagger will likely not run on the same machine as the peer process or outside Vagrant. In order to send requests from the Swagger-UI or Swagger-Editor interface edit the Swagger file to the port number of your choice.
 
 **Note on test blockchain** If you want to test the REST APIs locally, construct a test blockchain by running the TestServerOpenchain_API_GetBlockCount test implemented inside [api_test.go](https://github.com/openblockchain/obc-peer/blob/master/openchain/api_test.go). This test will create a test blockchain with 5 blocks. Subsequently restart the peer process.
 
@@ -138,6 +137,8 @@ You can experiment with the Openchain REST API through any tool of your choice. 
 ```
 
 ### REST Endpoints
+
+To learn about the Openchanin REST API through Swagger, please take a look at the Swagger document [here](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json) and the instructions on how to set up Swagger locally on your machine [here](#to-set-up-swagger-ui).
 
 * [Block](#block)
   * GET /chain/blocks/{Block}
@@ -163,7 +164,7 @@ Use the Block API to retrieve the contents of various blocks from the blockchain
 
 ```
 message Block {
-    string proposerID = 1;
+    uint32 version = 1;
     google.protobuf.Timestamp Timestamp = 2;
     repeated Transaction transactions = 3;
     bytes stateHash = 4;
@@ -175,7 +176,7 @@ message Block {
 
 * **GET /chain**
 
-Use the Chain API to retrieve the current state of the blockchain. The returned BlockchainInfo message is defined inside [api.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/api.proto) .
+Use the Chain API to retrieve the current state of the blockchain. The returned BlockchainInfo message is defined inside [api.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/api.proto).
 
 ```
 message BlockchainInfo {
@@ -248,7 +249,7 @@ message ChaincodeInvocationSpec {
 }
 ```
 
-**Note:** The deploy transaction requires a 'path' parameter to locate, build, and deploy the chaincode. On the other hand, invoke and query transactions require a 'name' parameter. These parameters are specified in the ChaincodeID, defined in [chaincode.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/chaincode.proto). The only exception to this rule is if the peer is running in development mode, i.e. the user deploys the chaincode themselves. In that case, the deploy transaction also requires a 'name' parameter.
+**Note:** The deploy transaction requires a 'path' parameter to locate, build, and deploy the chaincode. On the other hand, invoke and query transactions require a 'name' parameter. These parameters are specified in the ChaincodeID, defined in [chaincode.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/chaincode.proto). The only exception to this rule is if the peer is running in chaincode development mode, i.e. the user starts the peer with --peer-chaincodedev and runs the chaincode themselves in a separate command line window. In that case, the deploy transaction also requires a 'name' parameter.
 
 ```
 message ChaincodeID {
@@ -346,7 +347,7 @@ The GET /registrar/{enrollmentID}/ecert endpoint is used to retrieve the enrollm
 
 [Swagger](http://swagger.io/) is a convenient package that allows us to describe and document our API in a single file. The Openchain REST API is described in [rest_api.json](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). To interact with the peer node directly through the Swagger-UI, please follow the instructions below.
 
-1. Make sure you have Node.js installed on your local machine. If it is not installed, please download the [Node.js](https://nodejs.org/en/download/) package and install it.
+1. You can use Node.js to serve up the rest_api.json locally. To do so, make sure you have Node.js installed on your local machine. If it is not installed, please download the [Node.js](https://nodejs.org/en/download/) package and install it.
 
 2. Install the Node.js http-server package with the command below:
 
@@ -383,15 +384,15 @@ The GET /registrar/{enrollmentID}/ecert endpoint is used to retrieve the enrollm
     go test -v -run TestServerOpenchain_API_GetBlockCount github.com/openblockchain/obc-peer/openchain
     ```
 
-9. Go back to the Swagger-UI interface inside your browser and load the API description.
+9. Go back to the Swagger-UI interface inside your browser and load the API description. You should now be able to issue queries against the pre-built blockchain directly from Swagger.
 
 ## Node.js
 
 You can interface to the obc-peer process from a Node.js application in one of two ways. Both approaches rely on the Swagger API description document, [rest_api.json](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). Use the approach the you find the most convenient.
 
-### [OpenchainSample_1](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20Samples/openchain_1.js)
+### [OpenchainSample_1](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20Samples/openchain_1.js)
 
-* Demonstrates interfacing to the obc-peer project from a Node.js app.
+* Demonstrates interfacing with a peer node from a Node.js app.
 * Utilizes the Node.js swagger-js plugin: https://github.com/swagger-api/swagger-js
 
 **To run:**
@@ -417,14 +418,14 @@ You can interface to the obc-peer process from a Node.js application in one of t
     http-server -a 0.0.0.0 -p 5554 --cors
     ```
 
-5. Download [OpenchainSample_1.zip](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20Samples/OpenchainSample_1.zip)
+5. Download [OpenchainSample_1.zip](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20Samples/OpenchainSample_1.zip)
 
     ```
     unzip OpenchainSample_1.zip -d OpenchainSample_1
     cd OpenchainSample_1
     ```
 
-6. Update the api_url within [openchain.js](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20Samples/openchain_1.js) to the appropriate URL if it is not already the default
+6. Update the api_url within [openchain.js](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20Samples/openchain_1.js) to the appropriate URL if it is not already the default
 
     `var api_url = 'http://localhost:5554/rest_api.json';`
 
@@ -434,9 +435,9 @@ You can interface to the obc-peer process from a Node.js application in one of t
 
 You will observe several responses on the console and the program will appear to hang for a few moments at the end. This is normal, as is it waiting for a build request for a Docker container to complete.
 
-### [OpenchainSample_2](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20Samples/openchain_2.js)
+### [OpenchainSample_2](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20Samples/openchain_2.js)
 
-* Demonstrates an alternative way of interfacing to the obc-peer project from a Node.js app.
+* Demonstrates an alternative way of interfacing with a peer node from a Node.js app.
 * Utilizes the TypeScript description of Openchain REST API generated through the Swagger-Editor.
 * Utilizes the DefinitelyTyped TypeScript definitions manager package: https://github.com/DefinitelyTyped/tsd
 
@@ -455,7 +456,7 @@ You will observe several responses on the console and the program will appear to
     go test -v -run TestServerOpenchain_API_GetBlockCount github.com/openblockchain/obc-peer/openchain
     ```
 
-4. Download [OpenchainSample_2.zip](https://github.com/openblockchain/obc-peer/blob/master/docs/Openchain%20Samples/OpenchainSample_2.zip)
+4. Download [OpenchainSample_2.zip](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20Samples/OpenchainSample_2.zip)
 
     ```
     unzip OpenchainSample_2.zip -d OpenchainSample_2
@@ -472,9 +473,9 @@ You will observe several responses on the console and the program will appear to
 
 If you update the [rest_api.json](https://github.com/angrbrd/obc-peer/blob/master/openchain/rest/rest_api.json) Swagger description, you must regenerate the associated TypeScript file for your Node.js application. The current TypeScript file describing the Openchain API is [api.ts](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/api.ts).
 
-Swagger produces TypeScript files with its Swagger-Editor package. If you would like to use Swagger-Editor, please set it up locally on your machine. The APIs we are working on are not public at this time and therefore we can not upload them directly to Swagger.io. To set up the Swagger-Editor please follow the steps below.
+Swagger produces TypeScript files with its Swagger-Editor package. If you would like to use Swagger-Editor before these APIs become public, please set it up locally on your machine. To set up the Swagger-Editor locally please follow the steps below.
 
-1. Download the latest release of [Swagger-Editor](https://github.com/swagger-api/swagger-editor).
+1. Download the latest version of [Swagger-Editor](https://github.com/swagger-api/swagger-editor).
 2. Unpack .zip
 3. cd swagger-editor/swagger-editor
 4. http-server -a 0.0.0.0 -p 8000 --cors
