@@ -493,6 +493,7 @@ The blockchain is defined as a linked list of blocks as each block contains the 
 
 ```
 message Block {
+  version = 1;
   google.protobuf.Timestamp timestamp = 2;
   repeated Transaction transactions = 3;
   bytes stateHash = 4;
@@ -501,18 +502,19 @@ message Block {
   NonHashData nonHashData = 7;
 }
 ```
+* `version` - Version used to track any protocol changes.
 
-* timestamp - The timestamp to be filled in by the block proposer.
+* `timestamp` - The timestamp to be filled in by the block proposer.
 
-* transactions - An array of Transaction messages.
+* `transactions` - An array of Transaction messages.
 
-* stateHash - The hash of the world state.
+* `stateHash` - The hash of the world state.
 
-* previousBlockHash - The hash of the previous block.
+* `previousBlockHash` - The hash of the previous block.
 
-* consensusMetadata - Optional metadata that the consensus may include in a block.
+* `consensusMetadata` - Optional metadata that the consensus may include in a block.
 
-* nonHashData - A NonHashData message that is set to nil before computing the hash of the block, but stored as part of the block in the database.
+* `nonHashData` - A NonHashData message that is set to nil before computing the hash of the block, but stored as part of the block in the database.
 
 #### 3.2.1.2 Block Hashing
 
@@ -540,17 +542,17 @@ message TransactionResult {
 }
 ```
 
-* localLedgerCommitTimestamp - A timestamp indicating when the block was commited to the local ledger.
+* `localLedgerCommitTimestamp` - A timestamp indicating when the block was commited to the local ledger.
 
-* TransactionResult - An array of transaction results.
+* `TransactionResult` - An array of transaction results.
 
-* TransactionResult.uuid - The ID of the transaction.
+* `TransactionResult.uuid` - The ID of the transaction.
 
-* result - The return value of the transaction.
+* `result` - The return value of the transaction.
 
-* errorCode - A code that can be used to log errors associated with the transaction.
+* `errorCode` - A code that can be used to log errors associated with the transaction.
 
-* error - A string that can be used to log errors associated with the transaction.
+* `error` - A string that can be used to log errors associated with the transaction.
 
 
 #### 3.2.1.4 Transaction Execution
