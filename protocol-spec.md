@@ -46,37 +46,39 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
    - 3.1 Message
    - 3.1.1 Discovery Messages
    - 3.1.2 Transaction Messages
+   - 3.1.2.1 Transaction Data Structure
+   - 3.1.2.2 Transaction Specification
+   - 3.1.2.3 Deploy Transaction
+   - 3.1.2.4 Invoke Transaction
+   - 3.1.2.5 Query Transaction
    - 3.1.3 Synchronization Messages
-   - 3.2 Transaction
-   - 3.2.1 Types
-   - 3.2.2 Data Structure
-   - 3.2.3 Life-cycle (publish, create, invoke)
-   - 3.3 Ledger
-   - 3.3.1 Blockchain
-   - 3.3.1.1 Block
-   - 3.3.1.2 Block Hashing
-   - 3.3.1.3 NonHashData
-   - 3.3.1.4 Transaction
-   - 3.3.2 World State
-   - 3.3.2.1 Hashing the world state
-   - 3.3.2.1.1 Bucket-tree
-   - 3.4 Chaincode
-   - 3.5 Pluggable Consensus Framework
-   - 3.5.1 Consenter interface
-   - 3.5.2 Consensus Programming Interface
-   - 3.5.3 Communicator interface
-   - 3.5.4 BlockchainPackage interface
-   - 3.5.5 Executor interface
-   - 3.5.5.1 Beginning a transaction batch
-   - 3.5.5.2 Executing transactions
-   - 3.5.5.3 Committing and rolling-back transactions
-   - 3.5.6 Ledger interface
-   - 3.5.6.1 ReadOnlyLedger interface
-   - 3.5.6.2 UtilLedger interface
-   - 3.5.6.3 WritableLedger interface
-   - 3.5.7 RemoteLedgers interface
-   - 3.5.8 Controller package
-   - 3.5.9 Helper package
+   - 3.1.4 Consensus Messages
+   - 3.2 Ledger
+   - 3.2.1 Blockchain
+   - 3.2.1.1 Block
+   - 3.2.1.2 Block Hashing
+   - 3.2.1.3 NonHashData
+   - 3.2.1.4 Transaction
+   - 3.2.2 World State
+   - 3.2.2.1 Hashing the world state
+   - 3.2.2.1.1 Bucket-tree
+   - 3.3 Chaincode
+   - 3.4 Pluggable Consensus Framework
+   - 3.4.1 Consenter interface
+   - 3.4.2 Consensus Programming Interface
+   - 3.4.3 Communicator interface
+   - 3.4.4 BlockchainPackage interface
+   - 3.4.5 Executor interface
+   - 3.4.5.1 Beginning a transaction batch
+   - 3.4.5.2 Executing transactions
+   - 3.4.5.3 Committing and rolling-back transactions
+   - 3.4.6 Ledger interface
+   - 3.4.6.1 ReadOnlyLedger interface
+   - 3.4.6.2 UtilLedger interface
+   - 3.4.6.3 WritableLedger interface
+   - 3.4.7 RemoteLedgers interface
+   - 3.4.8 Controller package
+   - 3.4.9 Helper package
 
 #### 4. Security
    - 4.1 Business security requirements(audit, linkability, reputation)
@@ -104,21 +106,21 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
 
 #### 5. Consensus
    - Practical Byzantine design and implementation
-	- Addressing determinism (assumption, detection, action)
+   - Addressing determinism (assumption, detection, action)
 
 #### 6. Execution Model
    - Transaction flow
-	Execution and state modification
-	Error codes
+   - Execution and state modification
+   - Error codes
 
 #### 7. Application Programming Interface
    - HTTP Service (security, topology)
-	REST APIs (description, usage, sample, swagger)
-	CLIs (motivations, usage, security)
+   - REST APIs (description, usage, sample, swagger)
+   - CLIs (motivations, usage, security)
 
 #### 8. Application Model
    - Composition of an application
-	Samples to illustrate
+   - Samples to illustrate
 
 #### 9. Future Directions
 
@@ -151,7 +153,7 @@ These terminologies are defined within the limited scope of this specification t
 
 **Chaincode** is an application-level code (a.k.a smart contract) stored on the ledger part of a transaction. Chaincode runs transactions that may modify the world state
 
-**Validating Node** A computer on blockchain network responsible for running consensus and maintaining the ledger
+**Validating Node** A computer on blockchain network responsible for running consensus and maintaining the ledger (node and peer are synonymously in this document)
 
 **Non-validating Node** A computer node functions as a proxy connecting transactors to the validating node. Non-validating node provides event stream and hosts REST API service
 
@@ -209,10 +211,10 @@ Similar to cloud hosted multiple networks, using participants’ own networks is
 
 
 ## 3. Protocol
-Open Blockchain peer-to-peer communication is built on [gRPC](http://www.grpc.io/docs/), which allows bi-directional stream-based messaging. It uses [Protocol Buffers](https://developers.google.com/protocol-buffers) to serialize data structures for both data transfer between peers. Protocol buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data. OBC data structures, messages, and services are described using [proto3 language](https://developers.google.com/protocol-buffers/docs/proto3) notation.
+Open Blockchain peer-to-peer communication is built on [gRPC](http://www.grpc.io/docs/), which allows bi-directional stream-based messaging. It uses [Protocol Buffers](https://developers.google.com/protocol-buffers) to serialize data structures for  data transfer between peers. Protocol buffers are a language-neutral, platform-neutral extensible mechanism for serializing structured data. OBC data structures, messages, and services are described using [proto3 language](https://developers.google.com/protocol-buffers/docs/proto3) notation.
 
 ### 3.1 Message
-Message flowed between nodes is capsulated by `OpenchainMessage` proto, which consists of 4 types of messages: Discovery, Transaction, Synchronization, and Consensus. Each type may define more subtypes.
+Messages flowed between nodes are encapsulated by `OpenchainMessage` proto structure, which consists of 4 types: Discovery, Transaction, Synchronization, and Consensus. Each type may define more subtypes embedded in the `payload`.
 
 ```
 message OpenchainMessage {
@@ -248,10 +250,10 @@ message OpenchainMessage {
     google.protobuf.Timestamp timestamp = 4;
 }
 ```
-The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response` depending on the type of the message. For example, if the `type` is `CHAIN_TRANSACTION`, the `payload` is `Transaction`.
+The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response` depending on the type of the message. For example, if the `type` is `CHAIN_TRANSACTION`, the `payload` is a `Transaction` object.
 
 ### 3.1.1 Discovery Messages
-Upon start up, a peer runs discovery protocol if `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is specified. `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is the IP address of another peer on the network (any peer) that serves as the starting point for discovering all the peers on the network. The protocol sequence begins with `DISC_HELLO`, whose `payload` is a `HelloMessage` object, containing its endpoint shown below:
+Upon start up, a peer runs discovery protocol if `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is specified. `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is the IP address of another peer on the network (any peer) that serves as the starting point for discovering all the peers on the network. The protocol sequence begins with `DISC_HELLO`, whose `payload` is a `HelloMessage` object, containing its endpoint below:
 
 ```
 message HelloMessage {
@@ -277,15 +279,15 @@ message PeerID {
 
 **Definition of fields:**
 
-- `PeerEndpoint` indicates whether it's a validating or non-validating node
-- `blockNumber` is the height of the blockchain the peer current has
-- `pkiID` is the cryptographic ID of the peer
 - `PeerID` is any name given to the peer at start up or defined in config file
-- `address` is host or IP address and port of the peer in the format ip:port
+- `PeerEndpoint` describes the endpoint and whether it's a validating or non-validating peer
+- `pkiID` is the cryptographic ID of the peer
+- `address` is host or IP address and port of the peer in the format `ip:port`
+- `blockNumber` is the height of the blockchain the peer current has
 
 If the block height received upon `DISC_HELLO` is higher than the current block height of the peer, it immediately initiates synchronization protocol to catch up with the network.
 
-After `DISC_HELLO`, peer sends `DISC_GET_PEERS` periodically to discover any additional peers joining the network. Response to `DISC_GET_PEERS`, peer sends `DISC_PEERS` with `payload` containing an array of `PeerEndpoint`. Other discorvery message types are not used at this point.
+After `DISC_HELLO`, peer sends `DISC_GET_PEERS` periodically to discover any additional peers joining the network. Response to `DISC_GET_PEERS`, peer sends `DISC_PEERS` with `payload` containing an array of `PeerEndpoint`. Other discovery message types are not used at this point.
 
 ### 3.1.2 Transaction Messages
 There are 3 types of transactions: Deploy, Invoke, and Query transactions. Deploy transaction installs the specified chaincode on the chain, invoke and query transactions call a function of a chaincode. Another type in consideration is Create transaction where a deployed chaincode may be instantiated on the chain and is addressable. This type has not been implemented as of this writing.
@@ -476,16 +478,16 @@ message SyncStateDeltas {
 A delta may be applied forward (from i to j) or backward (from j to i) in the state transition.
 
 ### 3.1.4 Consensus Messages
-Consensus deals with transactions, so a `CONSENSUS` message is initiated internally by the consensus framework when it receives a `CHAIN_TRANSACTION` message. The framework converts `CHAIN_TRANSACTION` into `CONSENSUS` then broadcasts to the validating nodes with the same `payload`.
+Consensus deals with transactions, so a `CONSENSUS` message is initiated internally by the consensus framework when it receives a `CHAIN_TRANSACTION` message. The framework converts `CHAIN_TRANSACTION` into `CONSENSUS` then broadcasts to the validating nodes with the same `payload`. The consensus plugin receives this message and process according to its internal algorithm. The plugin may create custom subtypes to manage consensus finite state machine. See section 3.4 for more details.
 
 
-### 3.3 Ledger
+### 3.2 Ledger
 
 The ledger consists of two primary pieces, the blockchain and the world state. The blockchain is a series of linked blocks that is used to record transactions within the ledger. The world state is a key-value database that chaincodes may use to store state when executed by a transaction.
 
-### 3.3.1 Blockchain
+### 3.2.1 Blockchain
 
-#### 3.3.1.1 Block
+#### 3.2.1.1 Block
 
 The blockchain is defined as a linked list of blocks as each block contains the hash of the previous block in the chain. The two other important pieces of information that a block contains are the list of transactions contained within the block and the hash of the world state after executing all transactions in the block.
 
@@ -512,7 +514,7 @@ message Block {
 
 * nonHashData - A NonHashData message that is set to nil before computing the hash of the block, but stored as part of the block in the database.
 
-#### 3.3.1.2 Block Hashing
+#### 3.2.1.2 Block Hashing
 
 * Hashing: The previousBlockHash hash is calculated using the following algorithm.
   1. Serialize the Block message to bytes using the protocol buffer library.
@@ -520,7 +522,7 @@ message Block {
   2. Hash the serialized block message to 512 bits of output using the SHA3 SHAKE256 algorithm as described in [FIPS 202](http://csrc.nist.gov/publications/drafts/fips-202/fips_202_draft.pdf).
 
 
-#### 3.3.1.3 NonHashData
+#### 3.2.1.3 NonHashData
 
 The NonHashData message is used to store block metadata that is not required to be the same value on all peers. These are suggested values.
 
@@ -551,16 +553,16 @@ message TransactionResult {
 * error - A string that can be used to log errors associated with the transaction.
 
 
-#### 3.3.1.4 Transaction Execution
+#### 3.2.1.4 Transaction Execution
 
 A transaction defines either the deployment of a chaincode or the execution of a chaincode. All transactions within a block are run before recording a block in the ledger. When chaincodes execute, they may modify the world state. The hash of the world state is then recorded in the block.
 
 
-### 3.3.2 World State
+### 3.2.2 World State
 
-#### 3.3.2.1 Hashing the world state
+#### 3.2.2.1 Hashing the world state
 
-#### 3.3.2.1.1 Bucket-tree
+#### 3.2.2.1.1 Bucket-tree
 
 The *world state* is assumed to be a collection of *key-values*. A key is composed of two components namely chaincodeID and keyWithinChaincode. For the purpose of the description below, the former component is assumed to be a valid utf8 string and the later component can be an arbitrary bytes and further, the two components of the key are assumed to be separated by a `nil` byte.
 
@@ -605,10 +607,10 @@ The above method offers performance benefits for computing crypto-hash when a fe
 
 In a particular deployment, all the peer nodes are expected to use same values for the configurations `numBuckets, maxGroupingAtEachLevel, and hashFunction`. Further, if any of these configurations are to be changed at a later stage, the configurations should be changed on all the peer nodes so that the comparison of crypto-hashes across peer nodes is meaningful. Also, this may require to migrate the existing data based on the implementation. For example, an implementation is expected to store the last computed crypto-hashes for all the nodes in the tree which would need to be recalculated.
 
-### 3.4 Chaincode (communication, api, execution, limit, determinism)
+### 3.3 Chaincode (communication, api, execution, limit, determinism)
 
 
-### 3.5 Pluggable Consensus Framework
+### 3.4 Pluggable Consensus Framework
 
 Open Blockchain consensus package is placed in `obc-peer/openchain/consensus` with consensus interfaces defined in `obc-peer/openchain/consensus/consensus.go`, which defines the interfaces every consensus _plugin_ implements:
 
@@ -630,7 +632,7 @@ There are 2 consensus plugins provided: `pbft` and `noops`:
 -  `noops` is a ''dummy'' consensus plugin for development and test purposes. It doesn't perform consensus but processes all consensus messages. It also serves as a good simple sample to start learning how to code a consensus plugin.
 
 
-### 3.5.1 `Consenter` interface
+### 3.4.1 `Consenter` interface
 
 Definition:
 
@@ -646,7 +648,7 @@ Every plugin _must_ implement this interface. In `RecvMsg`, the plugin author is
 
 See `helper.HandleMessage` below to understand how the peer interacts with this interface.
 
-### 3.5.2 `CPI` interface
+### 3.4.2 `CPI` interface
 
 Definition:
 
@@ -662,7 +664,7 @@ type CPI interface {
   1. Is instantiated when the `helper.NewConsensusHandler` is called.
   2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object (refer to `controller.NewConsenter`).
 
-### 3.5.3 `Communicator` interface
+### 3.4.3 `Communicator` interface
 
 Definition:
 
@@ -684,7 +686,7 @@ message PeerID {
 }
 ```
 
-### 3.5.4 `BlockchainPackage` interface
+### 3.4.4 `BlockchainPackage` interface
 
 Definition:
 
@@ -698,7 +700,7 @@ type BlockchainPackage interface {
 
 A key member of the `CPI` interface, `BlockchainPackage` groups interaction of consensus with the rest of the Open Blockchain blockchain fabric, such as the execution of transactions, querying, and updating the ledger.  This interface supports querying the local blockchain and state, updating the local blockchain and state, and querying the blockchain and state of other nodes in the consensus network. It consists of three parts: `Executor`, `Ledger` and `RemoteLedgers` interfaces. These are described in the following.
 
-### 3.5.5 `Executor` interface
+### 3.4.5 `Executor` interface
 
 Definition:
 
@@ -714,7 +716,7 @@ type Executor interface {
 
 The executor interface is the most frequently utilized portion of the `BlockchainPackage` interface, and is the only piece which is strictly necessary for a consensus network to make progress.  The interface allows for a transaction to be started, executed, rolled back if necessary, previewed, and potentially committed.  This interface is comprised of the following methods.
 
-#### 3.5.5.1 Beginning a transaction batch
+#### 3.4.5.1 Beginning a transaction batch
 
 ```
 BeginTxBatch(id interface{}) error
@@ -722,7 +724,7 @@ BeginTxBatch(id interface{}) error
 
 This call accepts an arbitrary `id`, deliberately opaque, as a way for the consensus plugin to ensure only the transactions associated with this particular batch are executed. For instance, in the pbft implementation, this `id` is the an encoded hash of the transactions to be executed.
 
-#### 3.5.5.2 Executing transactions
+#### 3.4.5.2 Executing transactions
 
 ```
 ExecTXs(id interface{}, txs []*pb.Transaction) ([]byte, []error)
@@ -730,7 +732,7 @@ ExecTXs(id interface{}, txs []*pb.Transaction) ([]byte, []error)
 
 This call accepts an array of transactions to execute against the current state of the ledger and returns the current state hash in addition to an array of errors corresponding to the array of transactions.  Note that a transaction resulting in an error has no effect on whether a transaction batch is safe to commit.  It is up to the consensus plugin to determine the behavior which should occur when failing transactions are encountered.  This call is safe to invoke multiple times.
 
-#### 3.5.5.3 Committing and rolling-back transactions
+#### 3.4.5.3 Committing and rolling-back transactions
 
 ```
 RollbackTxBatch(id interface{}) error
@@ -751,7 +753,7 @@ CommitTxBatch(id interface{}, transactions []*pb.Transaction, transactionsResult
 This call commits a block to the blockchain.  Blocks must be committed to a blockchain in total order. ``CommitTxBatch`` concludes the transaction batch, and a new call to `BeginTxBatch` must be made before any new transactions are executed and committed.
 
 
-### 3.5.6 `Ledger` interface
+### 3.4.6 `Ledger` interface
 
 Definition:
 
@@ -765,7 +767,7 @@ type Ledger interface {
 
 ``Ledger`` interface is intended to allow the consensus plugin to interrogate and possibly update the current state and blockchain. It is comprised of the three interfaces described below.
 
-#### 3.5.6.1 `ReadOnlyLedger` interface
+#### 3.4.6.1 `ReadOnlyLedger` interface
 
 Definition:
 
@@ -803,7 +805,7 @@ GetCurrentStateHash() (stateHash []byte, err error)
 This call returns the current state hash for the ledger.  In general, this function should never fail, though in the unlikely event that this occurs, the error is passed to the caller to decide what if any recovery is necessary.
 
 
-#### 3.5.6.2 `UtilLedger` interface
+#### 3.4.6.2 `UtilLedger` interface
 
 Definition:
 
@@ -830,7 +832,7 @@ VerifyBlockchain(start, finish uint64) (uint64, error)
 
 
 
-#### 3.5.6.3 `WritableLedger` interface
+#### 3.4.6.3 `WritableLedger` interface
 
 Definition:
 
@@ -877,7 +879,7 @@ type WritableLedger interface {
 
 	This function will delete the entire current state, resulting in a pristine empty state.  It is intended to be called before loading an entirely new state via deltas.  This is generally only useful to the state transfer API.
 
-### 3.5.7 `RemoteLedgers` interface
+### 3.4.7 `RemoteLedgers` interface
 
 Definition:
 
@@ -909,9 +911,9 @@ The `RemoteLedgers` interface exists primarily to enable state transfer and to i
 
 	This function attempts to retrieve a stream of `*pb.SyncStateDeltas` from the peer designated by `peerID` for the range from `start` to `finish`.  The caller must validated that the desired block delta is being returned, as it is possible that slow results from another request could appear on this channel.  Invoking this call for the same `peerID` a second time will cause the first channel to close.
 
-### 3.5.8 `controller` package
+### 3.4.8 `controller` package
 
-#### 3.5.8.1 controller.NewConsenter
+#### 3.4.8.1 controller.NewConsenter
 
 Signature:
 
@@ -925,13 +927,13 @@ The plugin author needs to edit the function's body so that it routes to the rig
 
 This function is called by `helper.NewConsensusHandler` when setting the `consenter` field of the returned message handler. The input argument `cpi` is the output of the `helper.NewHelper` constructor and implements the `consensus.CPI` interface.
 
-### 3.5.9 `helper` package
+### 3.4.9 `helper` package
 
-#### 3.5.9.1 High-level overview
+#### 3.4.9.1 High-level overview
 
 A validating peer establishes a message handler (`helper.ConsensusHandler`) for every connected peer, via the `helper.NewConsesusHandler` function (a handler factory). Every incoming message is inspected on its type (`helper.HandleMessage`); if it's a message for which consensus needs to be reached, it's passed on to the peer's consenter object (`consensus.Consenter`). Otherwise it's passed on to the next message handler in the stack.
 
-#### 3.5.9.2 helper.ConsensusHandler
+#### 3.4.9.2 helper.ConsensusHandler
 
 Definition:
 
@@ -949,7 +951,7 @@ Within the context of consensus, we focus only on the `coordinator` and `consent
 
 Notice that `obc-peer/openchain/peer/peer.go` defines the `peer.MessageHandler` (interface), and `peer.MessageHandlerCoordinator` (interface) types.
 
-#### 3.5.9.3 helper.NewConsensusHandler
+#### 3.4.9.3 helper.NewConsensusHandler
 
 Signature:
 
@@ -959,7 +961,7 @@ func NewConsensusHandler(coord peer.MessageHandlerCoordinator, stream peer.ChatS
 
 Creates a `helper.ConsensusHandler` object. Sets the same `coordinator` for every message handler. Also sets the `consenter` equal to: `controller.NewConsenter(NewHelper(coord))`
 
-### 3.5.10 helper.Helper
+### 3.4.10 helper.Helper
 
 Definition:
 
@@ -971,7 +973,7 @@ type Helper struct {
 
 Contains the reference to the validating peer's `coordinator`. Is the object that implements the `consensus.CPI` interface for the peer.
 
-#### 3.5.10.1 helper.NewHelper
+#### 3.4.10.1 helper.NewHelper
 
 Signature:
 
@@ -982,7 +984,7 @@ func NewHelper(mhc peer.MessageHandlerCoordinator) consensus.CPI
 Returns a `helper.Helper` object whose `coordinator` is set to the input argument `mhc` (the `coordinator` field of the `helper.ConsensusHandler` message handler). This object implements the `consensus.CPI` interface, thus allowing the plugin to interact with the stack.
 
 
-#### 3.5.10.2 helper.HandleMessage
+#### 3.4.10.2 helper.HandleMessage
 
 Recall that the `helper.ConsesusHandler` object returned by `helper.NewConsensusHandler` implements the `peer.MessageHandler` interface:
 
