@@ -81,17 +81,15 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
    - 3.4.9 Helper package
 
 #### 4. Security
+   - 4. Security
    - 4.1 Business security requirements
    - 4.1.1 Preserving user privacy while incorporating identity and role management
    - 4.1.2 Supporting invocation access control without precluding privacy
    - 4.1.3 Addressing reputation/risk management
    - 4.1.4 Enabling a system transactions capability
    - 4.1.5 Flexibly accommodating usage of transaction certificates
-   - 4.1.6 Expanding to support root CA functionality  
    - 4.2 Transaction security offerings at the infrastructure level
    - 4.3 Transaction Confidentiality
-   - 4.3.1 First (minimal) version of Transaction Confidentiality
-   - 4.3.2 Transaction confidentiality in future releases
    - 4.4 Deployment transaction
    - 4.5 Invocation transaction
    - 4.6 Invocation Access Control offered at the infrastructure
@@ -103,7 +101,6 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
    - 4.8.4 Read Access Control Enforcement by the Application
    - 4.8.5 Support from the fabric layer.
    - 4.8.6 Enforcement of read-access control on the application.
-   - 4.8.7 Disclaimers \& Current Status.
    - 4.9 Network security (TLS)
    - 4.10 Restrictions in the current release
    - 4.10.1 Simplified Transaction Confidentiality
@@ -1140,9 +1137,8 @@ We target a design that will allow for granting or restricting access to an enti
 3. chain-code [invocations &] state, i.e., successive updates to the state of a specific chain-code, when one or more functions of its are invoked
 4. all the above
 
-Notice, that from the first releases, we aim to offer the capability to the application to leverage our PKI & blockchain infrastructure to build their own access control policies and enforcement mechanisms. This is the topic of Section 7.
+Notice, that we aim to offer the capability to the application to leverage our PKI & blockchain infrastructure to build their own access control policies and enforcement mechanisms.
 
-### 4.3.2 Transaction confidentiality
 To support finer-grain confidentiality, i.e., restrict read-access to the plain-text of a chain-code to a subset of users that the chain-code creator defines, we move to the public key setting for encryption.
 Here a chain is to be bound to a single long�term encryption key-pair (PK<sub>chain</sub>, SK<sub>chain</sub>) [as opposed to the symmetric encryption key Kchain, that we use in the first release].
 Initially, this key-pair is to be stored and maintained by each chain's PKI. In later releases, however, we can move away from this restriction, as chains (and the associated key-pairs) can be triggered through
