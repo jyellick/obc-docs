@@ -3,7 +3,7 @@
 _Draft 0.01_
 
 ## Preface
-This document is the protocol specification of Open Blockchain (OBC), a permissioned blockchain implementation for industry use-case. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
+This document is the protocol specification of Open Blockchain (OBC), a permissioned blockchain implementation for industry use-cases. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
 
 ### Intended Audience
 The intended audience for this specification includes the following groups:
@@ -21,7 +21,7 @@ Frank Lu, John Wolpert, Bishop Brock, Nitin Gaur, Sharon Weed
 ### Acknowledgements
 The following individuals have provided invaluable technical input to the specification:
 Gennaro Cuomo, Joseph A Latone, Christian Cachin
-
+________________________________________________________
 
 ## Table of Contents
 #### 1. Introduction
@@ -111,24 +111,20 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
    - 5.3 Inner Ccnsensus Programming Interface
    - 5.4 Sieve Consensus
 
-#### 6. Execution Model
-   - Transaction flow
-   - Execution and state modification
-   - Error codes
-
-#### 7. Application Programming Interface
+#### 6. Application Programming Interface
    - HTTP Service (security, topology)
    - REST APIs (description, usage, sample, swagger)
    - CLIs (motivations, usage, security)
 
-#### 8. Application Model
+#### 7. Application Model
    - Composition of an application
    - Samples to illustrate
 
-#### 9. Future Directions
+#### 8. Future Directions
 
-#### 10. References
+#### 9. References
 
+________________________________________________________
 
 ## 1. Introduction
 This document specifies the principles, architecture, and protocol of Open Blockchain, a blockchain implementation suitable for industrial use-cases.
@@ -144,32 +140,32 @@ Techonologically, Open Blockchain is a fabric of blockchain, where Bitcoin could
 
 ### 1.2 Why Open Blockchain?
 
-Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. Open Blockchain is an industry–focused design, based on and extending the learnings of the pioneers in this field.
+Early blockchain technology serves a set of purposes but is often not well-suited for the needs of specific industries. To meet the demands of modern markets, Open Blockchain is based on an industry-focused design that addresses the multiple and varied requirements of specific industry use cases , extending the learning of the pioneers in this field while also addressing issues such as scalability. Open Blockchain provides a new approach to enable permissioned networks, privacy, and confidentially on multiple blockchain networks.
 
 ### 1.3 Terminology
 These terminologies are defined within the limited scope of this specification to help readers understand clearly and precisely the concepts described here.
 
-**Transaction** is a request to the blockchain to execute a function on the ledger. The function is implemented by a **chaincode**
+**Transaction** is a request to the blockchain to execute a function on the ledger. The function is implemented by a **chaincode**.
 
-**Transactor** is an entity that issues transactions such as a client application
+**Transactor** is an entity that issues transactions such as a client application.
 
-**Ledger** is a sequence of cryptographically linked blocks, containing transactions and current **world state**
+**Ledger** is a sequence of cryptographically linked blocks, containing transactions and current **world state**.
 
 **World State** Results of executing transactions may be persisted in variables, called world state.
 
-**Chaincode** is an application-level code (a.k.a [smart contract](https://en.wikipedia.org/wiki/Smart_contract)) stored on the ledger part of a transaction. Chaincode runs transactions that may modify the world state
+**Chaincode** is an application-level code (a.k.a [smart contract](https://en.wikipedia.org/wiki/Smart_contract)) stored on the ledger part of a transaction. Chaincode runs transactions that may modify the world state.
 
 **Validating Peer** A computer node on OBC network responsible for running consensus, validating transactions, and maintaining the ledger.
 
-**Non-validating Peer** A computer node on OBC network functions as a proxy connecting transactors to the neighboring validating peers. Non-validating peer doesn't execute transactions but does verify transactions. It also hosts event stream and REST API service
+**Non-validating Peer** A computer node on OBC network functions as a proxy connecting transactors to the neighboring validating peers. Non-validating peer doesn't execute transactions but does verify transactions. It also hosts event stream and REST API service.
 
-**Permissioned Ledger** Each entity or node on the blockchain network is required to be a member of the network. Anonymous nodes are not allowed to connect
+**Permissioned Ledger** Each entity or node on the blockchain network is required to be a member of the network. Anonymous nodes are not allowed to connect.
 
-**Privacy** Transactors need privacy to conceal their identities on the network. While members of the network may examining the transactions, but the transactions can't be linked to the transactor without special privilege
+**Privacy** Transactors need privacy to conceal their identities on the network. While members of the network may examining the transactions, but the transactions can't be linked to the transactor without special privilege.
 
-**Confidentiality** is the ability to render the transaction content inaccessible to anyone other than the stakeholders of the transaction
+**Confidentiality** is the ability to render the transaction content inaccessible to anyone other than the stakeholders of the transaction.
 
-**Auditability** While private transactions are important, business usage of blockchain needs to comply with regulations and make it easy for regulators to investigate transaction records
+**Auditability** While private transactions are important, business usage of blockchain needs to comply with regulations and make it easy for regulators to investigate transaction records.
 
 
 
@@ -193,7 +189,7 @@ Blockchain services manage the distributed ledger through a peer-to-peer protoco
 Chaincode services provides a secured and lightweight way to sandbox the chaincode execution potentially on the validating nodes. The environment is a “locked down” and secured container along with a set of signed base images containing secure OS and chaincode language, runtime and SDK layers for Go, Java, and Node.js. Other languages can be enabled if required.
 
 ##### 2.1.4 Event Stream
-Validating nodes and chaincodes can emit events on the network that applications may listen and take actions on. There is a set of pre-defined events, and chaincodes can generate custom events. Events are consumed by 1 or more event adapters. Adapters may further deliver events using other vehicles such as Web hooks or Kafka.
+Validating peers and chaincodes can emit events on the network that applications may listen and take actions on. There is a set of pre-defined events, and chaincodes can generate custom events. Events are consumed by 1 or more event adapters. Adapters may further deliver events using other vehicles such as Web hooks or Kafka.
 
 ##### 2.1.5 Application Programming Interface (API)
 The primary interface to OBC is through Rest API and its variations over Swagger 2.0. The API allows applications to register users, query blockchain, and issue transactions. There is a set of API specifically for chaincode to interact with the stack to execute transactions.
@@ -1888,21 +1884,16 @@ When core PBFT executes this verify-set, all correct replicas will act in the sa
 Under adverse conditions, a request that diverged between correct replicas may appear like a deterministic request (we speak of *false negative* in Sieve detection of non-determinstic requests).  Nevertheless, Sieve requires at least one correct replica to obtain a certain outcome state in order for that state to be committed. Correct replicas that possibly observe diverging execution will discard their result and synchronize their state to match the agreed-upon execution.
 
 
-## 6. Execution Model
-   - Transaction flow
-	Execution and state modification
-	Error codes
-
-## 7. Application Programming Interface
+## 6. Application Programming Interface
    - HTTP Service (security, topology)
 	REST APIs (description, usage, sample, swagger)
 	CLIs (motivations, usage, security)
 
-Openchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
+Open Blockchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
 
 
 ![Reference architecture](images/refarch-api.png) <p>
-At the top, CLI is the command line interface to the network. Openchain provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
+At the top, CLI is the command line interface to the network. OBC provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
 
 The API spans the following categories:
 
@@ -1915,9 +1906,8 @@ The API spans the following categories:
 *  Storage - External store for files or documents
 *  Event - Sub/pub events on blockchain
 
-When you are ready to start interacting with the Openchain peer node through the available APIs and packages, follow the instructions on the [API Documentation](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md) page.
 
-## 8. Application Model
+## 7. Application Model
 <table>
 <col>
 <col>
@@ -1941,10 +1931,10 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 </table>
 
 
-## 9. Future Directions
+## 8. Future Directions
 
 
-## 10. References
+## 9. References
 - [1] Miguel Castro, Barbara Liskov: Practical Byzantine fault tolerance and proactive recovery. ACM Trans. Comput. Syst. 20(4): 398-461 (2002)
 
 - [2] Christian Cachin, Rachid Guerraoui, Luís E. T. Rodrigues: Introduction to Reliable and Secure Distributed Programming (2. ed.). Springer 2011, ISBN 978-3-642-15259-7, pp. I-XIX, 1-367
