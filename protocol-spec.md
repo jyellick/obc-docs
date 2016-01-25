@@ -1171,7 +1171,7 @@ c<sub>1</sub>, c<sub>2</sub> are public constants. The nonce, the Encrypted Chai
 authenticated. Figure below shows how encryption keys for the client's transaction are generated. Arrows in this figure denote application of an HMAC, keyed by the key at the source of the arrow and
 using the number in the arrow as argument. Deployment/Invocation transactions' keys are indicated by d/i respectively.
 
-![FirstRelease-clientSide](./figures/firstrel-1.png)
+![FirstRelease-clientSide](./images/sec-firstrel-1.png)
 
 To validate a confidential transaction Tx submitted to the blockchain by a client,
 a validating entity first decrypts ECID and EP by re-deriving K<sub>TxCID</sub> and K<sub>TxP</sub>
@@ -1180,7 +1180,7 @@ Payload are recovered the transaction can be processed.
 
 
 
-![FirstRelease-validatorSide](./figures/firstrel-2.png)
+![FirstRelease-validatorSide](./images/sec-firstrel-2.png)
 
 When V validates a confidential transaction, the corresponding chaincode can access and modify the
 chaincode's state. V keeps the chaincode\'s state encrypted. In order to do so, V generates symmetric
@@ -1221,12 +1221,12 @@ for a given pair of transactions (dTx,iTx) we give access to state updated by iT
 
 Figure 3 demonstrates the format of a deployment transaction for the first release.
 
-![FirstRelease-deploy](./figures/firstrel-depl.png)
+![FirstRelease-deploy](./images/sec-firstrel-depl.png)
 
 
 Figure 4 demonstrates the format of an invocation transaction for the first release.
 
-![FirstRelease-deploy](./figures/firstrel-inv.png)
+![FirstRelease-deploy](./images/sec-firstrel-inv.png)
 
 
 One can notice that both deployment and invocation transactions consist of two sections:
@@ -1263,7 +1263,7 @@ In the following we detail how the transaction format is enhanced to accommodate
 ### 4.4 Deployment transaction
 Figure 5 depicts the structure of a typical deployment transaction with confidentiality enabled.
 
-![FirstRelease-deploy](./figures/futrel-depl.png)
+![FirstRelease-deploy](./images/sec-futrel-depl.png)
 
 One can notice that a deployment transaction consists of several sections:
 * section *general-info*, that contains the administration details of the transaction, i.e., which chain this transaction corresponds to (chained), the type of transaction (that is set to ''deploymetTx''), the version number of confidentiality policy implemented, its creator identifier (expressed by means of transaction certificate TCert of enrollment certificate Cert), and a Nonce, that facilitates primarily replay-attack resistance techniques.
@@ -1305,7 +1305,7 @@ Two noteworthy points:
 A transaction invoking the chain-code triggering the execution of a function of the chain-code with user-specified arguments
 is structured as depicted in Figure 6.
 
-![FirstRelease-deploy](./figures/futrel-inv.png)
+![FirstRelease-deploy](./images/sec-futrel-inv.png)
 
 Invocation transaction as in the case of deployment transaction consists of a *general-info* section, a *code-info* section, a section for the *chain-validators*, and one for the *contract users*,
 signed altogether with one of the invoker user's transaction certificates.
@@ -1333,7 +1333,7 @@ subset of users of the system, as defined by the chain-code developer. We aim to
 
 The following figure reflects this capability of specifying invocation ACLs in the deployment of a chain-code.
 
-![FirstRelease-deploy](./figures/futrel-depl.png)
+![FirstRelease-deploy](./images/sec-futrel-depl.png)
 
 More specifically,
 the headers part of code-info contain the list of function prototypes exposed to the contract users each
@@ -1349,7 +1349,7 @@ efficient search over a user's trasactions.
 
 The figure below demonstrates how the invoker authorizes itself to invoke a function.
 
-![FirstRelease-deploy](./figures/futrel-inv.png)
+![FirstRelease-deploy](./images/sec-futrel-inv.png)
 
 It uses the (transaction) certificate of its that is present in the ACL of the invoked function in the associated deployment transaction
 and signs the plaintext payload of its invocation with this certificate.
@@ -1591,9 +1591,9 @@ User u<sub>A</sub> wants to ensure that only u<sub>r</sub> can read the function
 For *u<sub>A</sub>* to be able to implement its own read access control at the application layer securely, our infrastructure is required to
 support the transaction format for code deployment and invocation, as depicted in the two figures below.
 
-![SecRelease-RACappDepl title="Deployment transaction format supporting application-level read access control."](./figures/RACapp-depl.png)
+![SecRelease-RACappDepl title="Deployment transaction format supporting application-level read access control."](./images/sec-RACapp-depl.png)
 
-![SecRelease-RACappInv title="Invocation transaction format supporting application-level read access control."](./figures/RACapp-inv.png)
+![SecRelease-RACappInv title="Invocation transaction format supporting application-level read access control."](./images/sec-RACapp-inv.png)
 
 More specifically fabric layer is required to provide the following functionality:
 1. Provide minimal encryption capability such that data is only decryptable by a validator's (infrastructure) side; this means that the
