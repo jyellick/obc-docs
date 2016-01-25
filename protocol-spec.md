@@ -13,7 +13,7 @@ The intended audience for this specification includes the following groups:
 - Application developers who want to leverage blockchain technologies to enrich their applications
 
 ### Authors
-These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Carol, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniottil, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova, Dulce Ponceleon, David Kravitz, Diego Masini
+These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Caro, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniotti, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova, Dulce Ponceleon, David Kravitz, Diego Masini
 
 ### Reviewers
 Frank Lu, John Wolpert, Bishop Brock, Nitin Gaur, Sharon Weed
