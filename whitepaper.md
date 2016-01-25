@@ -101,14 +101,15 @@ _Still have questions on identity and auditability? Check out the [identity mana
 
 
 #### Private Transactions and Confidential Contracts
-If transaction patterns are too easy to be observed and interpreted, shared ledgers may give away details about a supplier relationship that should not be revealed to their competitors. In tight supplier/buyer communities, even one party's relative volume of trade is something which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from being publically identified by unauthorized third parties.
+If transaction patterns are too easily observed and interpreted, shared ledgers may give away details about a supplier relationship that should not be revealed to their competitors. In tight supplier/buyer communities, even one party's relative volume of trade is information which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business-ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from unauthorized third parties. 
 
-Within Open Blockchain, content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, aka smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. (see architecture below for details)
+Within Open Blockchain, content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, a.k.a. smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. (see architecture below for details)
 
 _Still have questions on confidentiality? Check out the [confidentiality section] (FAQ/confidentiality_FAQ.md) of FAQ_
 
 #### Modular Consensus
-Because different industries and regions may run their own networks,  different networks may need to deploy different consensus algorithms to fit their usage scenarios. Consensus algorithms on the protocol within Open Blockchain must be pluggable, allowing users to select the consensus algorithm of their choice during deployment. The Open Blockchain protocol will provide an initial out of the box Practical Byzantine Fault Tolerance (PBFT) [1] implementation in its initial release, and we expect the community to contribute more consensus algorithm modules later.
+Because different industries and regions may run their own networks,  different networks might need to deploy different consensus algorithms to fit their usage scenarios. Consensus algorithms under the Open Blockchain protocol must be pluggable, allowing users to select the consensus algorithm of their choice during deployment. The Open Blockchain protocol will provide an initial out of the box Practical Byzantine Fault Tolerance (PBFT) [1] implementation in its initial release, and we anticipate that the community will contribute additional consensus algorithm modules in the future.
+
 
 _Still have questions on consensus and want to explore more about OBC's pre-packaged consensus implementations ? Check out the [consensus section] (FAQ/consensus_FAQ.md) of FAQ_
 
@@ -293,7 +294,7 @@ We have observed that industry is urgently calling for a business ready blockcha
 
 To fully realize the potential of blockchain technology, and to create a standard that can be adopted into many different uses, we designed the open blockchain fabric to be both flexible and extensible. We also developed the default implementation of the OBC protocol, which included many latest advances in computer science such as those around cryptography and consensus.
 
-To have a better understanding of the open blockchain protocol, we invite you to read our protocol specification, it will get you ready to start using OBC to build your applications, or even to contribute to the project. 
+To have a better understanding of the open blockchain protocol, we invite you to read our [protocol specification] (protocol-spec.md), it will get you ready to start using OBC to build your applications, or even to contribute to the project. 
 
 
 ## Authors
