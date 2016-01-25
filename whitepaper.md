@@ -5,15 +5,9 @@
 
 ## Abstract
 
+This paper describes industry uses cases that drive the principles of a new blockchain fabric, while also including the basic requirements and high level architecture based on those industry uses cases. The design presented here describes a blockchain fabric called Open Blockchain, a protocol for business-to-business and business-to-customer transactions.  Based on industry use cases, Open Blockchain allows for compliance with regulations and drives the requirements that arise when competing businesses work together on the same network.The central elements of this specification that will be described below are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, the requirements added include performance, verified identities, private and confidential transactions, and pluggable consensus model.   
 
-
-This paper describes the principles, high-level architecture and initial technical direction of a blockchain suitable for industrial use cases.
-
-The design presented here describes a blockchain fabric called Open Blockchain, a protocol for business-to-business and business-to-customer transactions. It is intended for permissioned networks (important: see definition below), and it allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
-
-The central elements of this specification are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, we add performance, verified identities, private and confidential transactions, and pluggable consensus model.
-
-_For questions regarding terminologies used in OBC, check out our [glossary] (biz/glossary.md)_
+_For questions regarding terminologies used in OBC, check out our [glossary] (glossary.md)_
 
 &nbsp;
 
@@ -24,9 +18,9 @@ Blockchain is an emerging technology pattern that can radically improve banking,
 
 With Bitcoin popularizing the domain since 2009, many businesses and industries have invested significant resources in investigating the underlying technology that powers the popular, yet controversial, cryptocurrency.
 
-Blockchain first gained traction in the financial industry because this technology has showed that assets can be issued, traded, managed, and serviced on an immutable shared ledger system that is the single point of truth. As opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in the usually inefficient, expensive, and often not standardized inter-organizational operation flows. 
+Blockchain is a peer to peer distributed ledger technology and  first gained traction in the financial industry, because this technology has shown that assets can be issued, traded, managed, and serviced efficiently.  The distributed ledger makes it easier to create cost- efficient business networks without requiring a central point of control as opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in an inefficient, expensive, and often not standardized inter-organizational operation flows.  
 
-As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. It can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
+As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are collection of business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. Smart contract can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
 
 Entering 2016, Blockchain awareness has now reached the point that the demand for a solution suitable for industry is surging.
 
@@ -34,15 +28,15 @@ Entering 2016, Blockchain awareness has now reached the point that the demand fo
 
 ## Why a new fabric:
 
+Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. 
 
-Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. We lay out an industry–focused design, based on and extending the learnings of the pioneers in this field.
-
+Furthermore, early pioneers for Blockchain technology serve a set of purposes but are often not well suited for the needs of specific industries. As a result, Open Blockchain is based on an industry- focused design and looks to address several of the requirements for specific industries and uses cases, extending the learnings of the pioneers in this field while also addressing scalability.   Open Blockchain provides an approach to allowing for many blockchain networks and enables permissioned networks, privacy, and confidentially.  
 
 &nbsp;
 
-## Hypothesis 
+## Our Vision
 
-We have made some hypothesis on how blockchain technology would evolve and change our lives in the future, and based on these hypotheses, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
+We have a vision on how blockchain technology would evolve and change our lives in the future, and based on these vision, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
 
 _Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
 
@@ -58,10 +52,10 @@ _Figure 1:  A world of many blockchain networks_
 
 
 #### Increasing demand for permissioned Network
-We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning. 
+We describe permissioned networks as ones where validating and non-validating nodes are run by known whitelisted organizations and where transactors on the network receive identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority can make it very easy to get an identity and transact (similar to getting a Gmail account) or very restrictive. A network can run very publicly, making it easy to integrate into a mobile app project. Or it can be completely private and known only to parties that have been invited and whose identity has been validated. Because the fabric is designed to support many networks for many different purposes, and to allow addressing between them, the protocol must allow for these different kinds of uses and different levels of permissioning.
 
-#### Importance for both privacy & confidentiality 
-We believe one of the fundamental requirements for any blockchain fabric is that the identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. Furthermore, we also expect there will be demands for allowing blockchain users to set certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders to that contract or the asset being transferred. 
+#### Importance for both privacy & confidentiality
+We believe one of the fundamental requirements for any blockchain fabric is that the identity and pattern of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. Furthermore, we also expect there will be demands for allowing blockchain users to set certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders to that contract or the asset being transferred.
 
 
 &nbsp;
@@ -95,11 +89,12 @@ _For more details about use cases and their requirements, and to visualize how t
 
 ## Featured Requirements  
 
+Featured Requirements are  described below and are based on our vision on the future of the blockchain and the industry use cases, and were as a result driven into the resulting architecture.  Those requirements identified include identity and auditability, private transactions, confidential contracts, modular consensus, performance, scalability, chain code and smart contracts.
 
 #### Identity and Auditability
 While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger.
 
-The protocol starts with a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate security keys for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
+As a result, the Open Blockchain protocol protocol starts with a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate security keys for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
 
 _Still have questions on identity and auditability? Check out the [identity management] (FAQ/identity_management_FAQ.md) section of FAQ_
 
@@ -107,14 +102,14 @@ _Still have questions on identity and auditability? Check out the [identity mana
 #### Private Transactions and Confidential Contracts
 If transaction patterns are too easy to be observed and interpreted, shared ledgers may give away details about a supplier relationship that should not be revealed to their competitors. In tight supplier/buyer communities, even one party's relative volume of trade is something which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from being publically identified by unauthorized third parties.
 
-Content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, aka smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. (see architecture below for details)
+Within Open Blockchain, content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, aka smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) and will only get loaded and decrypted at runtime. (see architecture below for details)
 
 _Still have questions on confidentiality? Check out the [confidentiality section] (FAQ/confidentiality_FAQ.md) of FAQ_
 
 #### Modular Consensus
-We envisioned that different industries and regions may run their own networks, and different networks may need to deploy different consensus algorithms to fit their usage scenarios. Consensus algorithms on the protocol must be pluggable, allowing users to select the consensus algorithm of their choice during deployment. The protocol will provide a Practical Byzantine Fault Tolerance (PBFT) [1] implementation in its initial release, and we expect the community to contribute more consensus algorithm modules later.
+Because different industries and regions may run their own networks,  different networks may need to deploy different consensus algorithms to fit their usage scenarios. Consensus algorithms on the protocol within Open Blockchain must be pluggable, allowing users to select the consensus algorithm of their choice during deployment. The Open Blockchain protocol will provide an initial out of the box Practical Byzantine Fault Tolerance (PBFT) [1] implementation in its initial release, and we expect the community to contribute more consensus algorithm modules later.
 
-_Still have questions on consensus? Check out the [consensus section] (FAQ/consensus_FAQ.md) of FAQ_
+_Still have questions on consensus and want to explore more about OBC's pre-packaged consensus implementations ? Check out the [consensus section] (FAQ/consensus_FAQ.md) of FAQ_
 
 #### Logic = Chaincode = Smart Contracts
 Blockchain logic, often referred to as “smart contracts,” are self-executing agreements between parties that have all relevant covenants spelled out in code, settle automatically, and can be dependent upon future signatures or trigger events. In the Open Blockchain project, we call this “chaincode” to help hold clarity between blockchain logic and the human-written contracts that they can sometimes represent. (This term is still under review and may change.)  
@@ -290,6 +285,11 @@ Similar to cloud hosted multiple networks, using participants’ own networks is
 
 &nbsp;
 
+## Authors
+Frank Lu, Binh Nguyen, John Wolpert, Sharon Weed Coco
+
+## Reviewers
+Anna Darbakova, Marko Vukolic, Elli Androulaki, Dulce Ponceleon, Josh Horton, Nick Gaski
 
 ## References
 - [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
