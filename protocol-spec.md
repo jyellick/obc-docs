@@ -3,14 +3,14 @@
 _Draft 0.01_
 
 ## Preface
-This document is the protocol specification of Open Blockchain (OBC), a permission blockchain implementation for industry use-case. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
+This document is the protocol specification of Open Blockchain (OBC), a permissioned blockchain implementation for industry use-case. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
 
 ### Intended Audience
 The intended audience for this specification includes the following groups:
 
-* Blockchain vendors who want to implement blockchain systems that conform to this specification
-* Tool developers who want to extend the capabilities of Open Blockchain
-* Application developers who want to leverage blockchain technologies to enrich their applications
+- Blockchain vendors who want to implement blockchain systems that conform to this specification
+- Tool developers who want to extend the capabilities of Open Blockchain
+- Application developers who want to leverage blockchain technologies to enrich their applications
 
 ### Authors
 These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Carol, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniottil, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova, Dulce Ponceleon, David Kravitz
@@ -246,8 +246,7 @@ message OpenchainMessage {
     }
     Type type = 1;
     bytes payload = 2;
-    bytes signature = 3;
-    google.protobuf.Timestamp timestamp = 4;
+    google.protobuf.Timestamp timestamp = 3;
 }
 ```
 The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response` depending on the type of the message. For example, if the `type` is `CHAIN_TRANSACTION`, the `payload` is a `Transaction` object.
