@@ -13,7 +13,7 @@ The intended audience for this specification includes the following groups:
 - Application developers who want to leverage blockchain technologies to enrich their applications
 
 ### Authors
-These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Caro, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniotti, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova, Dulce Ponceleon, David Kravitz, Diego Masini
+These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Caro, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniotti, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anna D Derbakova, Dulce Ponceleon, David Kravitz, Diego Masini
 
 ### Reviewers
 Frank Lu, John Wolpert, Bishop Brock, Nitin Gaur, Sharon Weed
@@ -112,9 +112,9 @@ ________________________________________________________
    - 5.4 Sieve Consensus
 
 #### 6. Application Programming Interface
-   - HTTP Service (security, topology)
-   - REST APIs (description, usage, sample, swagger)
-   - CLIs (motivations, usage, security)
+   - 6.1 REST Service
+   - 6.2 REST API
+   - 6.3 CLI
 
 #### 7. Application Model
    - Composition of an application
@@ -192,11 +192,10 @@ Chaincode services provides a secured and lightweight way to sandbox the chainco
 Validating peers and chaincodes can emit events on the network that applications may listen and take actions on. There is a set of pre-defined events, and chaincodes can generate custom events. Events are consumed by 1 or more event adapters. Adapters may further deliver events using other vehicles such as Web hooks or Kafka.
 
 ##### 2.1.5 Application Programming Interface (API)
-The primary interface to OBC is through Rest API and its variations over Swagger 2.0. The API allows applications to register users, query blockchain, and issue transactions. There is a set of API specifically for chaincode to interact with the stack to execute transactions.
+The primary interface to OBC is a REST API and its variations over Swagger 2.0. The API allows applications to register users, query the blockchain, and to issue transactions. There is a set of APIs specifically for chaincode to interact with the stack to execute transactions and query transaction results.
 
 ##### 2.1.6 Command Line Interface (CLI)
-CLI includes a subset of API to enable developers to quick test chaincodes or query for status of transactions. CLI is implemented in golang and operable on multiple OS platforms.
-
+CLI includes a subset of APIs to enable developers to quickly test chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms.
 
 ### 2.2 Topology
 A deployment of Open Blockchain may consist of a member service, many validating nodes, non-validating nodes, and 1 or more applications client. All makes up a chain. There can be multiple chains; each has own operating parameters and security concerns.
@@ -1885,26 +1884,520 @@ Under adverse conditions, a request that diverged between correct replicas may a
 
 
 ## 6. Application Programming Interface
-   - HTTP Service (security, topology)
-	REST APIs (description, usage, sample, swagger)
-	CLIs (motivations, usage, security)
 
-Open Blockchain includes REST and JSON RPC APIs, events, and an SDK for applications to communicate with the network. Typically applications interact with a peer node, which will require some form of authentication to ensure the entity has proper privilege, so messages from a client are signed by the client identity and verified by the peer node.
+The primary interface to OBC is a REST API. The REST API allows applications to register users, query the blockchain, and to issue transactions. A CLI is also provided to cover a subset of the available APIs for development purposes. The CLI enables developers to quickly test chaincodes or query for status of transactions.
 
+Applications interact with a non-validating peer node through the REST API, which will require some form of authentication to ensure the entity has proper privileges. The application is responsible for supplying the appropriate authentication mechanism and the peer node will subsequently sign the outgoing messages with the client identity.
 
 ![Reference architecture](images/refarch-api.png) <p>
-At the top, CLI is the command line interface to the network. OBC provides a set of CLIs to administer and manage the network. CLI can also be used during development to test chaincodes. ReST API and SDK are built on top of JSON-RPC API, which is the most complete API layer. SDK will be available in Golang, JavaScript, and Java. Other languages can be added as necessary.
-
-The API spans the following categories:
+The Openchain API design covers the categories below, though the implementation is incomplete for some of them in the current release. The [REST API](#62-rest-api) section will describe the APIs currently supported.
 
 *  Identity - Enrollment to get certificates or revoking a certificate
 *  Address - Target and source of a transaction
 *  Transaction - Unit of execution on the ledger
-*  Chaincode - Program running on the ledger
-*  Blockchain - Content of the ledger
+*  Chaincode (Devops)- Program running on the ledger
+*  Blockchain - Contents of the ledger
 *  Network - Information about the blockchain network
 *  Storage - External store for files or documents
 *  Event - Sub/pub events on blockchain
+
+## 6.1 REST Service
+The Openchain REST service is initialized on non-validating peers only by the function below. The service will not be enabled on validating nodes in production to eliminate any possible security vulnerabilities.
+
+```
+func StartOpenchainRESTServer(server *oc.ServerOpenchain, devops *oc.Devops)
+```
+
+This function reads the `rest.address` value in `obc-peer/openchain.yaml` configuration file, which is the configuration file for the `obc-peer` process. The value of the `rest.address` key defines the default address and port on which the peer will listen for HTTP REST requests.
+
+It is assumed that the REST service receives requests from applications which have already authenticated the end user.
+
+## 6.2 REST API
+
+You can work with the Openchain REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. You can likewise trigger REST requests directly through [Swagger](http://swagger.io/). To obtain the Openchain REST API Swagger description, click [here](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). The currently available APIs are summarized in the following section.
+
+### 6.2.1 REST Endpoints
+
+* [Block](#block)
+  * GET /chain/blocks/{Block}
+* [Chain](#chain)
+  * GET /chain
+* [Transactions](#transactions)
+  * GET /transactions/{UUID}
+* [Devops](#devops)
+  * POST /devops/deploy
+  * POST /devops/invoke
+  * POST /devops/query
+* [Registrar](#registrar)
+  * POST /registrar
+  * GET /registrar/{enrollmentID}
+  * DELETE /registrar/{enrollmentID}
+  * GET /registrar/{enrollmentID}/ecert
+
+#### 6.2.1.1 Block API
+
+* **GET /chain/blocks/{Block}**
+
+Use the Block API to retrieve the contents of various blocks from the blockchain. The returned Block message structure is defined in section [3.2.1.1](#3211-block).
+
+Block Retrieval Request:
+```
+GET host:port/chain/blocks/173
+```
+
+Block Retrieval Response:
+```
+{
+    "transactions": [
+        {
+            "type": 3,
+            "chaincodeID": "EgRteWNj",
+            "payload": "Ch4IARIGEgRteWNjGhIKBmludm9rZRIBYRIBYhICMTA=",
+            "uuid": "f5978e82-6d8c-47d1-adec-f18b794f570e",
+            "timestamp": {
+                "seconds": 1453758316,
+                "nanos": 206716775
+            },
+            "cert": "MIIB/zCCAYWgAwIBAgIBATAKBggqhkjOPQQDAzApMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQwwCgYDVQQDEwN0Y2EwHhcNMTYwMTI1MjE0MTE3WhcNMTYwNDI0MjE0MTE3WjArMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQ4wDAYDVQQDEwVsdWthczB2MBAGByqGSM49AgEGBSuBBAAiA2IABC/BBkt8izf6Ew8UDd62EdWFikJhyCPY5VO9Wxq9JVzt3D6nubx2jO5JdfWt49q8V1Aythia50MZEDpmKhtM6z7LHOU1RxuxdjcYDOvkNJo6pX144U4N1J8/D3A+97qZpKN/MH0wDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwDQYDVR0OBAYEBAECAwQwDwYDVR0jBAgwBoAEAQIDBDA9BgYqAwQFBgcBAf8EMABNbPHZ0e/2EToi0H8mkouuUDwurgBYuUB+vZfeMewBre3wXG0irzMtfwHlfECRDDAKBggqhkjOPQQDAwNoADBlAjAoote5zYFv91lHzpbEwTfJL/+r+CG7oMVFUFuoSlvBSCObK2bDIbNkW4VQ+ZC9GTsCMQC5GCgy2oZdHw/x7XYzG2BiqmRkLRTiCS7vYCVJXLivU65P984HopxW0cEqeFM9co0=",
+            "signature": "MGUCMCIJaCT3YRsjXt4TzwfmD9hg9pxYnV13kWgf7e1hAW5Nar//05kFtpVlq83X+YtcmAIxAK0IQlCgS6nqQzZEGCLd9r7cg1AkQOT/RgoWB8zcaVjh3bCmgYHsoPAPgMsi3TJktg=="
+        }
+    ],
+    "stateHash": "7ftCvPeHIpsvSavxUoZM0u7o67MPU81ImOJIO7ZdMoH2mjnAaAAafYy9MIH3HjrWM1/Zla/Q6LsLzIjuYdYdlQ==",
+    "previousBlockHash": "lT0InRg4Cvk4cKykWpCRKWDZ9YNYMzuHdUzsaeTeAcH3HdfriLEcTuxrFJ76W4jrWVvTBdI1etxuIV9AO6UF4Q==",
+    "nonHashData": {
+        "localLedgerCommitTimestamp": {
+            "seconds": 1453758316,
+            "nanos": 250834782
+        }
+    }
+}
+```
+
+#### 6.2.1.2 Chain API
+
+* **GET /chain**
+
+Use the Chain API to retrieve the current state of the blockchain. The returned BlockchainInfo message is defined below.
+
+```
+message BlockchainInfo {
+    uint64 height = 1;
+    bytes currentBlockHash = 2;
+    bytes previousBlockHash = 3;
+}
+```
+
+* `height` - Number of blocks in the blockchain, including the genesis block.
+
+* `currentBlockHash` - The hash of the current or last block.
+
+* `previousBlockHash` - The hash of the previous block.
+
+Blockchain Retrieval Request:
+```
+GET host:port/chain
+```
+
+Blockchain Retrieval Response:
+```
+{
+    "height": 174,
+    "currentBlockHash": "lIfbDax2NZMU3rG3cDR11OGicPLp1yebIkia33Zte9AnfqvffK6tsHRyKwsw0hZFZkCGIa9wHVkOGyFTcFxM5w==",
+    "previousBlockHash": "Vlz6Dv5OSy0OZpJvijrU1cmY2cNS5Ar3xX5DxAi/seaHHRPdssrljDeppDLzGx6ZVyayt8Ru6jO+E68IwMrXLQ=="
+}
+```
+
+#### 6.2.1.3 Transactions API
+
+* **GET /transactions/{UUID}**
+
+Use the Transaction API to retrieve an individual transaction matching the UUID from the blockchain. The returned transaction message is defined in section [3.1.2.1](#3121-transaction-data-structure).
+
+Transaction Retrieval Request:
+```
+GET host:port/transactions/f5978e82-6d8c-47d1-adec-f18b794f570e
+```
+
+Transaction Retrieval Response:
+```
+{
+    "type": 3,
+    "chaincodeID": "EgRteWNj",
+    "payload": "Ch4IARIGEgRteWNjGhIKBmludm9rZRIBYRIBYhICMTA=",
+    "uuid": "f5978e82-6d8c-47d1-adec-f18b794f570e",
+    "timestamp": {
+        "seconds": 1453758316,
+        "nanos": 206716775
+    },
+    "cert": "MIIB/zCCAYWgAwIBAgIBATAKBggqhkjOPQQDAzApMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQwwCgYDVQQDEwN0Y2EwHhcNMTYwMTI1MjE0MTE3WhcNMTYwNDI0MjE0MTE3WjArMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQ4wDAYDVQQDEwVsdWthczB2MBAGByqGSM49AgEGBSuBBAAiA2IABC/BBkt8izf6Ew8UDd62EdWFikJhyCPY5VO9Wxq9JVzt3D6nubx2jO5JdfWt49q8V1Aythia50MZEDpmKhtM6z7LHOU1RxuxdjcYDOvkNJo6pX144U4N1J8/D3A+97qZpKN/MH0wDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwDQYDVR0OBAYEBAECAwQwDwYDVR0jBAgwBoAEAQIDBDA9BgYqAwQFBgcBAf8EMABNbPHZ0e/2EToi0H8mkouuUDwurgBYuUB+vZfeMewBre3wXG0irzMtfwHlfECRDDAKBggqhkjOPQQDAwNoADBlAjAoote5zYFv91lHzpbEwTfJL/+r+CG7oMVFUFuoSlvBSCObK2bDIbNkW4VQ+ZC9GTsCMQC5GCgy2oZdHw/x7XYzG2BiqmRkLRTiCS7vYCVJXLivU65P984HopxW0cEqeFM9co0=",
+    "signature": "MGUCMCIJaCT3YRsjXt4TzwfmD9hg9pxYnV13kWgf7e1hAW5Nar//05kFtpVlq83X+YtcmAIxAK0IQlCgS6nqQzZEGCLd9r7cg1AkQOT/RgoWB8zcaVjh3bCmgYHsoPAPgMsi3TJktg=="
+}
+```
+
+#### 6.2.1.4 Devops (chaincode) API
+
+* **POST /devops/deploy**
+* **POST /devops/invoke**
+* **POST /devops/query**
+
+Use the Devops APIs to deploy, invoke, and query chaincodes. The deploy request requires the client to supply a `path` parameter, pointing to the location of the chaincode in the file system. The response to a deploy request is either a message containing a confirmation of successful chaincode deployment or an error, containing a reason for the failure. It also contains the generated chaincode `name`, which is to be used in subsequent invocation and query transactions to identify the deployed chaincode.
+
+To deploy, supply the required ChaincodeSpec payload, defined in section [3.1.2.2](#3122-transaction-specification).
+
+Deploy Request:
+```
+POST host:port/devops/deploy
+
+{
+  "type": "GOLANG",
+  "chaincodeID":{
+      "path":"github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02"
+  },
+  "ctorMsg": {
+      "function":"init",
+      "args":["a", "100", "b", "200"]
+  }
+}
+
+```
+
+Deploy Response:
+```
+{
+    "OK": "Successfully deployed chainCode.",
+    "message": "3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
+}
+```
+
+With security enabled, modify the required payload to include the `secureContext` element passing the enrollment ID of a logged in user as follows:
+
+Deploy Request with security enabled:
+```
+{
+  "type": "GOLANG",
+  "chaincodeID":{
+      "path":"github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02"
+  },
+  "ctorMsg": {
+      "function":"init",
+      "args":["a", "100", "b", "200"]
+  },
+  "secureContext": "lukas"
+}
+```
+
+The invoke request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to an invocation request is either a message containing a confirmation of successful execution or an error, containing a reason for the failure.
+
+To invoke, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
+
+Invoke Request:
+```
+POST host:port/devops/invoke
+
+{
+  "chaincodeSpec": {
+  	"type": "GOLANG",
+  	"chaincodeID":{
+    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
+  	},
+  	"ctorMsg": {
+    	"function":"invoke",
+      	"args":["a", "b", "10"]
+  	}
+  }
+}
+```
+
+Invoke Response:
+```
+{
+    "OK": "Successfully invoked chainCode."
+}
+```
+
+With security enabled, modify the required payload to include the `secureContext` element passing the enrollment ID of a logged in user as follows:
+
+Invoke Request with security enabled:
+```
+{
+  "chaincodeSpec": {
+  	"type": "GOLANG",
+  	"chaincodeID":{
+    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
+  	},
+  	"ctorMsg": {
+    	"function":"invoke",
+      	"args":["a", "b", "10"]
+  	},
+  	"secureContext": "lukas"
+  }
+}
+```
+
+The query request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to an query request is either a message containing a confirmation of successful execution or an error, containing a reason for the failure.
+
+To query, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
+
+Query Request:
+```
+POST host:port/devops/query
+
+{
+  "chaincodeSpec": {
+  	"type": "GOLANG",
+  	"chaincodeID":{
+    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
+  	},
+  	"ctorMsg": {
+    	"function":"query",
+      	"args":["a"]
+  	}
+  }
+}
+```
+
+Query Response:
+```
+{
+    "OK": "80"
+}
+```
+
+With security enabled, modify the required payload to include the `secureContext` element passing the enrollment ID of a logged in user as follows:
+
+Query Request with security enabled:
+```
+{
+  "chaincodeSpec": {
+  	"type": "GOLANG",
+  	"chaincodeID":{
+    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
+  	},
+  	"ctorMsg": {
+    	"function":"query",
+      	"args":["a"]
+  	},
+  	"secureContext": "lukas"
+  }
+}
+```
+
+#### 6.2.1.5 Registrar (member services)
+
+* **POST /registrar**
+* **GET /registrar/{enrollmentID}**
+* **DELETE /registrar/{enrollmentID}**
+* **GET /registrar/{enrollmentID}/ecert**
+
+Use the Registrar APIs to manage end user registration with the certificate authority (CA). These API endpoints are used to register a user with the CA, determine whether a given user is registered, and to remove any login tokens for a target user from local storage, preventing them from executing any further transactions. The Registrar APIs are also used to retrieve user enrollment certificates from the system.
+
+The `/registrar` endpoint is used to register a user with the CA. The required Secret payload is defined below. The response to the registration request is either a confirmation of successful registration or an error, containing a reason for the failure. An example of a valid Secret message to register user 'lukas' is shown below.
+
+```
+message Secret {
+    string enrollId = 1;
+    string enrollSecret = 2;
+}
+```
+
+Enrollment Request:
+```
+POST host:port/registrar
+
+{
+  "enrollId": "lukas",
+  "enrollSecret": "NPKYL39uKbkj"
+}
+```
+
+Enrollment Response:
+```
+{
+    "OK": "Login successful for user 'lukas'."
+}
+```
+
+The `GET /registrar/{enrollmentID}` endpoint is used to confirm whether a given user is registered with the CA. If so, a confirmation will be returned. Otherwise, an authorization error will result.
+
+Verify Enrollment Request:
+```
+GET host:port/registrar/jim
+```
+
+Verify Enrollment Response:
+```
+{
+    "OK": "User jim is already logged in."
+}
+```
+
+Verify Enrollment Request:
+```
+GET host:port/registrar/alex
+```
+
+Verify Enrollment Response:
+```
+{
+    "Error": "User alex must log in."
+}
+```
+
+The `DELETE /registrar/{enrollmentID}` endpoint is used to delete login tokens for a target user. If the login tokens are deleted successfully, a confirmation will be returned. Otherwise, an authorization error will result. No payload is required for this endpoint.
+
+Remove Enrollment Request:
+```
+DELETE host:port/registrar/lukas
+```
+
+Remove Enrollment Response:
+```
+{
+    "OK": "Deleted login token and directory for user lukas."
+}
+```
+
+The `GET /registrar/{enrollmentID}/ecert` endpoint is used to retrieve the enrollment certificate of a given user from local storage. If the target user has already registered with the CA, the response will include a URL-encoded version of the enrollment certificate. If the target user has not yet registered, an error will be returned. If the client wishes to use the returned enrollment certificate after retrieval, keep in mind that it must be URl-decoded. This can be accomplished with the QueryUnescape method in the "net/url" package.
+
+Enrollment Certificate Retrieval Request:
+```
+GET host:port/registrar/jim/ecert
+```
+
+Enrollment Certificate Retrieval Response:
+```
+{
+    "OK": "-----BEGIN+CERTIFICATE-----%0AMIIBzTCCAVSgAwIBAgIBATAKBggqhkjOPQQDAzApMQswCQYDVQQGEwJVUzEMMAoG%0AA1UEChMDSUJNMQwwCgYDVQQDEwNPQkMwHhcNMTYwMTIxMDYzNjEwWhcNMTYwNDIw%0AMDYzNjEwWjApMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQwwCgYDVQQDEwNP%0AQkMwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAARSLgjGD0omuJKYrJF5ClyYb3sGEGTU%0AH1mombSAOJ6GAOKEULt4L919sbSSChs0AEvTX7UDf4KNaKTrKrqo4khCoboMg1VS%0AXVTTPrJ%2BOxSJTXFZCohVgbhWh6ZZX2tfb7%2BjUDBOMA4GA1UdDwEB%2FwQEAwIHgDAM%0ABgNVHRMBAf8EAjAAMA0GA1UdDgQGBAQBAgMEMA8GA1UdIwQIMAaABAECAwQwDgYG%0AUQMEBQYHAQH%2FBAE0MAoGCCqGSM49BAMDA2cAMGQCMGz2RR0NsJOhxbo0CeVts2C5%0A%2BsAkKQ7v1Llbg78A1pyC5uBmoBvSnv5Dd0w2yOmj7QIwY%2Bn5pkLiwisxWurkHfiD%0AxizmN6vWQ8uhTd3PTdJiEEckjHKiq9pwD%2FGMt%2BWjP7zF%0A-----END+CERTIFICATE-----%0A"
+}
+```
+
+## 6.3 CLI
+
+The Openchain CLI includes a subset of the available APIs to enable developers to quickly test and debug chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms. The currently available CLI commands are summarized in the following section.
+
+### 6.3.1 CLI Commands
+
+To see what CLI commands are currently available in the Openchain implementation, execute the following:
+
+    cd $GOPATH/src/github.com/openblockchain/obc-peer
+    ./obc-peer
+
+You will receive a response similar to below:
+
+```
+    Usage:
+      openchain [command]
+
+    Available Commands:
+      peer        Run openchain peer.
+      status      Status of the openchain peer.
+      stop        Stop openchain peer.
+      login       Login user on CLI.
+      vm          VM functionality of openchain.
+      chaincode   chaincode specific commands.
+      help        Help about any command
+
+    Flags:
+      -h, --help[=false]: help for openchain
+
+
+    Use "openchain [command] --help" for more information about a command.
+```
+
+Some of the available command line arguments for the `./obc-peer` command are listed below:
+
+* `-c` - constructor: function to trigger in order to initialize the chaincode state upon deployment.
+
+* `-l` - language: specifies the implementation language of the chaincode. Currently, only Golang is supported.
+
+* `-n` - name: chaincode identifier returned from the deploy transaction. Must be used in subsequent invoke and query transactions.
+
+* `-p` - path: identifies chaincode location in the local file system.
+
+* `-u` - username: registration id of a logged in user invoking the transaction.
+
+Not all of the above commands are fully implemented in the current release. The commands that are helpful for chaincode development and debugging and are fully supported are described below.
+
+Note, that any configuration settings for the peer node listed in `obc-peer/openchain.yaml` configuration file, which is the  configuration file for the `obc-peer` process, may be modified on the command line with an environment variable. For example, to set the `peer.id` or the `peer.addressAutoDetect` settings, one may pass the `OPENCHAIN_PEER_ID=vp1` and `OPENCHAIN_PEER_ADDRESSAUTODETECT=true` on the command line.
+
+#### 6.3.1.1 peer
+
+The CLI `peer` command will execute the Openchain peer process in either the development or production mode. The development mode is meant for running a single peer node locally, together with a local chaincode deployment. This allows a chaincode developer to modify and debug their code without standing up a complete Openchain network. An example for starting the peer in development mode is below.
+
+```
+./obc-peer peer --peer-chaincodedev
+```
+
+To start the peer process in production mode, modify the above command as follows:
+
+```
+./obc-peer peer
+```
+
+#### 6.3.1.2 login
+
+The CLI `login` command will login a registered user through the CLI. To log in through the CLI, issue the following commands, where `username` is the enrollment ID of a registered user. An example is below.
+
+```
+./obc-peer login <username>
+```
+
+```
+./obc-peer login jim
+```
+
+The command will prompt for a password, which must match the enrollment password for this user registered with the certificate authority. If the password entered does not match the registered password, an error will result.
+
+```
+22:21:31.246 [main] login -> INFO 001 CLI client login...
+22:21:31.247 [main] login -> INFO 002 Local data store for client loginToken: /var/openchain/production/client/
+Enter password for user 'jim': ************
+22:21:40.183 [main] login -> INFO 003 Logging in user 'jim' on CLI interface...
+22:21:40.623 [main] login -> INFO 004 Storing login token for user 'jim'.
+22:21:40.624 [main] login -> INFO 005 Login successful for user 'jim'.
+```
+
+#### 6.3.1.3 chaincode deploy
+
+The CLI `deploy` command creates the docker image for the chaincode and subsequently deploys the package to the validating peer. An example is below.
+
+```
+./obc-peer chaincode deploy -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
+```
+
+With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+
+```
+./obc-peer chaincode deploy -u jim -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
+```
+
+#### 6.3.1.4 chaincode invoke
+
+The CLI `invoke` command executes a specified function within the target chaincode. An example is below.
+
+```
+./obc-peer chaincode invoke -n <name_value_returned_from_deploy_command> -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
+```
+
+With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+
+```
+./obc-peer chaincode invoke -u jim -n <name_value_returned_from_deploy_command> -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
+```
+
+#### 6.3.1.5 chaincode query
+
+The CLI `query` command triggers a specified query method within the target chaincode. The response that is returned depends on the chaincode implementation. An example is below.
+
+```
+./obc-peer chaincode query -l golang -n <name_value_returned_from_deploy_command> -c '{"Function": "query", "Args": ["a"]}'
+```
+
+With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+
+```
+./obc-peer chaincode query -u jim -l golang -n <name_value_returned_from_deploy_command> -c '{"Function": "query", "Args": ["a"]}'
+```
 
 
 ## 7. Application Model
