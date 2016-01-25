@@ -5,7 +5,8 @@
 
 ## Abstract
 
-This paper describes industry uses cases that drive the principles of a new blockchain fabric, while also including the basic requirements and high level architecture based on those industry uses cases. The design presented here describes a blockchain fabric called Open Blockchain, a protocol for business-to-business and business-to-customer transactions.  Based on industry use cases, Open Blockchain allows for compliance with regulations and drives the requirements that arise when competing businesses work together on the same network.The central elements of this specification that will be described below are smart contracts (aka chaincode), digital assets, record repository, a decentralized network and cryptographic security. To these blockchain staples, the requirements added include performance, verified identities, private and confidential transactions, and pluggable consensus model.   
+This paper describes industry use cases that drive the principles behind a new blockchain fabric, and outlines the basic requirements and high-level architecture based on those use cases. The design presented here describes this evolving blockchain fabric, called Open Blockchain, as a protocol for business-to-business and business-to-customer transactions. Based on industry use cases, Open Blockchain allows for compliance with regulations while supporting the varied requirements that arise when competing businesses work together on the same network.The central elements of this specification (described below) are smart contracts (a.k.a. chaincode), digital assets, record repositories, a decentralized network and cryptographic security. To these blockchain staples, industry requirements for performance, verified identities, private and confidential transactions, and a pluggable consensus model have been added.   
+
 
 _For questions regarding terminologies used in OBC, check out our [glossary] (glossary.md)_
 
@@ -18,9 +19,9 @@ Blockchain is an emerging technology pattern that can radically improve banking,
 
 With Bitcoin popularizing the domain since 2009, many businesses and industries have invested significant resources in investigating the underlying technology that powers the popular, yet controversial, cryptocurrency.
 
-Blockchain is a peer to peer distributed ledger technology and  first gained traction in the financial industry, because this technology has shown that assets can be issued, traded, managed, and serviced efficiently.  The distributed ledger makes it easier to create cost- efficient business networks without requiring a central point of control as opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system, and reconcile transaction updates with one another in an inefficient, expensive, and often not standardized inter-organizational operation flows.  
+Blockchain is a peer-to-peer distributed ledger technology that first gained traction in the financial industry, because of its capacity to issue, trade, manage, and service assets efficiently and securely. The distributed ledger makes it easy to create cost-efficient business networks without requiring a central point of control, as opposed to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system and reconcile transaction updates with one another in an inefficient, expensive, and often non-standardized inter-organizational operation flows.  
 
-As the shared ledger concept is gaining tracking in the business world, blockchain’s other aspect – smart contract – is also getting a lot of attention from many industries. Smart contract are collection of business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. Smart contract can be very useful in automating business processes in a trusted way by involving all stakeholder to process and validate contractual rules collectively. 
+As the shared ledger concept is gaining tracking in the business world, blockchain’s additional feature – smart contract – is also getting a lot of attention from various industries. Smart contract is a collection of business rules deployed on blockchain that are shared and validated collectively by a group of business stakeholders. Smart contract can be very useful in automating business processes in a trusted way by allowing all stakeholders to process and validate contractual rules collectively.
 
 Entering 2016, Blockchain awareness has now reached the point that the demand for a solution suitable for industry is surging.
 
@@ -30,13 +31,13 @@ Entering 2016, Blockchain awareness has now reached the point that the demand fo
 
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. 
 
-Furthermore, early pioneers for Blockchain technology serve a set of purposes but are often not well suited for the needs of specific industries. As a result, Open Blockchain is based on an industry- focused design and looks to address several of the requirements for specific industries and uses cases, extending the learnings of the pioneers in this field while also addressing scalability.   Open Blockchain provides an approach to allowing for many blockchain networks and enables permissioned networks, privacy, and confidentially.  
+Furthermore, Early pioneers for blockchain technologies serve a set of purposes but are often not well-suited for the needs of specific industries. To meet the demands of modern markets, Open Blockchain is based on an industry-focused design that addresses the multiple and varied requirements of different industry use cases, extending the learning of the pioneers in this field while also addressing issues such as scalability. 
 
 &nbsp;
 
 ## Our Vision
 
-We have a vision on how blockchain technology would evolve and change our lives in the future, and based on these vision, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
+We developed a vision on how blockchain technology would evolve and change our lives in the future, and based on these vision, we developed our industry use cases, identified key requirements, and designed and built a system that we believe will bring blockchain technology to the masses.
 
 _Note: To prepare you to go through the material below, we strongly recommend you to go through our [glossary] (glossary.md) first_
 
@@ -89,12 +90,12 @@ _For more details about use cases and their requirements, and to visualize how t
 
 ## Featured Requirements  
 
-Featured Requirements are  described below and are based on our vision on the future of the blockchain and the industry use cases, and were as a result driven into the resulting architecture.  Those requirements identified include identity and auditability, private transactions, confidential contracts, modular consensus, performance, scalability, chain code and smart contracts.
+The featured requirements, described below, are based on robust industry use cases  which were driven into the resulting Open Blockchain architecture.  The requirements include identity and auditability, private transactions, confidential contracts, modular consensus, performance, scalability, chain code and smart contracts.
 
 #### Identity and Auditability
 While private transactions are important, business usage of blockchain also needs to comply with regulations and make it easy for regulators to investigate transaction records. Also, a party must be able to prove its identity and ownership of an asset after the fact, perhaps years after the fact, without the mechanism for establishing that identity being able to be used by bad actors to appropriate a party's identity or ascertain their activities on the ledger.
 
-As a result, the Open Blockchain protocol protocol starts with a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities participating in a network. From this identity, the protocol can generate security keys for members to transact on a network, and these keys will conceal the identities of the transacting parties, providing privacy support to the network.
+As a result, the Open Blockchain protocol protocol starts with a cryptographic certificate encapsulating a user’s confidential data registered on a Registration Authority. The Registration Authority can issue and revoke identities that are participating in a network. From  each identity, the protocol can generate security keys for members to transact on a network, which conceal the identities of the transacting parties, providing privacy support to the network.
 
 _Still have questions on identity and auditability? Check out the [identity management] (FAQ/identity_management_FAQ.md) section of FAQ_
 
@@ -284,6 +285,16 @@ Cloud hosted multiple networks allow participants to have their peer nodes hoste
 Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
 
 &nbsp;
+## Conclusion
+
+OBC’s sole mission is to bring blockchian technology to the masses. After reviewing available blockchain solutions and hearing use cases from both industry leaders and technology evangelists, we’re convinced that blockchain will be an extremely important technology pattern that can revolutionize many industries and businesses.
+
+We have observed that industry is urgently calling for a business ready blockchain fabric that is both efficient and scalable, and that offers enterprise grade support on privacy and confidentiality. We have also noticed that there are many different categories of use cases and each may have different requirements on its underlying blockchain network, so one solution may not fit all. 
+
+To fully realize the potential of blockchain technology, and to create a standard that can be adopted into many different uses, we designed the open blockchain fabric to be both flexible and extensible. We also developed the default implementation of the OBC protocol, which included many latest advances in computer science such as those around cryptography and consensus.
+
+To have a better understanding of the open blockchain protocol, we invite you to read our protocol specification, it will get you ready to start using OBC to build your applications, or even to contribute to the project. 
+
 
 ## Authors
 Frank Lu, Binh Nguyen, John Wolpert, Sharon Coco
