@@ -3,14 +3,14 @@
 _Draft 0.01_
 
 ## Preface
-This document is the protocol specification of Open Blockchain (OBC), a permission blockchain implementation for industry use-case. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
+This document is the protocol specification of Open Blockchain (OBC), a permissioned blockchain implementation for industry use-case. It is not intended to be a complete explanation of the implementation, but rather the interfaces and relationships between components in the system and the application.
 
 ### Intended Audience
 The intended audience for this specification includes the following groups:
 
-* Blockchain vendors who want to implement blockchain systems that conform to this specification
-* Tool developers who want to extend the capabilities of Open Blockchain
-* Application developers who want to leverage blockchain technologies to enrich their applications
+- Blockchain vendors who want to implement blockchain systems that conform to this specification
+- Tool developers who want to extend the capabilities of Open Blockchain
+- Application developers who want to leverage blockchain technologies to enrich their applications
 
 ### Authors
 These are the authors who wrote various sections of this document:  Binh Q Nguyen, Elli Androulaki, Angelo De Caro, Sheehan Anderson, Manish Sethi, Thorsten Kramp, Alessandro Sorniotti, Marko Vukolic, Florian Simon Schubert, Jason K Yellick, Konstantinos Christidis, Srinivasan Muralidharan, Anya Derbakova, Dulce Ponceleon, David Kravitz, Diego Masini
@@ -129,17 +129,20 @@ Gennaro Cuomo, Joseph A Latone, Christian Cachin
 
 
 ## 1. Introduction
-This document specifies the principles, architecture, and protocol of Open Blockchain or OBC, a blockchain suitable for industrial use-cases.
+This document specifies the principles, architecture, and protocol of Open Blockchain, a blockchain implementation suitable for industrial use-cases.
 
 ### 1.1 What is Open Blockchain?
-Open Blockchain is a ledger of digital events shared among  different participants, each has a stake in the system. The ledger can only be updated by consensus of a majority of the participants, and, once recorded, information can never be altered. Each recorded event is cryptographically verifiable with proof of agreement from the participants.
+Open Blockchain is a ledger of digital events, called transactions, shared among  different participants, each has a stake in the system. The ledger can only be updated by consensus of the participants, and, once recorded, information can never be altered. Each recorded event is cryptographically verifiable with proof of agreement from the participants.
 
+Open Blockchain transactions are secured, private, and confidential. Each participant registers with proof of identity to the network membership services to gain access to the system. Transactions are issued with derived certificates unlinkable to the individual participant, offering a complete anonymity on the network. Transaction content is encrypted with sophisticated key derivation functions to ensure only intended participants may see the content, protecting the confidentiality of the business transactions.
+
+Open Blockchain ledger allows compliance with regulations, and ledger entries are auditable in whole or in part. In collaboration with participants, auditors may obtain time-based certificates to allow viewing the ledger and linking transactions to provide an accurate assessment of the operations.
+
+Techonologically, Open Blockchain is a fabric of blockchain, where Bitcoin could be a simple application built on Open Blockchain. It is a modular architecture allowing components to be plug-and-play by implementing this protocol specification. It features powerful container technology to host any main stream language for smart contracts development. Leveraging familiar and proven technologies is the moto of the fabric architecture.
 
 ### 1.2 Why Open Blockchain?
 
 Blockchain technology is in its infancy and is often not well suited for the needs of industry. Scalability challenges and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important industry applications. Open Blockchain is an industry–focused design, based on and extending the learnings of the pioneers in this field.
-
-Open Blockchain is designed for permissioned networks, where participants are registered members of the system. It allows compliance with regulations and respects the requirements that arise when competing businesses work together on the same network.
 
 ### 1.3 Terminology
 These terminologies are defined within the limited scope of this specification to help readers understand clearly and precisely the concepts described here.
@@ -247,8 +250,7 @@ message OpenchainMessage {
     }
     Type type = 1;
     bytes payload = 2;
-    bytes signature = 3;
-    google.protobuf.Timestamp timestamp = 4;
+    google.protobuf.Timestamp timestamp = 3;
 }
 ```
 The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response` depending on the type of the message. For example, if the `type` is `CHAIN_TRANSACTION`, the `payload` is a `Transaction` object.
