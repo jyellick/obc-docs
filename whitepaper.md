@@ -286,7 +286,7 @@ Similar to cloud hosted multiple networks, using participants’ own networks is
 &nbsp;
 
 ## Authors
-Frank Lu, Binh Nguyen, John Wolpert, Sharon Weed Coco
+Frank Lu, Binh Nguyen, John Wolpert, Sharon Coco
 
 ## Reviewers
 Anna Darbakova, Marko Vukolic, Elli Androulaki, Dulce Ponceleon, Josh Horton, Nick Gaski
