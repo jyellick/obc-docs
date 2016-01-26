@@ -839,7 +839,7 @@ Definition:
 ```
 type WritableLedger interface {
 	PutBlock(blockNumber uint64, block *pb.Block) error
-	ApplyStateDelta(delta []byte, unapply bool) error
+	ApplyStateDelta(id interface{}, delta *statemgmt.StateDelta) error
 	CommitStateDelta(id interface{}) error
 	RollbackStateDelta(id interface{}) error
 	EmptyState() error
@@ -855,7 +855,7 @@ type WritableLedger interface {
 	This function takes a provided, raw block, and inserts it into the blockchain at the given blockNumber.  Note that this intended to be an unsafe interface, so no error or sanity checking is performed.  Inserting a block with a number higher than the current block height is permitted, similarly overwriting existing already committed blocks is also permitted.  Remember, this does not affect the auditability or immutability of the chain, as the hashing techniques make it computationally infeasible to forge a block earlier in the chain.  Any attempt to rewrite the blockchain history is therefore easily detectable.  This is generally only useful to the state transfer API.
 
   -	```
-	ApplyStateDelta(delta []byte, unapply bool) error
+	ApplyStateDelta(id interface{}, delta *statemgmt.StateDelta) error
 	```
 
 	This function takes a state delta, and applies it to the current state.  The delta will be applied to transition a state forward or backwards depending on the construction of the state delta.  Like the `Executor` methods, `ApplyStateDelta` accepts an opaque interface `id` which should also be passed into `CommitStateDelta` or `RollbackStateDelta` as appropriate.
