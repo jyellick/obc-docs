@@ -67,7 +67,7 @@ ________________________________________________________
    - 3.4.1 Consenter interface
    - 3.4.2 Consensus Programming Interface
    - 3.4.3 Communicator interface
-   - 3.4.4 BlockchainPackage interface
+   - 3.4.4 LedgerStack interface
    - 3.4.5 Executor interface
    - 3.4.5.1 Beginning a transaction batch
    - 3.4.5.2 Executing transactions
@@ -619,9 +619,9 @@ Open Blockchain consensus package is placed in `obc-peer/openchain/consensus` wi
   - `consensus.Consenter`: interface that  allows consensus plugin to receive messages from the network.
   - `consensus.CPI`:  _Consensus Programming Interface_ (`CPI`) is used by consensus plugin to interact with rest of the stack. This interface is split in two parts:
 	  - `consensus.Communicator`: used to send (broadcast and unicast) messages to other validators; and
-	  - `consensus.BlockchainPackage`: which is used as an interface to the Open Blockchain execution framework as well as the ledger.
+	  - `consensus.LedgerStack`: which is used as an interface to the Open Blockchain execution framework as well as the ledger.
 
-As described below in more details, `consensus.BlockchainPackage` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validators (see `consensus.Executor` interface description below for more details).
+As described below in more details, `consensus.LedgerStack` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validators (see `consensus.Executor` interface description below for more details).
 
 Currently, consensus framework consists of 3 packages `consensus`, `controller`, and `helper`. The primary reason for `controller` and `helper` packages is to avoid "import cycle" in Go (golang) and minimize code changes for plugin to update.
 
@@ -657,7 +657,7 @@ Definition:
 ```
 type CPI interface {
 	Communicator
-	BlockchainPackage
+	LedgerStack
 }
 ```
 
@@ -688,19 +688,19 @@ message PeerID {
 }
 ```
 
-### 3.4.4 `BlockchainPackage` interface
+### 3.4.4 `LedgerStack` interface
 
 Definition:
 
 ```
-type BlockchainPackage interface {
+type LedgerStack interface {
 	Executor
 	Ledger
 	RemoteLedgers
 }
 ```
 
-A key member of the `CPI` interface, `BlockchainPackage` groups interaction of consensus with the rest of the Open Blockchain blockchain fabric, such as the execution of transactions, querying, and updating the ledger.  This interface supports querying the local blockchain and state, updating the local blockchain and state, and querying the blockchain and state of other nodes in the consensus network. It consists of three parts: `Executor`, `Ledger` and `RemoteLedgers` interfaces. These are described in the following.
+A key member of the `CPI` interface, `LedgerStack` groups interaction of consensus with the rest of the Open Blockchain blockchain fabric, such as the execution of transactions, querying, and updating the ledger.  This interface supports querying the local blockchain and state, updating the local blockchain and state, and querying the blockchain and state of other nodes in the consensus network. It consists of three parts: `Executor`, `Ledger` and `RemoteLedgers` interfaces. These are described in the following.
 
 ### 3.4.5 `Executor` interface
 
@@ -716,7 +716,7 @@ type Executor interface {
 }
 ```
 
-The executor interface is the most frequently utilized portion of the `BlockchainPackage` interface, and is the only piece which is strictly necessary for a consensus network to make progress.  The interface allows for a transaction to be started, executed, rolled back if necessary, previewed, and potentially committed.  This interface is comprised of the following methods.
+The executor interface is the most frequently utilized portion of the `LedgerStack` interface, and is the only piece which is strictly necessary for a consensus network to make progress.  The interface allows for a transaction to be started, executed, rolled back if necessary, previewed, and potentially committed.  This interface is comprised of the following methods.
 
 #### 3.4.5.1 Beginning a transaction batch
 
