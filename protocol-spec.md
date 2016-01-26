@@ -69,19 +69,21 @@ ________________________________________________________
    - 3.4 Pluggable Consensus Framework
    - 3.4.1 Consenter interface
    - 3.4.2 Consensus Programming Interface
-   - 3.4.3 Communicator interface
-   - 3.4.4 BlockchainPackage interface
-   - 3.4.5 Executor interface
-   - 3.4.5.1 Beginning a transaction batch
-   - 3.4.5.2 Executing transactions
-   - 3.4.5.3 Committing and rolling-back transactions
-   - 3.4.6 Ledger interface
-   - 3.4.6.1 ReadOnlyLedger interface
-   - 3.4.6.2 UtilLedger interface
-   - 3.4.6.3 WritableLedger interface
-   - 3.4.7 RemoteLedgers interface
-   - 3.4.8 Controller package
-   - 3.4.9 Helper package
+   - 3.4.3 Inquirer interface
+   - 3.4.4 Communicator interface
+   - 3.4.5 SecurityUtils interface
+   - 3.4.6 LedgerStack interface
+   - 3.4.7 Executor interface
+   - 3.4.7.1 Beginning a transaction batch
+   - 3.4.7.2 Executing transactions
+   - 3.4.7.3 Committing and rolling-back transactions
+   - 3.4.8 Ledger interface
+   - 3.4.8.1 ReadOnlyLedger interface
+   - 3.4.8.2 UtilLedger interface
+   - 3.4.8.3 WritableLedger interface
+   - 3.4.9 RemoteLedgers interface
+   - 3.4.10 Controller package
+   - 3.4.11 Helper package
 
 #### 4. Security
    - 4. Security
@@ -133,7 +135,7 @@ ________________________________________________________
 This document specifies the principles, architecture, and protocol of Open Blockchain, a blockchain implementation suitable for industrial use-cases.
 
 ### 1.1 What is Open Blockchain?
-Open Blockchain is a ledger of digital events, called transactions, shared among  different participants, each has a stake in the system. The ledger can only be updated by consensus of the participants, and, once recorded, information can never be altered. Each recorded event is cryptographically verifiable with proof of agreement from the participants.
+Open Blockchain is a ledger of digital events, called transactions, shared among  different participants, each having a stake in the system. The ledger can only be updated by consensus of the participants, and, once recorded, information can never be altered. Each recorded event is cryptographically verifiable with proof of agreement from the participants.
 
 Open Blockchain transactions are secured, private, and confidential. Each participant registers with proof of identity to the network membership services to gain access to the system. Transactions are issued with derived certificates unlinkable to the individual participant, offering a complete anonymity on the network. Transaction content is encrypted with sophisticated key derivation functions to ensure only intended participants may see the content, protecting the confidentiality of the business transactions.
 
@@ -174,7 +176,7 @@ These terminologies are defined within the limited scope of this specification t
 
 ## 2. Fabric
 
-Open Blockchain The fabric is made up of the core components described in the subsections below.
+Open Blockchain fabric is made up of the core components described in the subsections below.
 
 ### 2.1 Architecture
 The reference architecture is aligned in 3 categories: Membership, Blockchain, and Chaincode services. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
@@ -262,7 +264,7 @@ message OpenchainMessage {
 The `payload` is an opaque byte array containing other objects such as `Transaction` or `Response` depending on the type of the message. For example, if the `type` is `CHAIN_TRANSACTION`, the `payload` is a `Transaction` object.
 
 ### 3.1.1 Discovery Messages
-Upon start up, a peer runs discovery protocol if `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is specified. `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is the IP address of another peer on the network (any peer) that serves as the starting point for discovering all the peers on the network. The protocol sequence begins with `DISC_HELLO`, whose `payload` is a `HelloMessage` object, containing its endpoint below:
+Upon start up, a peer runs discovery protocol if `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is specified. `OPENCHAIN_PEER_DISCOVERY_ROOTNODE` is the IP address of another peer on the network (any peer) that serves as the starting point for discovering all the peers on the network. The protocol sequence begins with `DISC_HELLO`, whose `payload` is a `HelloMessage` object, containing its endpoint:
 
 ```
 message HelloMessage {
@@ -296,10 +298,10 @@ message PeerID {
 
 If the block height received upon `DISC_HELLO` is higher than the current block height of the peer, it immediately initiates synchronization protocol to catch up with the network.
 
-After `DISC_HELLO`, peer sends `DISC_GET_PEERS` periodically to discover any additional peers joining the network. Response to `DISC_GET_PEERS`, peer sends `DISC_PEERS` with `payload` containing an array of `PeerEndpoint`. Other discovery message types are not used at this point.
+After `DISC_HELLO`, peer sends `DISC_GET_PEERS` periodically to discover any additional peers joining the network. Response to `DISC_GET_PEERS`, a peer sends `DISC_PEERS` with `payload` containing an array of `PeerEndpoint`. Other discovery message types are not used at this point.
 
 ### 3.1.2 Transaction Messages
-There are 3 types of transactions: Deploy, Invoke, and Query transactions. Deploy transaction installs the specified chaincode on the chain, invoke and query transactions call a function of a chaincode. Another type in consideration is Create transaction where a deployed chaincode may be instantiated on the chain and is addressable. This type has not been implemented as of this writing.
+There are 2 types of transactions: Deploy and Invoke transactions. Deploy transaction installs the specified chaincode on the chain, invoke and query transactions call a function of a deployed chaincode. Another type in consideration is Create transaction where a deployed chaincode may be instantiated on the chain and is addressable. This type has not been implemented as of this writing.
 
 ### 3.1.2.1 Transaction Data Structure
 
@@ -343,23 +345,14 @@ enum ConfidentialityLevel {
 	- `CHAINCODE_EXECUTE` - Represents a chaincode function execution that may read and modify the world state.
 	- `CHAINCODE_QUERY` - Represents a chaincode function execution that may only read the world state.
 	- `CHAINCODE_TERMINATE` - Marks a chaincode as inactive so that future functions of the chaincode can no longer be invoked.
-
 - `chaincodeID` - The ID of a chaincode which is a hash of the chaincode source, path to the source code, constructor function, and parameters.
-
 - `payload` - Bytes defining the payload of the transaction.
-
 - `metadata` - Bytes defining any associated transaction metadata that the application may use.
-
 - `uuid` - A unique ID for the transaction.
-
 - `timestamp` - A timestamp of when the transaction request was received by the peer.
-
 - `confidentialityLevel` - Level of data confidentiality. There are 2 levels currently. Future releases may define more levels.
-
 - `nonce` - Used for security
-
 - `cert` - Certificate of the transactor
-
 - `signature` - Signature of the transactor
 
 More detail on transaction security in section 4.
@@ -401,7 +394,7 @@ message ChaincodeInput {
 - `secureContext` - Security context of the transactor.
 - `metadata` - Any data the application wants to pass along.
 
-The peer receiving the `chaincodeSpec` wraps it in an appropriate transaction message and broadcasts to the network.
+The peer, receiving the `chaincodeSpec`, wraps it in an appropriate transaction message and broadcasts to the network.
 
 ### 3.1.2.3 Deploy Transaction
 A deploy transaction `type` is `CHAINCODE_NEW` and the payload contains an object of `ChaincodeDeploymentSpec`.
@@ -418,9 +411,7 @@ message ChaincodeDeploymentSpec {
 - `effectiveDate` - Time when the chaincode is ready to accept invocations.
 - `codePackage` - gzip of the chaincode source.
 
-TODO: Show an example of ChaincodeDeploymentSpec
-`./obc-peer chaincode deploy -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'`
-
+The validating peer always verify the hash of the `codePackage` when deploy the chaincode to make sure the package has not been tampered with since the deploy transaction enterred the network.
 
 ### 3.1.2.4 Invoke Transaction
 An invoke transaction `type` is `CHAINCODE_EXECUTE` and the `payload` contains an object of `ChaincodeInvocationSpec`.
@@ -628,9 +619,9 @@ Open Blockchain consensus package is placed in `obc-peer/openchain/consensus` wi
   - `consensus.Consenter`: interface that  allows consensus plugin to receive messages from the network.
   - `consensus.CPI`:  _Consensus Programming Interface_ (`CPI`) is used by consensus plugin to interact with rest of the stack. This interface is split in two parts:
 	  - `consensus.Communicator`: used to send (broadcast and unicast) messages to other validators; and
-	  - `consensus.BlockchainPackage`: which is used as an interface to the Open Blockchain execution framework as well as the ledger.
+	  - `consensus.LedgerStack`: which is used as an interface to the Open Blockchain execution framework as well as the ledger.
 
-As described below in more details, `consensus.BlockchainPackage` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validators (see `consensus.Executor` interface description below for more details).
+As described below in more details, `consensus.LedgerStack` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validators (see `consensus.Executor` interface description below for more details).
 
 Currently, consensus framework consists of 3 packages `consensus`, `controller`, and `helper`. The primary reason for `controller` and `helper` packages is to avoid "import cycle" in Go (golang) and minimize code changes for plugin to update.
 
@@ -665,8 +656,10 @@ Definition:
 
 ```
 type CPI interface {
+	Inquirer
 	Communicator
-	BlockchainPackage
+	SecurityUtils
+	LedgerStack
 }
 ```
 
@@ -675,21 +668,20 @@ type CPI interface {
   1. Is instantiated when the `helper.NewConsensusHandler` is called.
   2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object (refer to `controller.NewConsenter`).
 
-### 3.4.3 `Communicator` interface
+### 3.4.3 `Inquirer` interface
 
 Definition:
 
 ```
-type Communicator interface {
-	GetNetworkHandles() (self *pb.PeerID, network []*pb.PeerID, err error)
-	Broadcast(msg *pb.OpenchainMessage) error
-	Unicast(msg *pb.OpenchainMessage, receiverHandle *pb.PeerID) error
+type Inquirer interface {
+        GetNetworkInfo() (self *pb.PeerEndpoint, network []*pb.PeerEndpoint, err error)
+        GetNetworkHandles() (self *pb.PeerID, network []*pb.PeerID, err error)
 }
 ```
 
-This interface is a part of the `consensus.CPI` interface. It is used to get the handles of the validating peers in the network (`helper.GetNetworkHandles`) and communicate with them (`helper.Broadcast`, `helper.Unicast`):
+This interface is a part of the `consensus.CPI` interface. It is used to get the handles of the validating peers in the network (`GetNetworkHandles`) as well as details about the those validating peers (`GetNetworkInfo`):
 
-Note that the peers are identified by a `pb.PeerID` object. This is a protobuf message (in the `protos` package), currently defined as (notice that this definition will be modified):
+Note that the peers are identified by a `pb.PeerID` object. This is a protobuf message (in the `protos` package), currently defined as (notice that this definition will likely be modified):
 
 ```
 message PeerID {
@@ -697,21 +689,47 @@ message PeerID {
 }
 ```
 
-### 3.4.4 `BlockchainPackage` interface
+### 3.4.4 `Communicator` interface
 
 Definition:
 
 ```
-type BlockchainPackage interface {
+type Communicator interface {
+	Broadcast(msg *pb.OpenchainMessage) error
+	Unicast(msg *pb.OpenchainMessage, receiverHandle *pb.PeerID) error
+}
+```
+
+This interface is a part of the `consensus.CPI` interface. It is used to communicate with other peers on the network (`helper.Broadcast`, `helper.Unicast`):
+
+### 3.4.5 `SecurityUtils` interface
+
+Definition:
+
+```
+type SecurityUtils interface {
+        Sign(msg []byte) ([]byte, error)
+        Verify(peerID *pb.PeerID, signature []byte, message []byte) error
+}
+```
+
+This interface is a part of the `consensus.CPI` interface. It is used to handle the cryptographic operations of message signing (`Sign`) and verifying signatures (`Verify`)
+
+### 3.4.6 `LedgerStack` interface
+
+Definition:
+
+```
+type LedgerStack interface {
 	Executor
 	Ledger
 	RemoteLedgers
 }
 ```
 
-A key member of the `CPI` interface, `BlockchainPackage` groups interaction of consensus with the rest of the Open Blockchain blockchain fabric, such as the execution of transactions, querying, and updating the ledger.  This interface supports querying the local blockchain and state, updating the local blockchain and state, and querying the blockchain and state of other nodes in the consensus network. It consists of three parts: `Executor`, `Ledger` and `RemoteLedgers` interfaces. These are described in the following.
+A key member of the `CPI` interface, `LedgerStack` groups interaction of consensus with the rest of the Open Blockchain blockchain fabric, such as the execution of transactions, querying, and updating the ledger.  This interface supports querying the local blockchain and state, updating the local blockchain and state, and querying the blockchain and state of other nodes in the consensus network. It consists of three parts: `Executor`, `Ledger` and `RemoteLedgers` interfaces. These are described in the following.
 
-### 3.4.5 `Executor` interface
+### 3.4.7 `Executor` interface
 
 Definition:
 
@@ -725,9 +743,9 @@ type Executor interface {
 }
 ```
 
-The executor interface is the most frequently utilized portion of the `BlockchainPackage` interface, and is the only piece which is strictly necessary for a consensus network to make progress.  The interface allows for a transaction to be started, executed, rolled back if necessary, previewed, and potentially committed.  This interface is comprised of the following methods.
+The executor interface is the most frequently utilized portion of the `LedgerStack` interface, and is the only piece which is strictly necessary for a consensus network to make progress.  The interface allows for a transaction to be started, executed, rolled back if necessary, previewed, and potentially committed.  This interface is comprised of the following methods.
 
-#### 3.4.5.1 Beginning a transaction batch
+#### 3.4.7.1 Beginning a transaction batch
 
 ```
 BeginTxBatch(id interface{}) error
@@ -735,7 +753,7 @@ BeginTxBatch(id interface{}) error
 
 This call accepts an arbitrary `id`, deliberately opaque, as a way for the consensus plugin to ensure only the transactions associated with this particular batch are executed. For instance, in the pbft implementation, this `id` is the an encoded hash of the transactions to be executed.
 
-#### 3.4.5.2 Executing transactions
+#### 3.4.7.2 Executing transactions
 
 ```
 ExecTXs(id interface{}, txs []*pb.Transaction) ([]byte, []error)
@@ -743,7 +761,7 @@ ExecTXs(id interface{}, txs []*pb.Transaction) ([]byte, []error)
 
 This call accepts an array of transactions to execute against the current state of the ledger and returns the current state hash in addition to an array of errors corresponding to the array of transactions.  Note that a transaction resulting in an error has no effect on whether a transaction batch is safe to commit.  It is up to the consensus plugin to determine the behavior which should occur when failing transactions are encountered.  This call is safe to invoke multiple times.
 
-#### 3.4.5.3 Committing and rolling-back transactions
+#### 3.4.7.3 Committing and rolling-back transactions
 
 ```
 RollbackTxBatch(id interface{}) error
@@ -764,7 +782,7 @@ CommitTxBatch(id interface{}, transactions []*pb.Transaction, transactionsResult
 This call commits a block to the blockchain.  Blocks must be committed to a blockchain in total order. ``CommitTxBatch`` concludes the transaction batch, and a new call to `BeginTxBatch` must be made before any new transactions are executed and committed.
 
 
-### 3.4.6 `Ledger` interface
+### 3.4.8 `Ledger` interface
 
 Definition:
 
@@ -778,7 +796,7 @@ type Ledger interface {
 
 ``Ledger`` interface is intended to allow the consensus plugin to interrogate and possibly update the current state and blockchain. It is comprised of the three interfaces described below.
 
-#### 3.4.6.1 `ReadOnlyLedger` interface
+#### 3.4.8.1 `ReadOnlyLedger` interface
 
 Definition:
 
@@ -814,7 +832,7 @@ GetCurrentStateHash() (stateHash []byte, err error)
 This call returns the current state hash for the ledger.  In general, this function should never fail, though in the unlikely event that this occurs, the error is passed to the caller to decide what if any recovery is necessary.
 
 
-#### 3.4.6.2 `UtilLedger` interface
+#### 3.4.8.2 `UtilLedger` interface
 
 Definition:
 
@@ -841,14 +859,14 @@ This utility method is intended for verifying large sections of the blockchain. 
 
 
 
-#### 3.4.6.3 `WritableLedger` interface
+#### 3.4.8.3 `WritableLedger` interface
 
 Definition:
 
 ```
 type WritableLedger interface {
 	PutBlock(blockNumber uint64, block *pb.Block) error
-	ApplyStateDelta(delta []byte, unapply bool) error
+	ApplyStateDelta(id interface{}, delta *statemgmt.StateDelta) error
 	CommitStateDelta(id interface{}) error
 	RollbackStateDelta(id interface{}) error
 	EmptyState() error
@@ -864,7 +882,7 @@ type WritableLedger interface {
 	This function takes a provided, raw block, and inserts it into the blockchain at the given blockNumber.  Note that this intended to be an unsafe interface, so no error or sanity checking is performed.  Inserting a block with a number higher than the current block height is permitted, similarly overwriting existing already committed blocks is also permitted.  Remember, this does not affect the auditability or immutability of the chain, as the hashing techniques make it computationally infeasible to forge a block earlier in the chain.  Any attempt to rewrite the blockchain history is therefore easily detectable.  This is generally only useful to the state transfer API.
 
   -	```
-	ApplyStateDelta(delta []byte, unapply bool) error
+	ApplyStateDelta(id interface{}, delta *statemgmt.StateDelta) error
 	```
 
 	This function takes a state delta, and applies it to the current state.  The delta will be applied to transition a state forward or backwards depending on the construction of the state delta.  Like the `Executor` methods, `ApplyStateDelta` accepts an opaque interface `id` which should also be passed into `CommitStateDelta` or `RollbackStateDelta` as appropriate.
@@ -888,7 +906,7 @@ type WritableLedger interface {
 
 	This function will delete the entire current state, resulting in a pristine empty state.  It is intended to be called before loading an entirely new state via deltas.  This is generally only useful to the state transfer API.
 
-### 3.4.7 `RemoteLedgers` interface
+### 3.4.9 `RemoteLedgers` interface
 
 Definition:
 
@@ -920,9 +938,9 @@ The `RemoteLedgers` interface exists primarily to enable state transfer and to i
 
 	This function attempts to retrieve a stream of `*pb.SyncStateDeltas` from the peer designated by `peerID` for the range from `start` to `finish`.  The caller must validated that the desired block delta is being returned, as it is possible that slow results from another request could appear on this channel.  Invoking this call for the same `peerID` a second time will cause the first channel to close.
 
-### 3.4.8 `controller` package
+### 3.4.10 `controller` package
 
-#### 3.4.8.1 controller.NewConsenter
+#### 3.4.10.1 controller.NewConsenter
 
 Signature:
 
@@ -936,13 +954,13 @@ The plugin author needs to edit the function's body so that it routes to the rig
 
 This function is called by `helper.NewConsensusHandler` when setting the `consenter` field of the returned message handler. The input argument `cpi` is the output of the `helper.NewHelper` constructor and implements the `consensus.CPI` interface.
 
-### 3.4.9 `helper` package
+### 3.4.11 `helper` package
 
-#### 3.4.9.1 High-level overview
+#### 3.4.11.1 High-level overview
 
 A validating peer establishes a message handler (`helper.ConsensusHandler`) for every connected peer, via the `helper.NewConsesusHandler` function (a handler factory). Every incoming message is inspected on its type (`helper.HandleMessage`); if it's a message for which consensus needs to be reached, it's passed on to the peer's consenter object (`consensus.Consenter`). Otherwise it's passed on to the next message handler in the stack.
 
-#### 3.4.9.2 helper.ConsensusHandler
+#### 3.4.11.2 helper.ConsensusHandler
 
 Definition:
 
@@ -960,7 +978,7 @@ Within the context of consensus, we focus only on the `coordinator` and `consent
 
 Notice that `obc-peer/openchain/peer/peer.go` defines the `peer.MessageHandler` (interface), and `peer.MessageHandlerCoordinator` (interface) types.
 
-#### 3.4.9.3 helper.NewConsensusHandler
+#### 3.4.11.3 helper.NewConsensusHandler
 
 Signature:
 
@@ -970,7 +988,7 @@ func NewConsensusHandler(coord peer.MessageHandlerCoordinator, stream peer.ChatS
 
 Creates a `helper.ConsensusHandler` object. Sets the same `coordinator` for every message handler. Also sets the `consenter` equal to: `controller.NewConsenter(NewHelper(coord))`
 
-### 3.4.10 helper.Helper
+### 3.4.11.4 helper.Helper
 
 Definition:
 
@@ -982,7 +1000,7 @@ type Helper struct {
 
 Contains the reference to the validating peer's `coordinator`. Is the object that implements the `consensus.CPI` interface for the peer.
 
-#### 3.4.10.1 helper.NewHelper
+#### 3.4.11.5 helper.NewHelper
 
 Signature:
 
@@ -993,7 +1011,7 @@ func NewHelper(mhc peer.MessageHandlerCoordinator) consensus.CPI
 Returns a `helper.Helper` object whose `coordinator` is set to the input argument `mhc` (the `coordinator` field of the `helper.ConsensusHandler` message handler). This object implements the `consensus.CPI` interface, thus allowing the plugin to interact with the stack.
 
 
-#### 3.4.10.2 helper.HandleMessage
+#### 3.4.11.6 helper.HandleMessage
 
 Recall that the `helper.ConsesusHandler` object returned by `helper.NewConsensusHandler` implements the `peer.MessageHandler` interface:
 
@@ -1796,7 +1814,7 @@ func (pbft *pbftCore) close()
 
 The `close` method terminates all background operations.  This interface is mostly exposed for testing, because during operation of the obc peer, there is never a need to terminate the PBFT instance.
 
-### 5.3 Inner Ccnsensus Programming Interface
+### 5.3 Inner Consensus Programming Interface
 
 The consumer application provides the inner consensus programming interface to the PBFT box.  PBFT will call these functions to query state and signal events.
 
@@ -1899,19 +1917,19 @@ The primary interface to OBC is a REST API. The REST API allows applications to 
 Applications interact with a non-validating peer node through the REST API, which will require some form of authentication to ensure the entity has proper privileges. The application is responsible for supplying the appropriate authentication mechanism and the peer node will subsequently sign the outgoing messages with the client identity.
 
 ![Reference architecture](images/refarch-api.png) <p>
-The Openchain API design covers the categories below, though the implementation is incomplete for some of them in the current release. The [REST API](#62-rest-api) section will describe the APIs currently supported.
+The OBC API design covers the categories below, though the implementation is incomplete for some of them in the current release. The [REST API](#62-rest-api) section will describe the APIs currently supported.
 
 *  Identity - Enrollment to get certificates or revoking a certificate
 *  Address - Target and source of a transaction
 *  Transaction - Unit of execution on the ledger
-*  Chaincode (Devops)- Program running on the ledger
+*  Chaincode (Devops) - Program running on the ledger
 *  Blockchain - Contents of the ledger
 *  Network - Information about the blockchain network
 *  Storage - External store for files or documents
 *  Event - Sub/pub events on blockchain
 
 ## 6.1 REST Service
-The Openchain REST service is initialized on non-validating peers only by the function below. The service will not be enabled on validating nodes in production to eliminate any possible security vulnerabilities.
+The Open Blockchain REST service can be enabled (via configuration) on either validating or non-validating peers, but it is recommended to only enabled the REST service on non-validating peers on production networks.
 
 ```
 func StartOpenchainRESTServer(server *oc.ServerOpenchain, devops *oc.Devops)
@@ -1923,21 +1941,23 @@ It is assumed that the REST service receives requests from applications which ha
 
 ## 6.2 REST API
 
-You can work with the Openchain REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. You can likewise trigger REST requests directly through [Swagger](http://swagger.io/). To obtain the Openchain REST API Swagger description, click [here](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). The currently available APIs are summarized in the following section.
+You can work with the OBC REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. You can likewise trigger REST requests directly through [Swagger](http://swagger.io/). To obtain the OBC REST API Swagger description, click [here](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). The currently available APIs are summarized in the following section.
 
 ### 6.2.1 REST Endpoints
 
-* [Block](#block)
-  * GET /chain/blocks/{Block}
-* [Chain](#chain)
+* [Block](#6211-block-api)
+  * GET /chain/blocks/{block-id}
+* [Chain](#6212-chain-api)
   * GET /chain
-* [Transactions](#transactions)
+* [Transactions](#6213-transactions-api)
   * GET /transactions/{UUID}
-* [Devops](#devops)
-  * POST /devops/deploy
-  * POST /devops/invoke
-  * POST /devops/query
-* [Registrar](#registrar)
+* [Chaincode](#6214-devops-chaincode-api)
+  * POST /chaincode
+  * PUT /chaincode/{chaincode-id}
+  * GET /chaincode/{chaincode-id}
+  * DELETE /chaincode/{chaincode-id}
+  * POST /chaincode/{chaincode-id}
+* [Registrar](#6215-registrar-member-services)
   * POST /registrar
   * GET /registrar/{enrollmentID}
   * DELETE /registrar/{enrollmentID}
@@ -1945,7 +1965,7 @@ You can work with the Openchain REST API through any tool of your choice. For ex
 
 #### 6.2.1.1 Block API
 
-* **GET /chain/blocks/{Block}**
+* **GET /chain/blocks/{block-id}**
 
 Use the Block API to retrieve the contents of various blocks from the blockchain. The returned Block message structure is defined in section [3.2.1.1](#3211-block).
 
@@ -2043,19 +2063,19 @@ Transaction Retrieval Response:
 }
 ```
 
-#### 6.2.1.4 Devops (chaincode) API
+#### 6.2.1.4 Chaincode API
 
-* **POST /devops/deploy**
-* **POST /devops/invoke**
-* **POST /devops/query**
+* **POST /chaincode**
+* **PUT /chaincode/{chaincode-id}**
+* **GET /chaincode/{chaincode-id}**
 
-Use the Devops APIs to deploy, invoke, and query chaincodes. The deploy request requires the client to supply a `path` parameter, pointing to the location of the chaincode in the file system. The response to a deploy request is either a message containing a confirmation of successful chaincode deployment or an error, containing a reason for the failure. It also contains the generated chaincode `name`, which is to be used in subsequent invocation and query transactions to identify the deployed chaincode.
+Use the Chaincode APIs to deploy, invoke, and query chaincodes. The deploy request requires the client to supply a `path` parameter, pointing to the location of the chaincode in the file system. The response to a deploy request is either a message containing a confirmation of successful chaincode deployment or an error, containing a reason for the failure. It also contains the generated chaincode `name` in the `message` field, which is to be used in subsequent invocation and query transactions to identify the deployed chaincode.
 
-To deploy, supply the required ChaincodeSpec payload, defined in section [3.1.2.2](#3122-transaction-specification).
+To deploy a chaincode, supply the required ChaincodeSpec payload, defined in section [3.1.2.2](#3122-transaction-specification).
 
 Deploy Request:
 ```
-POST host:port/devops/deploy
+POST host:port/chaincode
 
 {
   "type": "GOLANG",
@@ -2097,18 +2117,15 @@ Deploy Request with security enabled:
 
 The invoke request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to an invocation request is either a message containing a confirmation of successful execution or an error, containing a reason for the failure.
 
-To invoke, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
+To invoke a function within a chaincode, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
 
 Invoke Request:
 ```
-POST host:port/devops/invoke
+PUT host:port/chaincode/{chaincode-id}
 
 {
   "chaincodeSpec": {
   	"type": "GOLANG",
-  	"chaincodeID":{
-    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
-  	},
   	"ctorMsg": {
     	"function":"invoke",
       	"args":["a", "b", "10"]
@@ -2131,9 +2148,6 @@ Invoke Request with security enabled:
 {
   "chaincodeSpec": {
   	"type": "GOLANG",
-  	"chaincodeID":{
-    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
-  	},
   	"ctorMsg": {
     	"function":"invoke",
       	"args":["a", "b", "10"]
@@ -2143,20 +2157,17 @@ Invoke Request with security enabled:
 }
 ```
 
-The query request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to an query request is either a message containing a confirmation of successful execution or an error, containing a reason for the failure.
+The query request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to a query request depends on the chaincode implementation. It will contain a message containing a confirmation of successful execution or an error, containing a reason for the failure. In the case of successful execution, the response will also contain values of requested state variables within the chaincode.
 
-To query, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
+To invoke a query function within a chaincode, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
 
 Query Request:
 ```
-POST host:port/devops/query
+GET host:port/chaincode/{chaincode-id}
 
 {
   "chaincodeSpec": {
   	"type": "GOLANG",
-  	"chaincodeID":{
-    	"name":"3940678a8dff854c5ca4365fe0e29771edccb16b2103578c9d9207fea56b10559b43ff5c3025e68917f5a959f2a121d6b19da573016401d9a028b4211e10b20a"
-  	},
   	"ctorMsg": {
     	"function":"query",
       	"args":["a"]
@@ -2200,7 +2211,7 @@ Query Request with security enabled:
 
 Use the Registrar APIs to manage end user registration with the certificate authority (CA). These API endpoints are used to register a user with the CA, determine whether a given user is registered, and to remove any login tokens for a target user from local storage, preventing them from executing any further transactions. The Registrar APIs are also used to retrieve user enrollment certificates from the system.
 
-The `/registrar` endpoint is used to register a user with the CA. The required Secret payload is defined below. The response to the registration request is either a confirmation of successful registration or an error, containing a reason for the failure. An example of a valid Secret message to register user 'lukas' is shown below.
+The `/registrar` endpoint is used to register a user with the CA. The required Secret payload is defined below. The response to the registration request is either a confirmation of successful registration or an error, containing a reason for the failure.
 
 ```
 message Secret {
@@ -2208,6 +2219,10 @@ message Secret {
     string enrollSecret = 2;
 }
 ```
+
+* `enrollId` - Enrollment ID with the certificate authority.
+
+* `enrollSecret` - Enrollment password with the certificate authority.
 
 Enrollment Request:
 ```
@@ -2282,11 +2297,11 @@ Enrollment Certificate Retrieval Response:
 
 ## 6.3 CLI
 
-The Openchain CLI includes a subset of the available APIs to enable developers to quickly test and debug chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms. The currently available CLI commands are summarized in the following section.
+The OBC CLI includes a subset of the available APIs to enable developers to quickly test and debug chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms. The currently available CLI commands are summarized in the following section.
 
 ### 6.3.1 CLI Commands
 
-To see what CLI commands are currently available in the Openchain implementation, execute the following:
+To see what CLI commands are currently available in the Open Blockchain implementation, execute the following:
 
     cd $GOPATH/src/github.com/openblockchain/obc-peer
     ./obc-peer
@@ -2313,15 +2328,15 @@ You will receive a response similar to below:
     Use "openchain [command] --help" for more information about a command.
 ```
 
-Some of the available command line arguments for the `./obc-peer` command are listed below:
+Some of the available command line arguments for the `obc-peer` command are listed below:
 
 * `-c` - constructor: function to trigger in order to initialize the chaincode state upon deployment.
 
 * `-l` - language: specifies the implementation language of the chaincode. Currently, only Golang is supported.
 
-* `-n` - name: chaincode identifier returned from the deploy transaction. Must be used in subsequent invoke and query transactions.
+* `-n` - name: chaincode identifier returned from the deployment transaction. Must be used in subsequent invoke and query transactions.
 
-* `-p` - path: identifies chaincode location in the local file system.
+* `-p` - path: identifies chaincode location in the local file system. Must be used as a parameter in the deployment transaction.
 
 * `-u` - username: registration id of a logged in user invoking the transaction.
 
@@ -2331,7 +2346,7 @@ Note, that any configuration settings for the peer node listed in `obc-peer/open
 
 #### 6.3.1.1 peer
 
-The CLI `peer` command will execute the Openchain peer process in either the development or production mode. The development mode is meant for running a single peer node locally, together with a local chaincode deployment. This allows a chaincode developer to modify and debug their code without standing up a complete Openchain network. An example for starting the peer in development mode is below.
+The CLI `peer` command will execute the Open Blockchain peer process in either the development or production mode. The development mode is meant for running a single peer node locally, together with a local chaincode deployment. This allows a chaincode developer to modify and debug their code without standing up a complete Open Blockchain network. An example for starting the peer in development mode is below.
 
 ```
 ./obc-peer peer --peer-chaincodedev
@@ -2345,11 +2360,13 @@ To start the peer process in production mode, modify the above command as follow
 
 #### 6.3.1.2 login
 
-The CLI `login` command will login a registered user through the CLI. To log in through the CLI, issue the following commands, where `username` is the enrollment ID of a registered user. An example is below.
+The CLI `login` command will login a user, that is already registered with the CA, through the CLI. To login through the CLI, issue the following command, where `username` is the enrollment ID of a registered user.
 
 ```
 ./obc-peer login <username>
 ```
+
+The example below demonstrates the login process for user `jim`.
 
 ```
 ./obc-peer login jim
@@ -2374,7 +2391,7 @@ The CLI `deploy` command creates the docker image for the chaincode and subseque
 ./obc-peer chaincode deploy -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
 ```
 
-With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+With security enabled, the command must be modified to pass an enrollment id of a logged in user with the `-u` parameter. An example is below.
 
 ```
 ./obc-peer chaincode deploy -u jim -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
@@ -2388,7 +2405,7 @@ The CLI `invoke` command executes a specified function within the target chainco
 ./obc-peer chaincode invoke -n <name_value_returned_from_deploy_command> -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
 ```
 
-With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+With security enabled, the command must be modified to pass an enrollment id of a logged in user with the `-u` parameter. An example is below.
 
 ```
 ./obc-peer chaincode invoke -u jim -n <name_value_returned_from_deploy_command> -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
@@ -2402,7 +2419,7 @@ The CLI `query` command triggers a specified query method within the target chai
 ./obc-peer chaincode query -l golang -n <name_value_returned_from_deploy_command> -c '{"Function": "query", "Args": ["a"]}'
 ```
 
-With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+With security enabled, the command must be modified to pass an enrollment id of a logged in user with the `-u` parameter. An example is below.
 
 ```
 ./obc-peer chaincode query -u jim -l golang -n <name_value_returned_from_deploy_command> -c '{"Function": "query", "Args": ["a"]}'
@@ -2416,12 +2433,12 @@ With security enabled, command must be modified to pass a enrollment id of a log
 <tr>
 <td width="50%"><img src="images/refarch-app.png"></td>
 <td valign="top">
-An Openchain application follows a MVC-B architecture – Model, View, Control, BlockChain.
+An OBC application follows a MVC-B architecture – Model, View, Control, BlockChain.
 <p><p>
 
 <ul>
   <li>VIEW LOGIC – Mobile or Web UI interacting with control logic.</li>
-  <li>CONTROL LOGIC – Coordinates between UI, Data Model and OpenChain APIs to drive transitions and chain-code.</li>
+  <li>CONTROL LOGIC – Coordinates between UI, Data Model and OBC APIs to drive transitions and chain-code.</li>
   <li>DATA MODEL – Application Data Model – manages off-chain data, including Documents and large files.</li>
   <li>BLOCKCHAIN  LOGIC – Blockchain logic are extensions of the Controller Logic and Data Model, into the Blockchain realm.    Controller logic is enhanced by chaincode, and the data model is enhanced with transactions on the blockchain.</li>
 </ul>
