@@ -122,10 +122,13 @@ ________________________________________________________
    - 6.3 CLI
 
 #### 7. Application Model
-   - Composition of an application
-   - Samples to illustrate
+   - 7.1 Composition of an Application
+   - 7.2 Sample Application
 
 #### 8. Future Directions
+   - 8.1 Enterprise Integration
+   - 8.2 Performance and Scalability
+   - 8.3 Additional Consensus Plugins
 
 #### 9. References
 
@@ -609,7 +612,199 @@ The above method offers performance benefits for computing crypto-hash when a fe
 
 In a particular deployment, all the peer nodes are expected to use same values for the configurations `numBuckets, maxGroupingAtEachLevel, and hashFunction`. Further, if any of these configurations are to be changed at a later stage, the configurations should be changed on all the peer nodes so that the comparison of crypto-hashes across peer nodes is meaningful. Also, this may require to migrate the existing data based on the implementation. For example, an implementation is expected to store the last computed crypto-hashes for all the nodes in the tree which would need to be recalculated.
 
-### 3.3 Chaincode (communication, api, execution, limit, determinism)
+### 3.3 Chaincode
+Chaincode is an application-level code (a.k.a. smart contract) that is executed by the Fabric. It is also stored on the ledger part of a transaction. Chaincode runs transactions and persists state.
+
+There are three types of transactions that can be executed by the chaincode
+  - deploy transaction - sends a request to the fabric to deploy the chaincode and returns an unique identifier (or "name") for the chaincode
+  - invoke transaction - sends an "invoke" request to the chaincode and returns a transaction identifier
+  - query transaction - sends the "query" request to the chaincode and returns the results of the query
+
+From a developer's point of view, a chaincode will implement a chaincode interface that supports two methods
+  - a method to execute invoke transactions (called the "Run" method in rest of the doc)
+  - a method to execute query queries (called the "Query" method in rest of the doc)
+
+The Run and Query methods will take the name of a request function along with corresponding arguments for each of the invoke and query transactions it implements.
+
+The Fabric provides support for persisting and retrieving key-value pairs on a per-chaincode basis. This support should be accessible from the Run and Query methods. An invoke transaction can change chaincode state by modifying key-value pairs, while a query transaction should not be allowed to modify them.
+
+Rest of this section is divided into three parts
+  - Chaincode Development provides an overview of developing chaincode from a chaincode developer's viewpoint
+  - Chaincode Runtime discusses the interaction between chaincode and the Validator Node at a high level
+  - Chaincode Protocol discusses the low level details of the communication between the chaincode and Validator Node
+
+##3 3.3.1 Chaincode Development
+
+The chaincode developer would implement the Run and Query methods. The Run method would be called by the Fabric for executing Deploy and Invoke transactions and the Query method would be called to execute query transactions.
+
+Additionally, on initialization the chaincode should establish a bi-directional communication stream with the Validating Node that launched the chaincode. This is done using an initialization function provided by the Fabric.
+
+The Fabric would allow the Run method to create, change, delete or retrieve key-value pairs. It will allow the Query method to retrieve key-value pairs but not modify them.
+
+The Fabric would serialize Run method calls by serializing the Deploy and Invoke transactions. However multiple Query method calls can be called concurrently.
+
+### 3.3.2 Chaincode runtime
+A high level life-cycle is as follows
+  - A deploy transaction is executed on the Validating Node
+    - The chaincode is extracted and is executed
+    - On successful execution the chaincode creates a communication channel to the Validating Node
+    - The chaincode listens on the communication channel for invoke and query requests
+  - An invoke or query transaction is executed on the validating node
+    - Chaincode is restarted if not running
+    - invoke or query transaction is sent to the chaincode
+
+### 3.3.3 Chaincode Protocol
+The communication between the Validator Node and the chaincode is based on gRPC. The Fabric provides a reference implementation for chaincode written in golang. The chaincode performs its functions by exchanging messages on a bidirectional gRPC stream.
+
+The approach taken by the reference implementation is to provide a thin "shim" layer which shields developer written chaincode from communication details. The shim layer handles the interaction between the user written chaincode and the Validating Node. All communication is accomplished using the protobuf "ChaincodeMessage"  structure.
+
+Rest of this section specifies the details of that communication protocol. We use pseudo-golang syntax to describe message structures.
+
+### 3.3.3.1 Chaincode initialization
+This section describes the interactions between chaincode and Validator Node when the Fabric launches a chaincode.
+
+The shim layer sends a one time registration message to the Validator Node
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_REGISTER, Payload: marshalled_ChaincodeID } where "marshalled_ChaincodeID" is ChaincodeID{ Name: < name of the chaincode > } marshalled using gRPC
+
+On success, the shim would receive a ChaincodeMessage with Type ChaincodeMessage_Type_REGISTERED
+
+On failure, the shim would receive a ChaincodeMessage with Type ChaincodeMessage_Type_ERROR. The shim should close the gRPC channel and exit.
+
+After registration, the shim receives an init message from the Validator Node
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_INIT, Payload: marshalled_ChaincodeInput, Uuid: "< a unique id" > } where "marshalled_ChaincodeInput" is ChaincodeInput { Function: "<name of function>", Args: { "arg1", "arg2", ..}
+
+The shim should call the Run method of the chaincode with parameters Function and Args received from the above message.
+
+The chaincode can return an error or a response message. The shim would send response message back to the Validator Node using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: <response message as bytes>, Uuid: "the unique id received on the init message from the Validator Node" }
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the init message from the Validator Node" }
+
+At this point the chaincode initialization is complete and is ready to receive Invoke and Query Transactions.
+
+### 3.3.3.2 Invoke transaction sent to the Chaincode
+This section describes the interactions between the chaincode and the Validator Node when the Fabric sends an Invoke message to the chaincode. The Validator Node will serialize invoke transactions so that the shim will receive one transaction at a time.
+
+The shim layer receives invoke transaction message from the Validator Node
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_TRANSACTION, Payload: marshalled_ChaincodeInput } where "marshalled_ChaincodeInput" is ChaincodeInput { Function: "<name of function>", Args: { "arg1", "arg2", ..}
+
+The shim should call the Run method of the chaincode with parameters Function and Args received from the above message.
+
+The chaincode can return an error or a response message. The shim would send response message back to the Validator Node using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: <response message as bytes>, Uuid: "the unique id received on the request message from the Validator Node" }
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the request message from the Validator Node" }
+
+At this point the invoke transaction is complete and the shim layer is ready to receive another invoke transaction.
+
+
+### 3.3.3.3 Query request sent to the chaincode
+This section describes the interactions between the chaincode and the Validator Node when the Fabric sends an Query message to the chaincode. The Validator Node can send multiple Query requests concurrently.
+
+The shim layer receives query request message from the Validator Node
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_QUERY, Payload: marshalled_ChaincodeInput } where "marshalled_ChaincodeInput" is ChaincodeInput { Function: "<name of function>", Args: { "arg1", "arg2", ..}
+
+The shim should call the Query method of the chaincode with parameters Function and Args received from the above message.
+
+The chaincode can return an error or a response message. The shim would send response message back to the Validator Node using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: <response message as bytes>, Uuid: "the unique id received on the request message from the Validator Node" }
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the request message from the Validator Node" }
+
+At this point the query request is complete.
+
+### 3.3.3.4 State requests from chaincode to the Validator Node
+
+The sections above dealt with how a user can send requests to the chaincode via the Fabric.This section deals with the protocol by which chaincode can store, modify and retrieve state information in the Fabric. The primitives of interaction are
+  - PUT_STATE - store a (key, value) pair with the Fabric
+  - GET_STATE - given a key, get its value from the Fabric
+  - DEL_STATE - delete a key and its value from the Fabric
+  - RANGE_QUERY_STATE - get a range of key values from the Fabric
+  - INVOKE_CHAINCODE - invoke another chaincode by supplying (function name, arguments)
+  - QUERY_CHAINCODE - query another chaincode by supplying (function name, arguments)
+
+These state requests can be initiated by the chaincode as part of the processing of the init, invoke or query requests described in the previous sections (referred to as "initiating request" below).
+
+#### 3.3.3.4.1 PUT_STATE
+On receiving {key, value} from the chaincode, the shim would send the following message to the Fabric
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_PUT_STATE, Payload: <marshalled_PutStateInfo>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_PutStateInfo" is PutStateInfo{ Key: key, Value: value }
+
+The Fabric can return an error or a response message which the shim would report back to the chaincode appropriately.
+
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+#### 3.3.3.4.2 GET_STATE
+On receiving a key from the chaincode, the shim would send the following message to the Fabric
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_GET_STATE, Payload: <marshalled_key>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_key" is the key marshalled as raw bytes.
+
+The Fabric can return an error or a response message.
+
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: bytes_value, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
+
+#### 3.3.3.4.3 DEL_STATE
+On receiving a key from the chaincode, the shim would send the following message to the Fabric
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_DEL_STATE, Payload: <marshalled_key>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_key" is the key marshalled as raw bytes.
+
+The Fabric can return an error or a response message which the shim would report back to the chaincode appropriately.
+
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+#### 3.3.3.4.4 RANGE_QUERY_STATE
+
+On receiving a "start-key" an "end-key" and a "limit" from the chaincode, the shim would send the following message to the Fabric
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RANGE_QUERY_STATE, Payload: <marshalled_RangeQueryStateInfo>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_RangeQueryStateInfo" is RangeQueryStateInfo{StartKey: start-key, EndKey: end-key, Limit: limit} marshalled as raw bytes.
+
+The Fabric can return an error or a response message.
+
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: marshalled_RangeQueryStateResponse, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_RangeQueryStateResponse" is the marshalled bytes of RangeQueryStateResponse. RangeQueryStateResponse contains an array of {key,value} pairs starting with the "start-key", ending with the "end-key" and limited by the specified by the "limit" value.
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
+
+#### 3.3.3.4.5 INVOKE_CHAINCODE
+
+On receiving a "chaincode name", a "function name" and "arguments" from the chaincode, the shim would send the following message to the Fabric
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_INVOKE_CHAINCODE, Payload: <marshalled_ChaincodeSpec>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_ChaincodeSpec" is ChaincodeSpec{ChaincodeID: <the chaincode name>, ChaincodeInput{ Function: <function name>, Args: <arguments>} } marshalled as raw bytes.
+
+The Fabric can return an error or a response message.
+
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: bytes_value, Uuid: "the unique id received on the initiating request from the Validator Node" } where "bytes_value" is response from called chaincode marshalled as raw bytes.
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
+
+#### 3.3.3.4.6 QUERY_CHAINCODE
+
+On receiving a "chaincode name", a "function name" and "arguments" from the chaincode, the shim would send the following message to the Fabric
+  - ChaincodeMessage 
+  { Type: ChaincodeMessage_Type_QUERY_CHAINCODE, Payload: <marshalled_ChaincodeSpec>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_ChaincodeSpec" is ChaincodeSpec{ChaincodeID: <the chaincode name>, ChaincodeInput{ Function: <function name>, Args: <arguments>} } marshalled as raw bytes.
+
+The Fabric can return an error or a response message.
+
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: bytes_value, Uuid: "the unique id received on the initiating request from the Validator Node" } where "bytes_value" is response from called chaincode marshalled as raw bytes.
+
+and would send an error using the following message
+  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
+
+The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
 
 
 ### 3.4 Pluggable Consensus Framework
@@ -1922,11 +2117,11 @@ The OBC API design covers the categories below, though the implementation is inc
 *  Identity - Enrollment to get certificates or revoking a certificate
 *  Address - Target and source of a transaction
 *  Transaction - Unit of execution on the ledger
-*  Chaincode (Devops) - Program running on the ledger
+*  Chaincode - Program running on the ledger
 *  Blockchain - Contents of the ledger
 *  Network - Information about the blockchain network
 *  Storage - External store for files or documents
-*  Event - Sub/pub events on blockchain
+*  Event Stream - Sub/pub events on blockchain
 
 ## 6.1 REST Service
 The Open Blockchain REST service can be enabled (via configuration) on either validating or non-validating peers, but it is recommended to only enabled the REST service on non-validating peers on production networks.
@@ -2427,6 +2622,8 @@ With security enabled, the command must be modified to pass an enrollment id of 
 
 
 ## 7. Application Model
+
+### 7.1 Composition of an Application
 <table>
 <col>
 <col>
@@ -2448,6 +2645,8 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 </td>
 </tr>
 </table>
+
+### 7.2 7.2 Sample Application
 
 
 ## 8. Future Directions
