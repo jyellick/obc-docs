@@ -141,7 +141,7 @@ The Membership category provides services for managing identity, privacy, and co
 
 Blockchain services manage the distributed ledger through a peer-to-peer protocol, built on HTTP/2. The data structures are highly optimized to provide the most efficient hash algorithm for maintaining the world state replication. Different consensus (PBFT, Raft, PoW, PoS) may be plugged in and configured per deployment.
 
-Chaincode services are a secured and lightweight way to sandbox the chaincode execution on the validators. The environment is a “locked down” and secured container along with a set of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required.
+Chaincode services are a secured and lightweight way to sandbox the chaincode execution on the validators. The environment is a “locked down” and secured container along with a set of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang (ready), Java (planned), and Node.js (planned). Other languages can be enabled if required.
 
 
 #### MEMBERSHIP
@@ -207,7 +207,7 @@ Event Hub in a decentralized network is complex in nature, as an event may appea
 <td valign="top">
 As defined in the previous sections, chaincode is a decentralized transactional program, running on the validators. <p><p>
 
-Chaincode Services use <a href="https://github.com/docker/"> Docker </a> to host the chaincode without relying on any particular virtual machine or computer language. Docker provides a secured, lightweight way to sandbox the chaincode execution. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang, Java, and Node.js. Other languages can be enabled if required. <p><p>
+Chaincode Services use <a href="https://github.com/docker/"> Docker </a> to host the chaincode without relying on any particular virtual machine or computer language. Docker provides a secured, lightweight way to sandbox the chaincode execution. The environment is a “locked down” and secured container along with a set of of signed base images containing secure OS and chaincode language, runtime and SDK images for Golang. Other languages can be enabled if required. <p><p>
 
 Secure Registry service enables Secured Docker Registry of base Open Blockchain images and custom images containing chaincodes.<p><p>
 
