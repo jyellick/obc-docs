@@ -290,18 +290,12 @@ Similar to cloud hosted multiple networks, using participants’ own networks is
 
 OBC’s sole mission is to bring blockchian technology to the masses. After reviewing available blockchain solutions and hearing use cases from both industry leaders and technology evangelists, we’re convinced that blockchain will be an extremely important technology pattern that can revolutionize many industries and businesses.
 
-We have observed that industry is urgently calling for a business ready blockchain fabric that is both efficient and scalable, and that offers enterprise grade support on privacy and confidentiality. We have also noticed that there are many different categories of use cases and each may have different requirements on its underlying blockchain network, so one solution may not fit all. 
+We have observed that industry is urgently calling for a business ready blockchain fabric that is both efficient and scalable, and offers enterprise grade support on privacy and confidentiality. We have also noticed that there are many different categories of use cases and each may require different underlying blockchain implementation. 
 
-To fully realize the potential of blockchain technology, and to create a standard that can be adopted into many different uses, we designed the open blockchain fabric to be both flexible and extensible. We also developed the default implementation of the OBC protocol, which included many latest advances in computer science such as those around cryptography and consensus.
+To fully realize the potential of blockchain technology and to create a standard that can be adopted into many different uses, we designed the open blockchain fabric to be both flexible and extensible. In addition, we are also leading the default implementation of the OBC protocol, which has included many latest advances in multiple computer science disciplines.
 
-To have a better understanding of the open blockchain protocol, we invite you to read our [protocol specification] (protocol-spec.md), it will get you ready to start using OBC to build your applications, or even to contribute to the project. 
+If you want to have a better understanding of the open blockchain protocol, we invite you to read our [protocol specification] (protocol-spec.md), it will get you ready to start using OBC to build your applications, or even to contribute to the project. 
 
-
-## Authors
-Frank Lu, Binh Nguyen, John Wolpert, Sharon Coco
-
-## Reviewers
-Anna Darbakova, Marko Vukolic, Elli Androulaki, Dulce Ponceleon, Josh Horton, Nick Gaski
 
 ## References
 - [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
