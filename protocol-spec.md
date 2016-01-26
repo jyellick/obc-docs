@@ -40,6 +40,9 @@ ________________________________________________________
    - 2.1.5 Application Programming Interface
    - 2.1.6 Command Line Interface
    - 2.2 Topology
+   - 2.2.1 Single Validating Peer
+   - 2.2.2 Multiple Validating Peers
+   - 2.2.3 Multichain
 
 #### 3. Protocol
 
@@ -108,7 +111,7 @@ ________________________________________________________
 #### 5. Byzantine Consensus
    - 5.1 Overview
    - 5.2 Core PBFT
-   - 5.3 Inner Ccnsensus Programming Interface
+   - 5.3 Inner Consensus Programming Interface
    - 5.4 Sieve Consensus
 
 #### 6. Application Programming Interface
@@ -161,7 +164,7 @@ These terminologies are defined within the limited scope of this specification t
 
 **Permissioned Ledger** Each entity or node on the blockchain network is required to be a member of the network. Anonymous nodes are not allowed to connect.
 
-**Privacy** Transactors need privacy to conceal their identities on the network. While members of the network may examining the transactions, but the transactions can't be linked to the transactor without special privilege.
+**Privacy** Transactors need privacy to conceal their identities on the network. While members of the network may examine the transactions, but the transactions can't be linked to the transactor without special privilege.
 
 **Confidentiality** is the ability to render the transaction content inaccessible to anyone other than the stakeholders of the transaction.
 
@@ -174,10 +177,9 @@ These terminologies are defined within the limited scope of this specification t
 Open Blockchain The fabric is made up of the core components described in the subsections below.
 
 ### 2.1 Architecture
-Figure 1 shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode services. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
+The reference architecture is aligned in 3 categories: Membership, Blockchain, and Chaincode services. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
 ![Reference architecture](images/refarch.png)
-Figure 1:  Openchain Reference architecture
 
 ##### 2.1.1 Membership Services
 Membership provides services for managing identity, privacy, and confidentiality on the network. Participants register to get identities, which will enable the Attribute Authority to issue security keys to transact. Reputation Manager enables auditors to see transactions pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
@@ -198,17 +200,24 @@ The primary interface to OBC is a REST API and its variations over Swagger 2.0. 
 CLI includes a subset of APIs to enable developers to quickly test chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms.
 
 ### 2.2 Topology
-A deployment of Open Blockchain may consist of a member service, many validating nodes, non-validating nodes, and 1 or more applications client. All makes up a chain. There can be multiple chains; each has own operating parameters and security concerns.
+A deployment of Open Blockchain may consist of a membership services, many validating peers, non-validating peers, and 1 or more applications. All makes up a chain. There can be multiple chains; each has own operating parameters and security concerns.
 
-_TODO: Diagram show connections between entities_
+### 2.2.1 Single Validating Peer
+Functionally, a non-validating peer is a subset of a validating peer; that is, every capability on a non-validating peer may be enabled on a validating peer, so the simplest blockchain network of OBC may consist of a single validating node. This configuration is most appropriate for development environment, where a validating peer may be started up as needed during edit-compile-debug cycle.
 
-There are 3 potential deployment models: Cloud hosted 1 network, cloud hosted multiple networks, or within each participant’s intranet.
+![Single Validating Peer](images/top-single-peer.png)
 
-The simplest and most efficient topology is cloud hosted 1 network (public or private cloud), where each participant owes a number of nodes, including validating and non-validating. Even though the network is in cloud, hosted by a vendor, who owns the physical boxes, the participants contractually control the computing resources, making it decentralized within a centralized environment.
+A single validating peer doesn't require consensus, so by default, it uses `noops` plugin, which executes transactions as they arrive. This gives the developer an immediate feedback during development.
 
-Cloud hosted multiple networks allow participants to have their nodes hosted by any cloud providers, given that nodes can connect to one another over HTTPs.
+### 2.2.2 Multiple Validating Peers
+Production or test networks should be made up of multiple validating and non-validating peers as necessary. Non-validating peers can take some workload off the validating peers, such as handling API requests and processing events.
 
-Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
+![Multiple Validating Peers](images/top-multi-peer.png)
+
+The validating peers form a mesh-network (every peer connects to every other peer) to disseminate information. A non-validating peer connects to a neighboring validating peer that it is allowed to connect to. Non-validating peers are optional since applications may communicate directly with validating peers.
+
+### 2.2.3 Multichain
+Each network of validating and non-validating peers makes up a chain. Many chains may be created to address different needs, similar to having multiple Web sites, each serves a different purpose.
 
 
 ## 3. Protocol
