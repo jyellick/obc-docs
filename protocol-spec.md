@@ -672,21 +672,18 @@ type CPI interface {
 
 ### 3.4.3 `Inquirer` interface
 
-### 3.4.4 `Communicator` interface
-
 Definition:
 
 ```
-type Communicator interface {
-	GetNetworkHandles() (self *pb.PeerID, network []*pb.PeerID, err error)
-	Broadcast(msg *pb.OpenchainMessage) error
-	Unicast(msg *pb.OpenchainMessage, receiverHandle *pb.PeerID) error
+type Inquirer interface {
+        GetNetworkInfo() (self *pb.PeerEndpoint, network []*pb.PeerEndpoint, err error)
+        GetNetworkHandles() (self *pb.PeerID, network []*pb.PeerID, err error)
 }
 ```
 
-This interface is a part of the `consensus.CPI` interface. It is used to get the handles of the validating peers in the network (`helper.GetNetworkHandles`) and communicate with them (`helper.Broadcast`, `helper.Unicast`):
+This interface is a part of the `consensus.CPI` interface. It is used to get the handles of the validating peers in the network (`GetNetworkHandles`) as well as details about the those validating peers (`GetNetworkInfo`):
 
-Note that the peers are identified by a `pb.PeerID` object. This is a protobuf message (in the `protos` package), currently defined as (notice that this definition will be modified):
+Note that the peers are identified by a `pb.PeerID` object. This is a protobuf message (in the `protos` package), currently defined as (notice that this definition will likely be modified):
 
 ```
 message PeerID {
@@ -694,7 +691,31 @@ message PeerID {
 }
 ```
 
+### 3.4.4 `Communicator` interface
+
+Definition:
+
+```
+type Communicator interface {
+	Broadcast(msg *pb.OpenchainMessage) error
+	Unicast(msg *pb.OpenchainMessage, receiverHandle *pb.PeerID) error
+}
+```
+
+This interface is a part of the `consensus.CPI` interface. It is used to communicate with other peers on the network (`helper.Broadcast`, `helper.Unicast`):
+
 ### 3.4.5 `SecurityUtils` interface
+
+Definition:
+
+```
+type SecurityUtils interface {
+        Sign(msg []byte) ([]byte, error)
+        Verify(peerID *pb.PeerID, signature []byte, message []byte) error
+}
+```
+
+This interface is a part of the `consensus.CPI` interface. It is used to handle the cryptographic operations of message signing (`Sign`) and verifying signatures (`Verify`)
 
 ### 3.4.6 `LedgerStack` interface
 
