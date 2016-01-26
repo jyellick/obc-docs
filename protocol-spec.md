@@ -66,6 +66,13 @@ ________________________________________________________
    - 3.2.2.1 Hashing the world state
    - 3.2.2.1.1 Bucket-tree
    - 3.3 Chaincode
+   - 3.3.1 Chaincode Development
+   - 3.3.2 Chaincode Runtime
+   - 3.3.3 Chaincode Protocol
+   - 3.3.3.1 Chaincode Initialization
+   - 3.3.3.2 Chaincode Invoke
+   - 3.3.3.3 Chaincode Query
+   - 3.3.3.4 Chaincode State
    - 3.4 Pluggable Consensus Framework
    - 3.4.1 Consenter interface
    - 3.4.2 Consensus Programming Interface
@@ -84,6 +91,10 @@ ________________________________________________________
    - 3.4.9 RemoteLedgers interface
    - 3.4.10 Controller package
    - 3.4.11 Helper package
+   - 3.5 Events
+   - 3.4.1 Event Stream
+   - 3.4.2 Event Structure
+   - 3.4.3 Event Adapters
 
 #### 4. Security
    - 4. Security
@@ -129,6 +140,7 @@ ________________________________________________________
    - 8.1 Enterprise Integration
    - 8.2 Performance and Scalability
    - 8.3 Additional Consensus Plugins
+   - 8.4 Additional Languages 
 
 #### 9. References
 
@@ -633,7 +645,7 @@ Rest of this section is divided into three parts
   - Chaincode Runtime discusses the interaction between chaincode and the Validator Node at a high level
   - Chaincode Protocol discusses the low level details of the communication between the chaincode and Validator Node
 
-##3 3.3.1 Chaincode Development
+### 3.3.1 Chaincode Development
 
 The chaincode developer would implement the Run and Query methods. The Run method would be called by the Fabric for executing Deploy and Invoke transactions and the Query method would be called to execute query transactions.
 
@@ -660,7 +672,7 @@ The approach taken by the reference implementation is to provide a thin "shim" l
 
 Rest of this section specifies the details of that communication protocol. We use pseudo-golang syntax to describe message structures.
 
-### 3.3.3.1 Chaincode initialization
+### 3.3.3.1 Chaincode Initialization
 This section describes the interactions between chaincode and Validator Node when the Fabric launches a chaincode.
 
 The shim layer sends a one time registration message to the Validator Node
@@ -683,7 +695,7 @@ and would send an error using the following message
 
 At this point the chaincode initialization is complete and is ready to receive Invoke and Query Transactions.
 
-### 3.3.3.2 Invoke transaction sent to the Chaincode
+### 3.3.3.2 Chaincode Invoke
 This section describes the interactions between the chaincode and the Validator Node when the Fabric sends an Invoke message to the chaincode. The Validator Node will serialize invoke transactions so that the shim will receive one transaction at a time.
 
 The shim layer receives invoke transaction message from the Validator Node
@@ -700,7 +712,7 @@ and would send an error using the following message
 At this point the invoke transaction is complete and the shim layer is ready to receive another invoke transaction.
 
 
-### 3.3.3.3 Query request sent to the chaincode
+### 3.3.3.3 Chaincode Query
 This section describes the interactions between the chaincode and the Validator Node when the Fabric sends an Query message to the chaincode. The Validator Node can send multiple Query requests concurrently.
 
 The shim layer receives query request message from the Validator Node
@@ -716,7 +728,7 @@ and would send an error using the following message
 
 At this point the query request is complete.
 
-### 3.3.3.4 State requests from chaincode to the Validator Node
+### 3.3.3.4 Chaincode State
 
 The sections above dealt with how a user can send requests to the chaincode via the Fabric.This section deals with the protocol by which chaincode can store, modify and retrieve state information in the Fabric. The primitives of interaction are
   - PUT_STATE - store a (key, value) pair with the Fabric
@@ -794,7 +806,7 @@ The shim would extract the Payload from a successful response message or the err
 #### 3.3.3.4.6 QUERY_CHAINCODE
 
 On receiving a "chaincode name", a "function name" and "arguments" from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage 
+  - ChaincodeMessage
   { Type: ChaincodeMessage_Type_QUERY_CHAINCODE, Payload: <marshalled_ChaincodeSpec>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_ChaincodeSpec" is ChaincodeSpec{ChaincodeID: <the chaincode name>, ChaincodeInput{ Function: <function name>, Args: <arguments>} } marshalled as raw bytes.
 
 The Fabric can return an error or a response message.
@@ -1232,6 +1244,11 @@ The function inspects the `Type` of the incoming `OpenchainMessage`. There are f
   2. Equal to `pb.OpenchainMessage_CHAIN_TRANSACTION` (i.e. an external deployment request): a response message is sent to the user first, then the message is passed to the `consenter.RecvMsg` function.
   3. Equal to `pb.OpenchainMessage_CHAIN_QUERY` (i.e. a query): passed to the `helper.doChainQuery` method so as to get executed locally.
   4. Otherwise: passed to the `HandleMessage` method of the next handler down the stack.
+
+### 3.5 Events
+### 3.4.1 Event Stream
+### 3.4.2 Event Structure
+### 3.4.3 Event Adapters
 
 
 ## 4. Security
@@ -2650,6 +2667,10 @@ For example, a Bluemix PaaS application using Node.js might have a Web front-end
 
 
 ## 8. Future Directions
+### 8.1 Enterprise Integration
+### 8.2 Performance and Scalability
+### 8.3 Additional Consensus Plugins
+### 8.4 Additional Languages
 
 
 ## 9. References
