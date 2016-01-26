@@ -66,19 +66,21 @@ ________________________________________________________
    - 3.4 Pluggable Consensus Framework
    - 3.4.1 Consenter interface
    - 3.4.2 Consensus Programming Interface
-   - 3.4.3 Communicator interface
-   - 3.4.4 LedgerStack interface
-   - 3.4.5 Executor interface
-   - 3.4.5.1 Beginning a transaction batch
-   - 3.4.5.2 Executing transactions
-   - 3.4.5.3 Committing and rolling-back transactions
-   - 3.4.6 Ledger interface
-   - 3.4.6.1 ReadOnlyLedger interface
-   - 3.4.6.2 UtilLedger interface
-   - 3.4.6.3 WritableLedger interface
-   - 3.4.7 RemoteLedgers interface
-   - 3.4.8 Controller package
-   - 3.4.9 Helper package
+   - 3.4.3 Inquirer interface
+   - 3.4.4 Communicator interface
+   - 3.4.5 SecurityUtils interface
+   - 3.4.6 LedgerStack interface
+   - 3.4.7 Executor interface
+   - 3.4.7.1 Beginning a transaction batch
+   - 3.4.7.2 Executing transactions
+   - 3.4.7.3 Committing and rolling-back transactions
+   - 3.4.8 Ledger interface
+   - 3.4.8.1 ReadOnlyLedger interface
+   - 3.4.8.2 UtilLedger interface
+   - 3.4.8.3 WritableLedger interface
+   - 3.4.9 RemoteLedgers interface
+   - 3.4.10 Controller package
+   - 3.4.11 Helper package
 
 #### 4. Security
    - 4. Security
@@ -656,7 +658,9 @@ Definition:
 
 ```
 type CPI interface {
+	Inquirer
 	Communicator
+	SecurityUtils
 	LedgerStack
 }
 ```
@@ -666,7 +670,9 @@ type CPI interface {
   1. Is instantiated when the `helper.NewConsensusHandler` is called.
   2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object (refer to `controller.NewConsenter`).
 
-### 3.4.3 `Communicator` interface
+### 3.4.3 `Inquirer` interface
+
+### 3.4.4 `Communicator` interface
 
 Definition:
 
@@ -688,7 +694,9 @@ message PeerID {
 }
 ```
 
-### 3.4.4 `LedgerStack` interface
+### 3.4.5 `SecurityUtils` interface
+
+### 3.4.6 `LedgerStack` interface
 
 Definition:
 
@@ -702,7 +710,7 @@ type LedgerStack interface {
 
 A key member of the `CPI` interface, `LedgerStack` groups interaction of consensus with the rest of the Open Blockchain blockchain fabric, such as the execution of transactions, querying, and updating the ledger.  This interface supports querying the local blockchain and state, updating the local blockchain and state, and querying the blockchain and state of other nodes in the consensus network. It consists of three parts: `Executor`, `Ledger` and `RemoteLedgers` interfaces. These are described in the following.
 
-### 3.4.5 `Executor` interface
+### 3.4.7 `Executor` interface
 
 Definition:
 
@@ -718,7 +726,7 @@ type Executor interface {
 
 The executor interface is the most frequently utilized portion of the `LedgerStack` interface, and is the only piece which is strictly necessary for a consensus network to make progress.  The interface allows for a transaction to be started, executed, rolled back if necessary, previewed, and potentially committed.  This interface is comprised of the following methods.
 
-#### 3.4.5.1 Beginning a transaction batch
+#### 3.4.7.1 Beginning a transaction batch
 
 ```
 BeginTxBatch(id interface{}) error
@@ -726,7 +734,7 @@ BeginTxBatch(id interface{}) error
 
 This call accepts an arbitrary `id`, deliberately opaque, as a way for the consensus plugin to ensure only the transactions associated with this particular batch are executed. For instance, in the pbft implementation, this `id` is the an encoded hash of the transactions to be executed.
 
-#### 3.4.5.2 Executing transactions
+#### 3.4.7.2 Executing transactions
 
 ```
 ExecTXs(id interface{}, txs []*pb.Transaction) ([]byte, []error)
@@ -734,7 +742,7 @@ ExecTXs(id interface{}, txs []*pb.Transaction) ([]byte, []error)
 
 This call accepts an array of transactions to execute against the current state of the ledger and returns the current state hash in addition to an array of errors corresponding to the array of transactions.  Note that a transaction resulting in an error has no effect on whether a transaction batch is safe to commit.  It is up to the consensus plugin to determine the behavior which should occur when failing transactions are encountered.  This call is safe to invoke multiple times.
 
-#### 3.4.5.3 Committing and rolling-back transactions
+#### 3.4.7.3 Committing and rolling-back transactions
 
 ```
 RollbackTxBatch(id interface{}) error
@@ -755,7 +763,7 @@ CommitTxBatch(id interface{}, transactions []*pb.Transaction, transactionsResult
 This call commits a block to the blockchain.  Blocks must be committed to a blockchain in total order. ``CommitTxBatch`` concludes the transaction batch, and a new call to `BeginTxBatch` must be made before any new transactions are executed and committed.
 
 
-### 3.4.6 `Ledger` interface
+### 3.4.8 `Ledger` interface
 
 Definition:
 
@@ -769,7 +777,7 @@ type Ledger interface {
 
 ``Ledger`` interface is intended to allow the consensus plugin to interrogate and possibly update the current state and blockchain. It is comprised of the three interfaces described below.
 
-#### 3.4.6.1 `ReadOnlyLedger` interface
+#### 3.4.8.1 `ReadOnlyLedger` interface
 
 Definition:
 
@@ -805,7 +813,7 @@ GetCurrentStateHash() (stateHash []byte, err error)
 This call returns the current state hash for the ledger.  In general, this function should never fail, though in the unlikely event that this occurs, the error is passed to the caller to decide what if any recovery is necessary.
 
 
-#### 3.4.6.2 `UtilLedger` interface
+#### 3.4.8.2 `UtilLedger` interface
 
 Definition:
 
@@ -832,7 +840,7 @@ This utility method is intended for verifying large sections of the blockchain. 
 
 
 
-#### 3.4.6.3 `WritableLedger` interface
+#### 3.4.8.3 `WritableLedger` interface
 
 Definition:
 
@@ -879,7 +887,7 @@ type WritableLedger interface {
 
 	This function will delete the entire current state, resulting in a pristine empty state.  It is intended to be called before loading an entirely new state via deltas.  This is generally only useful to the state transfer API.
 
-### 3.4.7 `RemoteLedgers` interface
+### 3.4.9 `RemoteLedgers` interface
 
 Definition:
 
@@ -911,9 +919,9 @@ The `RemoteLedgers` interface exists primarily to enable state transfer and to i
 
 	This function attempts to retrieve a stream of `*pb.SyncStateDeltas` from the peer designated by `peerID` for the range from `start` to `finish`.  The caller must validated that the desired block delta is being returned, as it is possible that slow results from another request could appear on this channel.  Invoking this call for the same `peerID` a second time will cause the first channel to close.
 
-### 3.4.8 `controller` package
+### 3.4.10 `controller` package
 
-#### 3.4.8.1 controller.NewConsenter
+#### 3.4.10.1 controller.NewConsenter
 
 Signature:
 
@@ -927,13 +935,13 @@ The plugin author needs to edit the function's body so that it routes to the rig
 
 This function is called by `helper.NewConsensusHandler` when setting the `consenter` field of the returned message handler. The input argument `cpi` is the output of the `helper.NewHelper` constructor and implements the `consensus.CPI` interface.
 
-### 3.4.9 `helper` package
+### 3.4.11 `helper` package
 
-#### 3.4.9.1 High-level overview
+#### 3.4.11.1 High-level overview
 
 A validating peer establishes a message handler (`helper.ConsensusHandler`) for every connected peer, via the `helper.NewConsesusHandler` function (a handler factory). Every incoming message is inspected on its type (`helper.HandleMessage`); if it's a message for which consensus needs to be reached, it's passed on to the peer's consenter object (`consensus.Consenter`). Otherwise it's passed on to the next message handler in the stack.
 
-#### 3.4.9.2 helper.ConsensusHandler
+#### 3.4.11.2 helper.ConsensusHandler
 
 Definition:
 
@@ -951,7 +959,7 @@ Within the context of consensus, we focus only on the `coordinator` and `consent
 
 Notice that `obc-peer/openchain/peer/peer.go` defines the `peer.MessageHandler` (interface), and `peer.MessageHandlerCoordinator` (interface) types.
 
-#### 3.4.9.3 helper.NewConsensusHandler
+#### 3.4.11.3 helper.NewConsensusHandler
 
 Signature:
 
@@ -961,7 +969,7 @@ func NewConsensusHandler(coord peer.MessageHandlerCoordinator, stream peer.ChatS
 
 Creates a `helper.ConsensusHandler` object. Sets the same `coordinator` for every message handler. Also sets the `consenter` equal to: `controller.NewConsenter(NewHelper(coord))`
 
-### 3.4.10 helper.Helper
+### 3.4.11.4 helper.Helper
 
 Definition:
 
@@ -973,7 +981,7 @@ type Helper struct {
 
 Contains the reference to the validating peer's `coordinator`. Is the object that implements the `consensus.CPI` interface for the peer.
 
-#### 3.4.10.1 helper.NewHelper
+#### 3.4.11.5 helper.NewHelper
 
 Signature:
 
@@ -984,7 +992,7 @@ func NewHelper(mhc peer.MessageHandlerCoordinator) consensus.CPI
 Returns a `helper.Helper` object whose `coordinator` is set to the input argument `mhc` (the `coordinator` field of the `helper.ConsensusHandler` message handler). This object implements the `consensus.CPI` interface, thus allowing the plugin to interact with the stack.
 
 
-#### 3.4.10.2 helper.HandleMessage
+#### 3.4.11.6 helper.HandleMessage
 
 Recall that the `helper.ConsesusHandler` object returned by `helper.NewConsensusHandler` implements the `peer.MessageHandler` interface:
 
