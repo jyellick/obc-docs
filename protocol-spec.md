@@ -108,7 +108,7 @@ ________________________________________________________
 #### 5. Byzantine Consensus
    - 5.1 Overview
    - 5.2 Core PBFT
-   - 5.3 Inner Ccnsensus Programming Interface
+   - 5.3 Inner Consensus Programming Interface
    - 5.4 Sieve Consensus
 
 #### 6. Application Programming Interface
@@ -130,7 +130,7 @@ ________________________________________________________
 This document specifies the principles, architecture, and protocol of Open Blockchain, a blockchain implementation suitable for industrial use-cases.
 
 ### 1.1 What is Open Blockchain?
-Open Blockchain is a ledger of digital events, called transactions, shared among  different participants, each has a stake in the system. The ledger can only be updated by consensus of the participants, and, once recorded, information can never be altered. Each recorded event is cryptographically verifiable with proof of agreement from the participants.
+Open Blockchain is a ledger of digital events, called transactions, shared among  different participants, each having a stake in the system. The ledger can only be updated by consensus of the participants, and, once recorded, information can never be altered. Each recorded event is cryptographically verifiable with proof of agreement from the participants.
 
 Open Blockchain transactions are secured, private, and confidential. Each participant registers with proof of identity to the network membership services to gain access to the system. Transactions are issued with derived certificates unlinkable to the individual participant, offering a complete anonymity on the network. Transaction content is encrypted with sophisticated key derivation functions to ensure only intended participants may see the content, protecting the confidentiality of the business transactions.
 
@@ -171,7 +171,7 @@ These terminologies are defined within the limited scope of this specification t
 
 ## 2. Fabric
 
-Open Blockchain The fabric is made up of the core components described in the subsections below.
+Open Blockchain fabric is made up of the core components described in the subsections below.
 
 ### 2.1 Architecture
 Figure 1 shows the reference architecture aligned in 3 categories: Membership, Blockchain, and Chaincode services. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
@@ -198,17 +198,17 @@ The primary interface to OBC is a REST API and its variations over Swagger 2.0. 
 CLI includes a subset of APIs to enable developers to quickly test chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms.
 
 ### 2.2 Topology
-A deployment of Open Blockchain may consist of a member service, many validating nodes, non-validating nodes, and 1 or more applications client. All makes up a chain. There can be multiple chains; each has own operating parameters and security concerns.
+A deployment of Open Blockchain may consist of a member service, many validating nodes, non-validating nodes, and one or more application clients. All of these components make up a chain. There can be multiple chains; each having its own operating parameters and security concerns.
 
 _TODO: Diagram show connections between entities_
 
 There are 3 potential deployment models: Cloud hosted 1 network, cloud hosted multiple networks, or within each participant’s intranet.
 
-The simplest and most efficient topology is cloud hosted 1 network (public or private cloud), where each participant owes a number of nodes, including validating and non-validating. Even though the network is in cloud, hosted by a vendor, who owns the physical boxes, the participants contractually control the computing resources, making it decentralized within a centralized environment.
+The simplest and most efficient topology is cloud hosted 1 network (public or private cloud), where each participant owns a number of nodes, both validating and non-validating. Even though the network is in the cloud and hosted by a vendor, who owns the physical boxes, the participants contractually control the computing resources, making it decentralized within a centralized environment.
 
-Cloud hosted multiple networks allow participants to have their nodes hosted by any cloud providers, given that nodes can connect to one another over HTTPs.
+Cloud hosted multiple networks allow participants to have their nodes hosted by any cloud provider, given that nodes can connect to one another over HTTPs.
 
-Similar to cloud hosted multiple networks, using participants’ own networks is also possible via HTTPs channel.
+Similar to cloud hosted multiple networks, using participants’ own networks is also possible via an HTTPs channel.
 
 
 ## 3. Protocol
@@ -408,9 +408,6 @@ message ChaincodeDeploymentSpec {
 - `chaincodeSpec` - See section 3.1.2.2 above.
 - `effectiveDate` - Time when the chaincode is ready to accept invocations.
 - `codePackage` - gzip of the chaincode source.
-
-TODO: Show an example of ChaincodeDeploymentSpec
-`./obc-peer chaincode deploy -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'`
 
 
 ### 3.1.2.4 Invoke Transaction
@@ -1787,7 +1784,7 @@ func (pbft *pbftCore) close()
 
 The `close` method terminates all background operations.  This interface is mostly exposed for testing, because during operation of the obc peer, there is never a need to terminate the PBFT instance.
 
-### 5.3 Inner Ccnsensus Programming Interface
+### 5.3 Inner Consensus Programming Interface
 
 The consumer application provides the inner consensus programming interface to the PBFT box.  PBFT will call these functions to query state and signal events.
 
@@ -1895,7 +1892,7 @@ The Openchain API design covers the categories below, though the implementation 
 *  Identity - Enrollment to get certificates or revoking a certificate
 *  Address - Target and source of a transaction
 *  Transaction - Unit of execution on the ledger
-*  Chaincode (Devops)- Program running on the ledger
+*  Chaincode (Devops) - Program running on the ledger
 *  Blockchain - Contents of the ledger
 *  Network - Information about the blockchain network
 *  Storage - External store for files or documents
@@ -1918,17 +1915,17 @@ You can work with the Openchain REST API through any tool of your choice. For ex
 
 ### 6.2.1 REST Endpoints
 
-* [Block](#block)
+* [Block](#6211-block-api)
   * GET /chain/blocks/{Block}
-* [Chain](#chain)
+* [Chain](#6212-chain-api)
   * GET /chain
-* [Transactions](#transactions)
+* [Transactions](#6213-transactions-api)
   * GET /transactions/{UUID}
-* [Devops](#devops)
+* [Devops](#6214-devops-chaincode-api)
   * POST /devops/deploy
   * POST /devops/invoke
   * POST /devops/query
-* [Registrar](#registrar)
+* [Registrar](#6215-registrar-member-services)
   * POST /registrar
   * GET /registrar/{enrollmentID}
   * DELETE /registrar/{enrollmentID}
@@ -2040,9 +2037,9 @@ Transaction Retrieval Response:
 * **POST /devops/invoke**
 * **POST /devops/query**
 
-Use the Devops APIs to deploy, invoke, and query chaincodes. The deploy request requires the client to supply a `path` parameter, pointing to the location of the chaincode in the file system. The response to a deploy request is either a message containing a confirmation of successful chaincode deployment or an error, containing a reason for the failure. It also contains the generated chaincode `name`, which is to be used in subsequent invocation and query transactions to identify the deployed chaincode.
+Use the Devops APIs to deploy, invoke, and query chaincodes. The deploy request requires the client to supply a `path` parameter, pointing to the location of the chaincode in the file system. The response to a deploy request is either a message containing a confirmation of successful chaincode deployment or an error, containing a reason for the failure. It also contains the generated chaincode `name` in the `message` field, which is to be used in subsequent invocation and query transactions to identify the deployed chaincode.
 
-To deploy, supply the required ChaincodeSpec payload, defined in section [3.1.2.2](#3122-transaction-specification).
+To deploy a chaincode, supply the required ChaincodeSpec payload, defined in section [3.1.2.2](#3122-transaction-specification).
 
 Deploy Request:
 ```
@@ -2088,7 +2085,7 @@ Deploy Request with security enabled:
 
 The invoke request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to an invocation request is either a message containing a confirmation of successful execution or an error, containing a reason for the failure.
 
-To invoke, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
+To invoke a function within a chaincode, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
 
 Invoke Request:
 ```
@@ -2134,9 +2131,9 @@ Invoke Request with security enabled:
 }
 ```
 
-The query request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to an query request is either a message containing a confirmation of successful execution or an error, containing a reason for the failure.
+The query request requires the client to supply a `name` parameter, which was previously returned in the response from the deploy transaction. The response to a query request depends on the chaincode implementation. It will contain a message containing a confirmation of successful execution or an error, containing a reason for the failure. In the case of successful execution, the response will also contain values of requested state variables within the chaincode.
 
-To query, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
+To invoke a query function within a chaincode, supply the required ChaincodeInvocationSpec defined in section [3.1.2.4](#3124-invoke-transaction).
 
 Query Request:
 ```
@@ -2191,7 +2188,7 @@ Query Request with security enabled:
 
 Use the Registrar APIs to manage end user registration with the certificate authority (CA). These API endpoints are used to register a user with the CA, determine whether a given user is registered, and to remove any login tokens for a target user from local storage, preventing them from executing any further transactions. The Registrar APIs are also used to retrieve user enrollment certificates from the system.
 
-The `/registrar` endpoint is used to register a user with the CA. The required Secret payload is defined below. The response to the registration request is either a confirmation of successful registration or an error, containing a reason for the failure. An example of a valid Secret message to register user 'lukas' is shown below.
+The `/registrar` endpoint is used to register a user with the CA. The required Secret payload is defined below. The response to the registration request is either a confirmation of successful registration or an error, containing a reason for the failure.
 
 ```
 message Secret {
@@ -2199,6 +2196,10 @@ message Secret {
     string enrollSecret = 2;
 }
 ```
+
+* `enrollId` - Enrollment ID with the certificate authority.
+
+* `enrollSecret` - Enrollment password with the certificate authority.
 
 Enrollment Request:
 ```
@@ -2277,7 +2278,7 @@ The Openchain CLI includes a subset of the available APIs to enable developers t
 
 ### 6.3.1 CLI Commands
 
-To see what CLI commands are currently available in the Openchain implementation, execute the following:
+To see what CLI commands are currently available in the Open Blockchain implementation, execute the following:
 
     cd $GOPATH/src/github.com/openblockchain/obc-peer
     ./obc-peer
@@ -2304,15 +2305,15 @@ You will receive a response similar to below:
     Use "openchain [command] --help" for more information about a command.
 ```
 
-Some of the available command line arguments for the `./obc-peer` command are listed below:
+Some of the available command line arguments for the `obc-peer` command are listed below:
 
 * `-c` - constructor: function to trigger in order to initialize the chaincode state upon deployment.
 
 * `-l` - language: specifies the implementation language of the chaincode. Currently, only Golang is supported.
 
-* `-n` - name: chaincode identifier returned from the deploy transaction. Must be used in subsequent invoke and query transactions.
+* `-n` - name: chaincode identifier returned from the deployment transaction. Must be used in subsequent invoke and query transactions.
 
-* `-p` - path: identifies chaincode location in the local file system.
+* `-p` - path: identifies chaincode location in the local file system. Must be used as a parameter in the deployment transaction.
 
 * `-u` - username: registration id of a logged in user invoking the transaction.
 
@@ -2322,7 +2323,7 @@ Note, that any configuration settings for the peer node listed in `obc-peer/open
 
 #### 6.3.1.1 peer
 
-The CLI `peer` command will execute the Openchain peer process in either the development or production mode. The development mode is meant for running a single peer node locally, together with a local chaincode deployment. This allows a chaincode developer to modify and debug their code without standing up a complete Openchain network. An example for starting the peer in development mode is below.
+The CLI `peer` command will execute the Open Blockchain peer process in either the development or production mode. The development mode is meant for running a single peer node locally, together with a local chaincode deployment. This allows a chaincode developer to modify and debug their code without standing up a complete Open Blockchain network. An example for starting the peer in development mode is below.
 
 ```
 ./obc-peer peer --peer-chaincodedev
@@ -2336,11 +2337,13 @@ To start the peer process in production mode, modify the above command as follow
 
 #### 6.3.1.2 login
 
-The CLI `login` command will login a registered user through the CLI. To log in through the CLI, issue the following commands, where `username` is the enrollment ID of a registered user. An example is below.
+The CLI `login` command will login a user, that is already registered with the CA, through the CLI. To login through the CLI, issue the following command, where `username` is the enrollment ID of a registered user.
 
 ```
 ./obc-peer login <username>
 ```
+
+The example below demonstrates the login process for user `jim`.
 
 ```
 ./obc-peer login jim
@@ -2365,7 +2368,7 @@ The CLI `deploy` command creates the docker image for the chaincode and subseque
 ./obc-peer chaincode deploy -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
 ```
 
-With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+With security enabled, the command must be modified to pass an enrollment id of a logged in user with the `-u` parameter. An example is below.
 
 ```
 ./obc-peer chaincode deploy -u jim -p github.com/openblockchain/obc-peer/openchain/example/chaincode/chaincode_example02 -c '{"Function":"init", "Args": ["a","100", "b", "200"]}'
@@ -2379,7 +2382,7 @@ The CLI `invoke` command executes a specified function within the target chainco
 ./obc-peer chaincode invoke -n <name_value_returned_from_deploy_command> -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
 ```
 
-With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+With security enabled, the command must be modified to pass an enrollment id of a logged in user with the `-u` parameter. An example is below.
 
 ```
 ./obc-peer chaincode invoke -u jim -n <name_value_returned_from_deploy_command> -c '{"Function": "invoke", "Args": ["a", "b", "10"]}'
@@ -2393,7 +2396,7 @@ The CLI `query` command triggers a specified query method within the target chai
 ./obc-peer chaincode query -l golang -n <name_value_returned_from_deploy_command> -c '{"Function": "query", "Args": ["a"]}'
 ```
 
-With security enabled, command must be modified to pass a enrollment id of a logged in user with the `-u` parameter. An example is below.
+With security enabled, the command must be modified to pass an enrollment id of a logged in user with the `-u` parameter. An example is below.
 
 ```
 ./obc-peer chaincode query -u jim -l golang -n <name_value_returned_from_deploy_command> -c '{"Function": "query", "Args": ["a"]}'
