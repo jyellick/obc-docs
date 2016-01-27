@@ -807,18 +807,18 @@ The shim would extract the Payload from a successful response message or the err
 
 ### 3.4 Pluggable Consensus Framework
 
-Open Blockchain consensus package is placed in `obc-peer/openchain/consensus` with consensus interfaces defined in `obc-peer/openchain/consensus/consensus.go`, which defines the interfaces every consensus _plugin_ implements:
+Open Blockchain consensus framework defines the interfaces that every consensus _plugin_ implements:
 
   - `consensus.Consenter`: interface that  allows consensus plugin to receive messages from the network.
   - `consensus.CPI`:  _Consensus Programming Interface_ (`CPI`) is used by consensus plugin to interact with rest of the stack. This interface is split in two parts:
-	  - `consensus.Communicator`: used to send (broadcast and unicast) messages to other validators; and
+	  - `consensus.Communicator`: used to send (broadcast and unicast) messages to other validating peers.
 	  - `consensus.LedgerStack`: which is used as an interface to the Open Blockchain execution framework as well as the ledger.
 
-As described below in more details, `consensus.LedgerStack` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validators (see `consensus.Executor` interface description below for more details).
+As described below in more details, `consensus.LedgerStack` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validating peers (see `consensus.Executor` interface description below for more details).
 
 Currently, consensus framework consists of 3 packages `consensus`, `controller`, and `helper`. The primary reason for `controller` and `helper` packages is to avoid "import cycle" in Go (golang) and minimize code changes for plugin to update.
 
-- `controller` package specifies the consensus plugin used by a validator.
+- `controller` package specifies the consensus plugin used by a validating peer.
 - `helper` package is a shim around a consensus plugin that helps it interact with the rest of the stack, such as maintaining message handlers to other peers.  
 
 There are 2 consensus plugins provided: `pbft` and `noops`:
@@ -830,23 +830,18 @@ There are 2 consensus plugins provided: `pbft` and `noops`:
 ### 3.4.1 `Consenter` interface
 
 Definition:
-
 ```
 type Consenter interface {
 	RecvMsg(msg *pb.OpenchainMessage) error
 }
 ```
-
-The plugin's entry point for (external) client requests, and consensus messages generated internally (i.e. from the consensus module) during the consensus process. Created via the `controller.NewConsenter` function.
-
-Every plugin _must_ implement this interface. In `RecvMsg`, the plugin author is expected to process the incoming message in order to reach consensus, and optionally interact with the rest of the stack (`consensus.CPI`)
+The plugin's entry point for (external) client requests, and consensus messages generated internally (i.e. from the consensus module) during the consensus process. The `controller.NewConsenter` creates the plugin `Consenter`. `RecvMsg` processes the incoming transactions in order to reach consensus.
 
 See `helper.HandleMessage` below to understand how the peer interacts with this interface.
 
 ### 3.4.2 `CPI` interface
 
 Definition:
-
 ```
 type CPI interface {
 	Inquirer
@@ -855,23 +850,20 @@ type CPI interface {
 	LedgerStack
 }
 ```
-
-`CPI` (_Consensus Programming Interface_) allows the plugin to interact with the stack. It is implemented by the `helper.Helper` object. Recall that this object:
+`CPI` allows the plugin to interact with the stack. It is implemented by the `helper.Helper` object. Recall that this object:
 
   1. Is instantiated when the `helper.NewConsensusHandler` is called.
-  2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object (refer to `controller.NewConsenter`).
+  2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object.
 
 ### 3.4.3 `Inquirer` interface
 
 Definition:
-
 ```
 type Inquirer interface {
         GetNetworkInfo() (self *pb.PeerEndpoint, network []*pb.PeerEndpoint, err error)
         GetNetworkHandles() (self *pb.PeerID, network []*pb.PeerID, err error)
 }
 ```
-
 This interface is a part of the `consensus.CPI` interface. It is used to get the handles of the validating peers in the network (`GetNetworkHandles`) as well as details about the those validating peers (`GetNetworkInfo`):
 
 Note that the peers are identified by a `pb.PeerID` object. This is a protobuf message (in the `protos` package), currently defined as (notice that this definition will likely be modified):
