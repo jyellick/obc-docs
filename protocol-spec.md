@@ -338,7 +338,7 @@ message Transaction {
     Type type = 1;
     string uuid = 5;
     bytes chaincodeID = 2;
-    bytes payload = 3;
+    bytes payloadHash = 3;
 
     ConfidentialityLevel confidentialityLevel = 7;
     bytes nonce = 8;
@@ -347,6 +347,10 @@ message Transaction {
 
     bytes metadata = 4;
     google.protobuf.Timestamp timestamp = 6;
+}
+
+message TransactionPayload {
+	bytes payload = 1;
 }
 
 enum ConfidentialityLevel {
@@ -364,7 +368,7 @@ enum ConfidentialityLevel {
 	- `CHAINCODE_QUERY` - Represents a chaincode function execution that may only read the world state.
 	- `CHAINCODE_TERMINATE` - Marks a chaincode as inactive so that future functions of the chaincode can no longer be invoked.
 - `chaincodeID` - The ID of a chaincode which is a hash of the chaincode source, path to the source code, constructor function, and parameters.
-- `payload` - Bytes defining the payload of the transaction.
+- `payloadHash` - Bytes defining the hash of `TransactionPayload.payload`.
 - `metadata` - Bytes defining any associated transaction metadata that the application may use.
 - `uuid` - A unique ID for the transaction.
 - `timestamp` - A timestamp of when the transaction request was received by the peer.
@@ -372,6 +376,7 @@ enum ConfidentialityLevel {
 - `nonce` - Used for security
 - `cert` - Certificate of the transactor
 - `signature` - Signature of the transactor
+- `TransactionPayload.payload` - Bytes defining the payload of the transaction. As the payload can be large, only the payload hash is included directly in the transaction message. 
 
 More detail on transaction security in section 4.
 
@@ -513,28 +518,36 @@ The blockchain is defined as a linked list of blocks as each block contains the 
 message Block {
   version = 1;
   google.protobuf.Timestamp timestamp = 2;
-  repeated Transaction transactions = 3;
+  bytes transactionsHash = 3;
   bytes stateHash = 4;
   bytes previousBlockHash = 5;
   bytes consensusMetadata = 6;
   NonHashData nonHashData = 7;
 }
+
+message BlockTransactions {
+  repeated Transaction transactions = 1;
+}
 ```
 * `version` - Version used to track any protocol changes.
 * `timestamp` - The timestamp to be filled in by the block proposer.
-* `transactions` - An array of Transaction messages.
-* `stateHash` - The hash of the world state.
+* `transactionsHash` - The merkle root hash of the block's transactions.
+* `stateHash` - The merkle root hash of the world state.
 * `previousBlockHash` - The hash of the previous block.
 * `consensusMetadata` - Optional metadata that the consensus may include in a block.
-* `nonHashData` - A NonHashData message that is set to nil before computing the hash of the block, but stored as part of the block in the database.
+* `nonHashData` - A `NonHashData` message that is set to nil before computing the hash of the block, but stored as part of the block in the database.
+* `BlockTransactions.transactions` - An array of Transaction messages. Transactions are not included in the block directly due to their size.
 
 #### 3.2.1.2 Block Hashing
 
-* Hashing: The previousBlockHash hash is calculated using the following algorithm.
+* The `previousBlockHash` hash is calculated using the following algorithm.
   1. Serialize the Block message to bytes using the protocol buffer library.
 
   2. Hash the serialized block message to 512 bits of output using the SHA3 SHAKE256 algorithm as described in [FIPS 202](http://csrc.nist.gov/publications/drafts/fips-202/fips_202_draft.pdf).
 
+* The `transactionHash` is the root of the transaction merkle tree. Defining the merkle tree implementation is a TODO.
+
+* The `stateHash` is defined in section 3.2.2.1.
 
 #### 3.2.1.3 NonHashData
 
