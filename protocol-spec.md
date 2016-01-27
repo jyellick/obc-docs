@@ -1356,9 +1356,9 @@ This implementation of membership services provide the following basic functiona
 
 The Registration Authority (RA) is a trusted entity that can ascertain the validity and identity of users who want to participate in the permissioned blockchain. As illustrated in Figure 1, (Fig1: User Enrollment Process) the user enrollment process is executed in two phases:
 
-'''Offline Phase:''' the user presents strong identification credentials (proof of ID) to a Registration Authority (RA) offline. The RA creates and stores an account for the user. The RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
+*Offline Phase:* the user presents strong identification credentials (proof of ID) to a Registration Authority (RA) offline. The RA creates and stores an account for the user. The RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
 
-'''Online Phase:'''  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
+*Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
 
 
 ### 4.3 Transaction security offerings at the infrastructure level
@@ -2123,7 +2123,7 @@ The design goal of Sieve is to augment PBFT consensus protocol with three main d
 
 - As OBC allows execution of arbitrary chaincode, such chaincode may introduce *non-deterministic* transactions. Although non-deterministic transaction should in principle be disallowed by, e.g., careful inspection of chaincode, using domain specific languages (DSLs), or by otherwise enforcing determinism, the design goal of Sieve is to provide a separate *consensus fabric-level* protection against *non-deterministic* transactions that can be used in combination with the above mentioned approaches.
 
-	To this end, Sieve detects and *sieves out non-deterministic transactions* (that manifest themselves as such). Hence, Sieve does not require all input transactions to consensus (i.e., the replicated state machine) to be deterministic. This feature of Sieve is new and has not been implemented by any existing Byzantine fault tolerant consensus protocols. 
+	To this end, Sieve detects and *sieves out non-deterministic transactions* (that manifest themselves as such). Hence, Sieve does not require all input transactions to consensus (i.e., the replicated state machine) to be deterministic. This feature of Sieve is new and has not been implemented by any existing Byzantine fault tolerant consensus protocols.
 
 A protocol achieving the above two goals should not be designed and implemented from scratch, and should reuse existing PBFT implementation, lowering code complexity and simplifying reasoning about a new consensus protocol. To this end, inspired by [6], Sieve is designed using a modular approach, reusing the core PBFT component of `obcpbft`.
 
