@@ -105,7 +105,7 @@ ________________________________________________________
    - 4.1.4 Enabling a system transactions capability
    - 4.1.5 Flexibly accommodating usage of transaction certificates
    - 4.1.6 Expanding to support root CA functionality
-   - 4.2 User Privacy through Membership Ser
+   - 4.2 User Privacy through Membership Services
    - 4.3 Transaction security offerings at the infrastructure level
    - 4.4 Transaction Confidentiality
    - 4.5 Deployment transaction
