@@ -406,7 +406,7 @@ message ChaincodeInput {
 **Definition of fields:**
 - `chaincodeID` - The chaincode source code path and name.
 - `ctorMsg` - Function name and argument parameters to call.
-- `timeout` - Time in millis to execute the transaction. The default is 30000.
+- `timeout` - Time in millis to execute the transaction.
 - `confidentialityLevel` - Confidentiality level of this transaction.
 - `secureContext` - Security context of the transactor.
 - `metadata` - Any data the application wants to pass along.
@@ -428,7 +428,7 @@ message ChaincodeDeploymentSpec {
 - `effectiveDate` - Time when the chaincode is ready to accept invocations.
 - `codePackage` - gzip of the chaincode source.
 
-The validating peer always verify the hash of the `codePackage` when deploy the chaincode to make sure the package has not been tampered with since the deploy transaction enterred the network.
+The validating peers always verify the hash of the `codePackage` when deploy the chaincode to make sure the package has not been tampered with since the deploy transaction enterred the network.
 
 ### 3.1.2.4 Invoke Transaction
 An invoke transaction `type` is `CHAINCODE_EXECUTE` and the `payload` contains an object of `ChaincodeInvocationSpec`.
@@ -520,17 +520,11 @@ message Block {
 }
 ```
 * `version` - Version used to track any protocol changes.
-
 * `timestamp` - The timestamp to be filled in by the block proposer.
-
 * `transactions` - An array of Transaction messages.
-
 * `stateHash` - The hash of the world state.
-
 * `previousBlockHash` - The hash of the previous block.
-
 * `consensusMetadata` - Optional metadata that the consensus may include in a block.
-
 * `nonHashData` - A NonHashData message that is set to nil before computing the hash of the block, but stored as part of the block in the database.
 
 #### 3.2.1.2 Block Hashing
@@ -627,33 +621,25 @@ The above method offers performance benefits for computing crypto-hash when a fe
 In a particular deployment, all the peer nodes are expected to use same values for the configurations `numBuckets, maxGroupingAtEachLevel, and hashFunction`. Further, if any of these configurations are to be changed at a later stage, the configurations should be changed on all the peer nodes so that the comparison of crypto-hashes across peer nodes is meaningful. Also, this may require to migrate the existing data based on the implementation. For example, an implementation is expected to store the last computed crypto-hashes for all the nodes in the tree which would need to be recalculated.
 
 ### 3.3 Chaincode
-Chaincode is an application-level code (a.k.a. smart contract) that is executed by the Fabric. It is also stored on the ledger part of a transaction. Chaincode runs transactions and persists state.
-
-There are three types of transactions that can be executed by the chaincode
-  - deploy transaction - sends a request to the fabric to deploy the chaincode and returns an unique identifier (or "name") for the chaincode
-  - invoke transaction - sends an "invoke" request to the chaincode and returns a transaction identifier
-  - query transaction - sends the "query" request to the chaincode and returns the results of the query
+There are three types of transactions that can be executed by a chaincode
+  - Deploy transaction - sends a request to the fabric to deploy the chaincode and returns an unique identifier for the chaincode
+  - Invoke transaction - sends an "invoke" request to the chaincode and returns a transaction identifier
+  - Query transaction - sends the "query" request to the chaincode and returns the results of the query
 
 From a developer's point of view, a chaincode will implement a chaincode interface that supports two methods
-  - a method to execute invoke transactions (called the "Run" method in rest of the doc)
-  - a method to execute query queries (called the "Query" method in rest of the doc)
+  - A method to execute invoke transactions (called the `Run` method in rest of the doc)
+  - A method to execute query queries (called the `Query` method in rest of the doc)
 
-The Run and Query methods will take the name of a request function along with corresponding arguments for each of the invoke and query transactions it implements.
+The `Run` and `Query` methods will take the name of a request function along with corresponding arguments for each of the invoke and query transactions it implements.
 
-The Fabric provides support for persisting and retrieving key-value pairs on a per-chaincode basis. This support should be accessible from the Run and Query methods. An invoke transaction can change chaincode state by modifying key-value pairs, while a query transaction should not be allowed to modify them.
-
-Rest of this section is divided into three parts
-  - Chaincode Development provides an overview of developing chaincode from a chaincode developer's viewpoint
-  - Chaincode Runtime discusses the interaction between chaincode and the Validator Node at a high level
-  - Chaincode Protocol discusses the low level details of the communication between the chaincode and Validator Node
+The Fabric provides support for persisting and retrieving key-value pairs on a per-chaincode basis. This support is accessible from the `Run` and `Query` methods. An invoke transaction can change chaincode state by modifying key-value pairs, while a query transaction should not be allowed to modify them.
 
 ### 3.3.1 Chaincode Development
+A chaincode defines `Run` and `Query` methods. The `Run` method is called by the Deploy and Invoke transactions, and the `Query` method would be called Query transactions.
 
-The chaincode developer would implement the Run and Query methods. The Run method would be called by the Fabric for executing Deploy and Invoke transactions and the Query method would be called to execute query transactions.
+Additionally, on initialization the chaincode establishes a bi-directional communication stream with the validating peer that launched the chaincode. This is done using an initialization function provided by the Fabric.
 
-Additionally, on initialization the chaincode should establish a bi-directional communication stream with the Validating Node that launched the chaincode. This is done using an initialization function provided by the Fabric.
-
-The Fabric would allow the Run method to create, change, delete or retrieve key-value pairs. It will allow the Query method to retrieve key-value pairs but not modify them.
+The `Run` method can create, change, delete or retrieve key-value pairs, but the `Query` method to can only retrieve key-value pairs but not modify them.
 
 The Fabric would serialize Run method calls by serializing the Deploy and Invoke transactions. However multiple Query method calls can be called concurrently.
 
@@ -823,18 +809,18 @@ The shim would extract the Payload from a successful response message or the err
 
 ### 3.4 Pluggable Consensus Framework
 
-Open Blockchain consensus package is placed in `obc-peer/openchain/consensus` with consensus interfaces defined in `obc-peer/openchain/consensus/consensus.go`, which defines the interfaces every consensus _plugin_ implements:
+Open Blockchain consensus framework defines the interfaces that every consensus _plugin_ implements:
 
   - `consensus.Consenter`: interface that  allows consensus plugin to receive messages from the network.
   - `consensus.CPI`:  _Consensus Programming Interface_ (`CPI`) is used by consensus plugin to interact with rest of the stack. This interface is split in two parts:
-	  - `consensus.Communicator`: used to send (broadcast and unicast) messages to other validators; and
+	  - `consensus.Communicator`: used to send (broadcast and unicast) messages to other validating peers.
 	  - `consensus.LedgerStack`: which is used as an interface to the Open Blockchain execution framework as well as the ledger.
 
-As described below in more details, `consensus.LedgerStack` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validators (see `consensus.Executor` interface description below for more details).
+As described below in more details, `consensus.LedgerStack` encapsulates, among other interfaces, the `consensus.Executor` interface, which is the key part of the consensus framework. Namely, `consensus.Executor` interface allows for a (batch of) transaction to be started, executed, rolled back if necessary, previewed, and potentially committed. A particular property that every consensus plugin needs to satisfy is that batches (blocks)  of transactions are committed to the ledger (via `consensus.Executor.CommitTxBatch`) in total order across all validating peers (see `consensus.Executor` interface description below for more details).
 
 Currently, consensus framework consists of 3 packages `consensus`, `controller`, and `helper`. The primary reason for `controller` and `helper` packages is to avoid "import cycle" in Go (golang) and minimize code changes for plugin to update.
 
-- `controller` package specifies the consensus plugin used by a validator.
+- `controller` package specifies the consensus plugin used by a validating peer.
 - `helper` package is a shim around a consensus plugin that helps it interact with the rest of the stack, such as maintaining message handlers to other peers.  
 
 There are 2 consensus plugins provided: `pbft` and `noops`:
@@ -846,23 +832,18 @@ There are 2 consensus plugins provided: `pbft` and `noops`:
 ### 3.4.1 `Consenter` interface
 
 Definition:
-
 ```
 type Consenter interface {
 	RecvMsg(msg *pb.OpenchainMessage) error
 }
 ```
-
-The plugin's entry point for (external) client requests, and consensus messages generated internally (i.e. from the consensus module) during the consensus process. Created via the `controller.NewConsenter` function.
-
-Every plugin _must_ implement this interface. In `RecvMsg`, the plugin author is expected to process the incoming message in order to reach consensus, and optionally interact with the rest of the stack (`consensus.CPI`)
+The plugin's entry point for (external) client requests, and consensus messages generated internally (i.e. from the consensus module) during the consensus process. The `controller.NewConsenter` creates the plugin `Consenter`. `RecvMsg` processes the incoming transactions in order to reach consensus.
 
 See `helper.HandleMessage` below to understand how the peer interacts with this interface.
 
 ### 3.4.2 `CPI` interface
 
 Definition:
-
 ```
 type CPI interface {
 	Inquirer
@@ -871,23 +852,20 @@ type CPI interface {
 	LedgerStack
 }
 ```
-
-`CPI` (_Consensus Programming Interface_) allows the plugin to interact with the stack. It is implemented by the `helper.Helper` object. Recall that this object:
+`CPI` allows the plugin to interact with the stack. It is implemented by the `helper.Helper` object. Recall that this object:
 
   1. Is instantiated when the `helper.NewConsensusHandler` is called.
-  2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object (refer to `controller.NewConsenter`).
+  2. Is accessible to the plugin author when they construct their plugin's `consensus.Consenter` object.
 
 ### 3.4.3 `Inquirer` interface
 
 Definition:
-
 ```
 type Inquirer interface {
         GetNetworkInfo() (self *pb.PeerEndpoint, network []*pb.PeerEndpoint, err error)
         GetNetworkHandles() (self *pb.PeerID, network []*pb.PeerID, err error)
 }
 ```
-
 This interface is a part of the `consensus.CPI` interface. It is used to get the handles of the validating peers in the network (`GetNetworkHandles`) as well as details about the those validating peers (`GetNetworkInfo`):
 
 Note that the peers are identified by a `pb.PeerID` object. This is a protobuf message (in the `protos` package), currently defined as (notice that this definition will likely be modified):
