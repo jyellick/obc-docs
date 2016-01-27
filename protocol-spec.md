@@ -2046,7 +2046,7 @@ The `close` method terminates all background operations.  This interface is most
 
 ### 5.3 Inner Consensus Programming Interface
 
-The consumer application provides the inner consensus programming interface to the PBFT box.  PBFT will call these functions to query state and signal events.
+The consumer application provides the inner consensus programming interface to core PBFT.  PBFT will call these functions to query state and signal events.
 
 Definition:
 
@@ -2054,7 +2054,7 @@ Definition:
 type innerCPI interface {
 	broadcast(msgPayload []byte)
 	unicast(msgPayload []byte, receiverID uint64) (err error)
-	verify(txRaw []byte) error
+	validate(txRaw []byte) error
 	execute(txRaw []byte, rawMetadata []byte)
 	viewChange(curView uint64)
 }
@@ -2123,13 +2123,13 @@ The design goal of Sieve is to augment PBFT consensus protocol with three main d
 
 - As OBC allows execution of arbitrary chaincode, such chaincode may introduce *non-deterministic* transactions. Although non-deterministic transaction should in principle be disallowed by, e.g., careful inspection of chaincode, using domain specific languages (DSLs), or by otherwise enforcing determinism, the design goal of Sieve is to provide a separate *consensus fabric-level* protection against *non-deterministic* transactions that can be used in combination with the above mentioned approaches.
 
-To this end, Sieve detects and *sieves out non-deterministic transactions* (that manifest themselves as such). Hence, Sieve does not require all input transactions to consensus (i.e., the replicated state machine) to be deterministic. This feature of Sieve is new and has not been implemented by any existing Byzantine fault tolerant consensus protocols. The challenge behind
+	To this end, Sieve detects and *sieves out non-deterministic transactions* (that manifest themselves as such). Hence, Sieve does not require all input transactions to consensus (i.e., the replicated state machine) to be deterministic. This feature of Sieve is new and has not been implemented by any existing Byzantine fault tolerant consensus protocols. 
 
 A protocol achieving the above two goals should not be designed and implemented from scratch, and should reuse existing PBFT implementation, lowering code complexity and simplifying reasoning about a new consensus protocol. To this end, inspired by [6], Sieve is designed using a modular approach, reusing the core PBFT component of `obcpbft`.
 
 Although the details of Sieve will appear elsewhere, we briefly outline some design and implementation aspects below.
 
-In a nutshell, Sieve requires deterministically agree on the output of the execution of a request.  If the request was deterministic in the first place, all correct replicas will have obtained the same output, and they can agree on this very result. However, if a request happens to produce divergent outputs at correct replicas, Sieve may  detect this divergent condition, and the replicas will agree to discard the result of the request, thereby retaining determinism.
+In a nutshell, Sieve requires replicas to deterministically agree on the output of the execution of a request.  If the request was deterministic in the first place, all correct replicas will have obtained the same output, and they can agree on this very result. However, if a request happens to produce divergent outputs at correct replicas, Sieve may  detect this divergent condition, and the replicas will agree to discard the result of the request, thereby retaining determinism.
 
 Notice that, as discussed further below, Sieve allows false negatives, i.e., execution of *non-deterministic* requests that execute with the same result at a sufficient number of replicas. However, Sieve allows no false positives and any discarded request is certainly non-deterministic.
 
