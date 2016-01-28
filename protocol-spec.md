@@ -210,7 +210,7 @@ Blockchain services manage the distributed ledger through a peer-to-peer protoco
 ##### 2.1.3 Chaincode Services
 Chaincode services provides a secured and lightweight way to sandbox the chaincode execution potentially on the validating nodes. The environment is a “locked down” and secured container along with a set of signed base images containing secure OS and chaincode language, runtime and SDK layers for Go, Java, and Node.js. Other languages can be enabled if required.
 
-##### 2.1.4 Event
+##### 2.1.4 Events
 Validating peers and chaincodes can emit events on the network that applications may listen and take actions on. There is a set of pre-defined events, and chaincodes can generate custom events. Events are consumed by 1 or more event adapters. Adapters may further deliver events using other vehicles such as Web hooks or Kafka.
 
 ##### 2.1.5 Application Programming Interface (API)
