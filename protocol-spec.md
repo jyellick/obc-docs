@@ -1,4 +1,4 @@
-# Open Blockchain Protocol Specification
+﻿# Open Blockchain Protocol Specification
 
 _Draft 0.01_
 
@@ -105,24 +105,27 @@ ________________________________________________________
    - 4.1.4 Enabling a system transactions capability
    - 4.1.5 Flexibly accommodating usage of transaction certificates
    - 4.1.6 Expanding to support root CA functionality
+
    - 4.2 User Privacy through Membership Services
    - 4.2.1 User/Client Enrollment Process
-   - 4.3 Transaction security offerings at the infrastructure level
-   - 4.4 Transaction Confidentiality
-   - 4.5 Deployment transaction
-   - 4.6 Invocation transaction
-   - 4.7 Invocation Access Control offered at the infrastructure
-   - 4.8 Replay Attack Resistance
-   - 4.9 Access control on the application level
-   - 4.9.1 Invocation access control
-   - 4.9.2 Support from the fabric layer
-   - 4.9.3 Implementing Invocation Access Control inside the Application
-   - 4.9.4 Read Access Control Enforcement by the Application
-   - 4.9.5 Support from the fabric layer.
-   - 4.9.6 Enforcement of read-access control on the application.
-   - 4.10 Network security (TLS)
-   - 4.11 Restrictions in the current release
-   - 4.11.1 Simplified Transaction Confidentiality
+
+   - 4.3 Transaction security offerings by the infrastructure
+   - 4.3.1 Transaction Confidentiality
+   - 4.3.1.1 Deployment transaction
+   - 4.3.1.2 Invocation transaction
+   - 4.3.2 Invocation Access Control Enforcement
+   - 4.3.3 Replay Attack Resistance
+   - 4.3.4 Restrictions in the current release
+   - 4.3.4.1 Simplified Transaction Confidentiality
+
+   - 4.4 Access control Offerings on the Application Level
+   - 4.4.1 Invocation Access Control
+   - 4.4.1.1 Fabric Layer Support
+   - 4.4.1.2 Implementing Invocation Access Control at the Application
+   - 4.4.2 Read Access Control Enforcement by the Application
+   - 4.4.2.1 Fabric Layer Support
+   - 4.4.2.2 Implementing Read-access Control Mechanisms at the Application
+   - 4.5 Network security (TLS)
 
 #### 5. Byzantine Consensus
    - 5.1 Overview
@@ -1247,13 +1250,35 @@ The function inspects the `Type` of the incoming `OpenchainMessage`. There are f
 
 ## 4. Security
 
-For this section we will be considering the setting depicted in Figure I. In particular, we identify the following entities:
- * Membership management infrastructure, i.e., a set of entities that are responsible for identifying an individual user (using any form of identification considered in the system, e.g., credit cards, id-cards), open an account for that user to be able to register, and issue the necessary credentials to successfully create transactions and deploy or invoke chain-codes successfully through Open Blockchain.
 
- * Peers, that we classify in validating peers, and non-validating peers. Validating peers (also known as validators), are the entities that order and process (check validity and execute & add to the blockchain) user-messages (transactions) submitted to the network on behalf of users. Non validating peers (also known as peers) receive user transactions on behalf of users, and after doing some basic validity checks, they forward the transactions to their neighboring validating peers. Peers maintain an up-to-date copy of the blockchain, but in contradiction to validators, they do not execute transactions (a process also known as *transaction validation*).
- * End users of the system, that have registered to our membership service administration, after having demonstrated ownership of what is considered *identity* in the system, and have obtained credentials to install the client-software and contribute transactions to the system.
- * Client-software, the software that needs to be installed at the client side for the latter to be able to complete his registration to our membership service and submit transactions to the system.
- * Online wallets, entities that are trusted by a user to maintain that user's credentials, and submit transactions solely upon user request to the network. Online wallets come with their own software at the client-side, that is usually light-weight, as the client only needs to authenticate himself and his requests to the wallet. While it can be the case that peers can play the role of *online wallet* for a set of users, in the following sessions we will investigate the behavior and security of online wallets separately.
+For this section we will be considering the setting depicted in Figure I. In particular, the system
+consists of the following entities: membership management infrastructure, i.e., a set of entities 
+that are responsible for identifying an individual user (using any form of identification 
+considered in the system, e.g., credit cards, id-cards), open an account for that user to be 
+able to register, and issue the necessary credentials to successfully create transactions 
+and deploy or invoke chain-codes successfully through Hyperledger.
+
+ * Peers, that are classified in validating peers, and non-validating peers. 
+   Validating peers (also known as validators), order and process (check validity, execute, 
+   and add to the blockchain) user-messages (transactions) submitted to the network. 
+   Non validating peers (also known as peers) receive user transactions on behalf of users, 
+   and after some fundamental validity checks, they forward the transactions to their 
+   neighboring validating peers. Peers maintain an up-to-date copy of the blockchain, 
+   but in contradiction to validators, they do not execute transactions 
+   (a process also known as *transaction validation*).
+ * End users of the system, that have registered to our membership service administration, 
+   after having demonstrated ownership of what is considered *identity* in the system, 
+   and have obtained credentials to install the client-software and submit transactions
+   to the system.
+ * Client-software, the software that needs to be installed at the client side for the 
+   latter to be able to complete his registration to our membership service and submit 
+   transactions to the system.
+ * Online wallets, entities that are trusted by a user to maintain that user's credentials, 
+   and submit transactions solely upon user request to the network. Online wallets come 
+   with their own software at the client-side, that is usually light-weight, as the 
+   client only needs to authenticate himself and his requests to the wallet. 
+   While it can be the case that peers can play the role of *online wallet* for a set of 
+   users, in the following sessions the security of online wallets is detailed separately.
 
 Users who wish to make use of Open Blockchain, open an account at the membership management administration, by proving ownership of as discussed in previous sections, new chain-codes are announced to the Blockchain by the chain-code creator (developer) through the means of a deployment transaction that the client-software would construct on behalf of the developer. Such transaction is first received by a peer or validator, and afterwards circulated in the entire network of validators, this transaction is executed and finds its place to the Blockchain. Users can also invoke a function of an already deployed chain-code through an invocation transaction.
 In the following we provide an overview of the desired business security requirements w.r.t. our system, and how do these map to our security goals. We then overview the security components and their operation and show how our design achieves the prescribed goals.
