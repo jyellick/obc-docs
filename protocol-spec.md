@@ -36,7 +36,7 @@ ________________________________________________________
    - 2.1.1 Membership Services
    - 2.1.2 Blockchain Services
    - 2.1.3 Chaincode Services
-   - 2.1.4 Event
+   - 2.1.4 Events
    - 2.1.5 Application Programming Interface
    - 2.1.6 Command Line Interface
    - 2.2 Topology
