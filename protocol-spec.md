@@ -1,4 +1,4 @@
-# Open Blockchain Protocol Specification
+﻿# Open Blockchain Protocol Specification
 
 _Draft 0.01_
 
@@ -105,24 +105,27 @@ ________________________________________________________
    - 4.1.4 Enabling a system transactions capability
    - 4.1.5 Flexibly accommodating usage of transaction certificates
    - 4.1.6 Expanding to support root CA functionality
+
    - 4.2 User Privacy through Membership Services
    - 4.2.1 User/Client Enrollment Process
-   - 4.3 Transaction security offerings at the infrastructure level
-   - 4.4 Transaction Confidentiality
-   - 4.5 Deployment transaction
-   - 4.6 Invocation transaction
-   - 4.7 Invocation Access Control offered at the infrastructure
-   - 4.8 Replay Attack Resistance
-   - 4.9 Access control on the application level
-   - 4.9.1 Invocation access control
-   - 4.9.2 Support from the fabric layer
-   - 4.9.3 Implementing Invocation Access Control inside the Application
-   - 4.9.4 Read Access Control Enforcement by the Application
-   - 4.9.5 Support from the fabric layer.
-   - 4.9.6 Enforcement of read-access control on the application.
-   - 4.10 Network security (TLS)
-   - 4.11 Restrictions in the current release
-   - 4.11.1 Simplified Transaction Confidentiality
+
+   - 4.3 Transaction security offerings by the infrastructure
+   - 4.3.1 Transaction Confidentiality
+   - 4.3.1.1 Deployment transaction
+   - 4.3.1.2 Invocation transaction
+   - 4.3.2 Invocation Access Control Enforcement
+   - 4.3.3 Replay Attack Resistance
+
+   - 4.4 Access control Offerings on the Application Level
+   - 4.4.1 Invocation Access Control
+   - 4.4.1.1 Fabric Layer Support
+   - 4.4.1.2 Implementing Invocation Access Control at the Application
+   - 4.4.2 Read Access Control Enforcement by the Application
+   - 4.4.2.1 Fabric Layer Support
+   - 4.4.2.2 Implementing Read-access Control Mechanisms at the Application
+   - 4.5 Network security (TLS)
+   - 4.6 Restrictions in the current release
+   - 4.6.1 Simplified Transaction Confidentiality
 
 #### 5. Byzantine Consensus
    - 5.1 Overview
@@ -1355,13 +1358,35 @@ Currently the producer framework can generate a Block or Generic event. A Block 
 
 ## 4. Security
 
-For this section we will be considering the setting depicted in Figure I. In particular, we identify the following entities:
- * Membership management infrastructure, i.e., a set of entities that are responsible for identifying an individual user (using any form of identification considered in the system, e.g., credit cards, id-cards), open an account for that user to be able to register, and issue the necessary credentials to successfully create transactions and deploy or invoke chain-codes successfully through Open Blockchain.
 
- * Peers, that we classify in validating peers, and non-validating peers. Validating peers (also known as validators), are the entities that order and process (check validity and execute & add to the blockchain) user-messages (transactions) submitted to the network on behalf of users. Non validating peers (also known as peers) receive user transactions on behalf of users, and after doing some basic validity checks, they forward the transactions to their neighboring validating peers. Peers maintain an up-to-date copy of the blockchain, but in contradiction to validators, they do not execute transactions (a process also known as *transaction validation*).
- * End users of the system, that have registered to our membership service administration, after having demonstrated ownership of what is considered *identity* in the system, and have obtained credentials to install the client-software and contribute transactions to the system.
- * Client-software, the software that needs to be installed at the client side for the latter to be able to complete his registration to our membership service and submit transactions to the system.
- * Online wallets, entities that are trusted by a user to maintain that user's credentials, and submit transactions solely upon user request to the network. Online wallets come with their own software at the client-side, that is usually light-weight, as the client only needs to authenticate himself and his requests to the wallet. While it can be the case that peers can play the role of *online wallet* for a set of users, in the following sessions we will investigate the behavior and security of online wallets separately.
+For this section we will be considering the setting depicted in Figure I. In particular, the system
+consists of the following entities: membership management infrastructure, i.e., a set of entities 
+that are responsible for identifying an individual user (using any form of identification 
+considered in the system, e.g., credit cards, id-cards), open an account for that user to be 
+able to register, and issue the necessary credentials to successfully create transactions 
+and deploy or invoke chain-codes successfully through Hyperledger.
+
+ * Peers, that are classified in validating peers, and non-validating peers. 
+   Validating peers (also known as validators), order and process (check validity, execute, 
+   and add to the blockchain) user-messages (transactions) submitted to the network. 
+   Non validating peers (also known as peers) receive user transactions on behalf of users, 
+   and after some fundamental validity checks, they forward the transactions to their 
+   neighboring validating peers. Peers maintain an up-to-date copy of the blockchain, 
+   but in contradiction to validators, they do not execute transactions 
+   (a process also known as *transaction validation*).
+ * End users of the system, that have registered to our membership service administration, 
+   after having demonstrated ownership of what is considered *identity* in the system, 
+   and have obtained credentials to install the client-software and submit transactions
+   to the system.
+ * Client-software, the software that needs to be installed at the client side for the 
+   latter to be able to complete his registration to our membership service and submit 
+   transactions to the system.
+ * Online wallets, entities that are trusted by a user to maintain that user's credentials, 
+   and submit transactions solely upon user request to the network. Online wallets come 
+   with their own software at the client-side, that is usually light-weight, as the 
+   client only needs to authenticate himself and his requests to the wallet. 
+   While it can be the case that peers can play the role of *online wallet* for a set of 
+   users, in the following sessions the security of online wallets is detailed separately.
 
 Users who wish to make use of Open Blockchain, open an account at the membership management administration, by proving ownership of as discussed in previous sections, new chain-codes are announced to the Blockchain by the chain-code creator (developer) through the means of a deployment transaction that the client-software would construct on behalf of the developer. Such transaction is first received by a peer or validator, and afterwards circulated in the entire network of validators, this transaction is executed and finds its place to the Blockchain. Users can also invoke a function of an already deployed chain-code through an invocation transaction.
 In the following we provide an overview of the desired business security requirements w.r.t. our system, and how do these map to our security goals. We then overview the security components and their operation and show how our design achieves the prescribed goals.
@@ -1484,49 +1509,93 @@ The Registration Authority (RA) is a trusted entity that can ascertain the valid
 
 ### 4.3 Transaction security offerings at the infrastructure level
 
-Transactions in Open Blockchain are user-messages submitted to be included in the ledger. These messages have a specific structure, and enable users to deploy new chain-codes, invoke existing chain-codes, or query the state of existing chain-codes. Therefore, the way transactions are formed, announced and processed plays an important role to the privacy and security offerings of the entire system.
+Transactions in Open Blockchain are user-messages submitted to be included in the ledger. 
+As discussed in previous sections, these messages have a specific structure, and enable users 
+to deploy new chaincodes, invoke existing chaincodes, or query the state of existing chaincodes.
+Therefore, the way transactions are formed, announced and processed plays an important role to 
+the privacy and security offerings of the entire system.
 
-On one hand our membership service provides us with the means to authenticate transactions as having originated by valid users of the system, to disassociate transactions with user identities, but while efficiently tracing the transactions a particular individual under certain conditions (law order, auditing). In other words, membership services offer to transactions authentication mechanisms that marry user-privacy with accountability and non-repudiation.
+On one hand our membership service provides the means to authenticate transactions as 
+having originated by valid users of the system, to disassociate transactions with user identities, 
+but while efficiently tracing the transactions a particular individual under certain conditions 
+(law enforcement, auditing). In other words, membership services offer to transactions authentication 
+mechanisms that marry user-privacy with accountability and non-repudiation.
 
-On the other hand, membership services alone cannot offer full privacy  of user-activities within
+On the other hand, membership services alone cannot offer full privacy of user-activities within
 Openblockhain. First of all, for privacy provisions offered by Open Blockchain to be complete,
 privacy-preserving authentication mechanisms need to be accompanied by transaction confidentiality.
-This becomes clear if one considers that reading a chain-code, may  leak information on who may have
-created, and thus break the privacy of that chain-code's creator. Section 5.1 elaborates on this.
+This becomes clear if one considers that the content of a chaincode, may leak information on who may have
+created it, and thus break the privacy of that chaincode's creator. The first subsection 
+discusses transaction confidentiality. 
 
-Enforcing access control on the invocation of chain-codes is another part of the security of the chain-code, that requires special care. Though for this one can leverage authentication mechanisms of membership services, one would need to design invocation ACLs and perform their validation in a way that non-authorized parties cannot link multiple invocations of the same chain-code by the same user. Section 5.2 elaborates on this.
+Enforcing access control on the invocation of chaincodes is another requirement associated
+to the security of chaincodes. Though for this one can leverage authentication mechanisms 
+of membership services, one would need to design invocation ACLs and perform their 
+validation in a way that non-authorized parties cannot link multiple invocations of 
+the same chaincode by the same user. Subection 5.2.2 elaborates on this.
 
-Finally, replay attacks is another crucial aspect of the security of the chain-code, as a malicious user
-may try to copy a transaction that was added to the Blockchain long time ago, and replay it in the network
-to distort its operation. This is the topic of Section 5.3.
+Finally, replay attacks is another crucial aspect of the security of the chaincode, 
+as a malicious user may copy a transaction that was added to the Blockchain in the past, 
+and replay it in the network to distort its operation. This is the topic of Section 5.3.
 
-### 4.4 Transaction Confidentiality
+#### 4.3.1 Transaction Confidentiality
 
-Transaction confidentiality requires that under the request of the developer, the plain-text of a chain-code, i.e., code, description, is not accessible or inferable (assuming a computational attacker) by any entity not properly authorized by the developer of the chain-code (user or peer). For the latter it is important that for contracts with confidentiality requirements the content of both deployment and invocation transactions remains concealed, and all of them unlinkable to each to other as transactions associated to the same chain-code.
+Transaction confidentiality requires that under the request of the developer, the plain-text 
+of a chain-code, i.e., code, description, is not accessible or inferable (assuming a computational 
+attacker) by any unauthorized entities(i.e., user or peer not authorized by the developer). 
+For the latter it is important that for chaincodes with confidentiality requirements the 
+content of both deployment and invocation transactions remains concealed. In the same spirit,
+non-authorized parties, should not be able to associate invocations (invocation transactions) of a 
+chaincode to the chaincode itself (deployment transaction) or these invocations to each other. 
 
-Additional requirements for any candidate solution is that it respects and supports the privacy and security provisions of the underlying membership service. In addition, it should not prevent the enforcement of any invocation access control of the chain-code functions in the fabric, or the implementation of enforcement of access-control mechanisms on the application (See Section 7).
+Additional requirements for any candidate solution is that it respects and supports the privacy 
+and security provisions of the underlying membership service. In addition, it should not prevent
+the enforcement of any invocation access control of the chain-code functions in the fabric, or 
+the implementation of enforcement of access-control mechanisms on the application (See Subsection 4.7).
 
-We target a design that will allow for granting or restricting access to an entity to any subset of the following parts of a chain-code:
-1. chain-code content, i.e., complete (source) code of the chain-code,
-2. chain-code function headers & ACLs, i.e., the prototypes of the functions included in a chain-code, and their respective list of (anonymous) identifiers of users who should be able to invoke each function (*)
-3. chain-code [invocations &] state, i.e., successive updates to the state of a specific chain-code, when one or more functions of its are invoked
+In subsection 4.3.4, confidentiality restrictions against a subset of validators in the current chain is
+discussed.
+
+In the following we provide an overview of the design on transaction confidentiality mechanisms that are
+to ultimately be supported in Open Blockchain. More information on the current release and its security
+provisions, you can find in Section 4.6.  
+
+The goal is to achieve a design that will allow for granting or restricting access to an 
+entity to any subset of the following parts of a chain-code:
+1. chaincode content & roles of users in that chaincode, i.e., complete (source) code of the 
+   chaincode,
+2. chaincode function headers, access control lists, i.e., the prototypes of the functions included 
+   in a chaincode, and their respective list of (anonymous) identifiers of users who should be 
+   able to invoke each function (*)
+3. chaincode [invocations &] state, i.e., successive updates to the state of a specific chaincode,
+   when one or more functions of its are invoked
 4. all the above
 
-Notice, that we aim to offer the capability to the application to leverage our PKI & blockchain infrastructure to build their own access control policies and enforcement mechanisms.
+Notice, that this design offers the application the capability to leverage Open Blockchain 
+membership service infrastructure and public key infrastructure its to build their own access 
+control policies and enforcement mechanisms.
 
-To support finer-grain confidentiality, i.e., restrict read-access to the plain-text of a chain-code to a subset of users that the chain-code creator defines, we move to the public key setting for encryption.
-Here a chain is to be bound to a single long�term encryption key-pair (PK<sub>chain</sub>, SK<sub>chain</sub>) [as opposed to the symmetric encryption key Kchain, that we use in the first release].
-Initially, this key-pair is to be stored and maintained by each chain's PKI. In later releases, however, we can move away from this restriction, as chains (and the associated key-pairs) can be triggered through
-the Blockchain by any user with *special* (admin) privileges (See, multi-chain sub-section).
-At enrollment phase, user obtain (as before) an enrollment certificate, denoted by Cert<sub>u<sub>i</sub></sub> for user u<sub>i</sub>, while each validator v<sub>j</sub> obtain its enrollment certificate denoted by
-Cert<sub>v<sub>j</sub></sub>. Entity enrollment would be enhanced, as follows.
+To support finer-grain confidentiality, i.e., restrict read-access to the plain-text of a 
+chaincode to a subset of users that the chaincode creator defines, a chain is bound to a 
+single long-term encryption key-pair (PK<sub>chain</sub>, SK<sub>chain</sub>).
+Though initially this key-pair is to be stored and maintained by each chain's PKI, in later releases, 
+however, this restriction will be moved away, as chains (and the associated key-pairs) 
+can be triggered through the Blockchain by any user with *special* (admin) privileges 
+(See, multi-chain sub-section). 
+
+**Notation**. At enrollment phase, users obtain (as before) an enrollment certificate, 
+denoted by Cert<sub>u<sub>i</sub></sub> for user u<sub>i</sub>, while each validator v<sub>j</sub> 
+obtain its enrollment certificate denoted by Cert<sub>v<sub>j</sub></sub>. 
+Entity enrollment would grant users and validators the following credentials:
 
 1. Users
-   a. claim and grant themselves encryption key-pair (epk<sub>u</sub>, esk<sub>u</sub>), (already present in the first release)
-   b.obtain the encryption (public) key of the chain PK<sub>chain</sub>
+   a. claim and grant themselves signing key-pair (spk<sub>u</sub>, ssk<sub>u</sub>), (already present in the first release)
+   b. claim and grant themselves encryption key-pair (epk<sub>u</sub>, esk<sub>u</sub>), (already present in the first release)
+   c.obtain the encryption (public) key of the chain PK<sub>chain</sub>
 2. Validators
-   a. claim and grant themselves an encryption key-pair (epk<sub>v</sub>, esk<sub>v</sub>)
-   b. obtain the decryption (secret) key of the chain SK<sub>chain</sub>
+   a. claim and grant themselves signing key-pair (spk<sub>v</sub>, ssk<sub>v</sub>), (already present in the first release)
+   b. claim and grant themselves an encryption key-pair (epk<sub>v</sub>, esk<sub>v</sub>)
+   c. obtain the decryption (secret) key of the chain SK<sub>chain</sub>
 
 Thus, enrollment certificates contain the public part of two key-pairs:
 * one signature key-pair [denoted by (spk<sub>v<sub>j</sub></sub>,ssk<sub>v<sub>j</sub></sub>) for validators and by (spk<sub>u<sub>i</sub></sub>, ssk<sub>u<sub>i</sub></sub>) for users], and
@@ -1534,25 +1603,43 @@ Thus, enrollment certificates contain the public part of two key-pairs:
 
 Chain, validator and user enrollment public keys are accessible to everyone.
 
-In addition to enrollment certificates, users who wish to anonymously participate in transactions issue transaction certificates.
-For simplicity transaction certificates of a user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>. Transaction certificates
+In addition to enrollment certificates, users who wish to anonymously participate in 
+transactions issue transaction certificates. For simplicity transaction certificates of a 
+user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>. Transaction certificates
 include the public part of a signature key-pair denoted by  (tpk<sub>u<sub>i</sub></sub>,tsk<sub>u<sub>i</sub></sub>).
 
 In the following we detail how the transaction format is enhanced to accommodate read-access restrictions at the level of a user.
 
-### 4.5 Deployment transaction
-Figure 5 depicts the structure of a typical deployment transaction with confidentiality enabled.
+#### 4.3.1.1 Deployment transaction
+The following figure depicts the structure of a typical deployment transaction with confidentiality enabled.
 
 ![FirstRelease-deploy](./images/sec-futrel-depl.png)
 
 One can notice that a deployment transaction consists of several sections:
-* section *general-info*, that contains the administration details of the transaction, i.e., which chain this transaction corresponds to (chained), the type of transaction (that is set to ''deploymetTx''), the version number of confidentiality policy implemented, its creator identifier (expressed by means of transaction certificate TCert of enrollment certificate Cert), and a Nonce, that facilitates primarily replay-attack resistance techniques.
-* section *code-info*, that contains information on the chain-code source code, function headers, (invocation) access list, etc. In the version of the transaction format depicted in Figure 5, there is a symmetric key used for the source-code of the chain-code (K<sub>C</sub>), and another symmetric key used for the function prototypes and ACLs (K<sub>H</sub>). A hash of the headers (function-prototypes & ACL) is computed and added in the source-code section, such that the latter is uniquely associated with the former.
-* section *chain-validators*, where appropriate key material is passed to the validators for the latter to be able to (i) decrypt the chain-code source (K<sub>C</sub>), (ii) decrypt the headers and ACLs(K<sub>H</sub>),  and (iii) encrypt the state when the chain-code has been invoked accordingly(K<sub>S</sub>). In particular, the chain-code creator generates an encryption key-pair for the chain-code it deploys (PK<sub>C</sub>, SK<sub>C</sub>). It then uses PK<sub>C</sub> to encrypt all the keys associated to the chain-code:
+* section *general-info*, that contains the administration details of the transaction, 
+  i.e., which chain this transaction corresponds to (chained), 
+  the type of transaction (that is set to ''deploymetTx''), the version number of 
+  confidentiality policy implemented, its creator identifier (expressed by means of 
+  transaction certificate TCert of enrollment certificate Cert), and a Nonce, that 
+  facilitates primarily replay-attack resistance techniques.
+* section *code-info*, that contains information on the chain-code source code, function 
+  headers, (invocation) access list, etc. In the version of the transaction format depicted 
+  in Figure 5, there is a symmetric key used for the source-code of the chain-code (K<sub>C</sub>),
+  and another symmetric key used for the function prototypes and ACLs (K<sub>H</sub>). 
+  A hash of the headers (function-prototypes & ACL) is computed and added in the source-code
+  section, such that the latter is uniquely associated with the former.
+* section *chain-validators*, where appropriate key material is passed to the validators for 
+  the latter to be able to (i) decrypt the chain-code source (K<sub>C</sub>), (ii) decrypt the 
+  headers and ACLs(K<sub>H</sub>),  and (iii) encrypt the state when the chain-code has been 
+  invoked accordingly(K<sub>S</sub>). In particular, the chain-code creator generates an encryption
+  key-pair for the chain-code it deploys (PK<sub>C</sub>, SK<sub>C</sub>). It then uses PK<sub>C</sub> 
+  to encrypt all the keys associated to the chain-code:
 <center> [(''code'',K<sub>C</sub>) ,(''headr'',K<sub>H</sub>),(''code-state'',K<sub>S</sub>), Sig<sub>TCert<sub>u<sub>c</sub></sub></sub>(\*)]<sub>PK<sub>c</sub></sub>, </center>
-  and passes the secret key SKC to the validators using the chain-specific public key:
+  and passes the secret key SK<sub>C</sub> to the validators using the chain-specific public key:
 <center>[(''chaincode'',SK<sub>C</sub>), Sig<sub>TCert<sub>u<sub>c</sub></sub></sub>(*)]<sub>PK<sub>chain</sub></sub>.</center>
-* section *contract-users*, where the public encryption keys of the contract users, i.e., users who are given read-access to parts of the chain-code, are used to encrypt the keys  associated to their access rights:
+* section *contract-users*, where the public encryption keys of the contract users, 
+  i.e., users who are given read-access to parts of the chain-code, are used to encrypt 
+  the keys  associated to their access rights:
 
   1. SK<sub>c</sub> for the users to be able to read any message associated to that chain-code (invocation, state, etc),
   2. K<sub>C</sub> for the user to be able to read only the contract code,
@@ -1565,96 +1652,153 @@ One can notice that a deployment transaction consists of several sections:
  latter to be able to retrieve this transaction through parsing the ledger and without keeping any state locally.
 
 
-The entire transaction transaction is signed by the transaction/enrollment certificate of the chain-code creator (as decided by the latter).
+The entire transaction is signed by a certificate of the chaincode creator, i.e., enrollment 
+or transaction certificate as decided by the latter.
 Two noteworthy points:
-* The cleartext of all messages that are finally encrypted under some key (symmetric or asymmetric)
-  inside the transaction type, is also signed using the same TCert the ciphertext is encrypted with,
-  and is attached to the transaction. [Comment the case where a client signes the Tx with a TCert and the plaintext with an ECert.].
-  The latter is done such that mix\&match attacks are not possible, i.e., an attacker who sees a transaction cannot
-  isolate the ciphertext corresponding to, e.g., code-info, and use it for another transaction of her own. Clearly,
-  such an ability would disrupt the operation of the system, as a chain-code that was first created by user A,
+* Messages that are included in a transaction in an encrypted format, i.e., code-functions, code-hdrs, 
+  are signed before they are encrypted using the same TCert the entire transaction is signed with, or 
+  even with a different TCert or the ECert of the user (if the transaction deployment should carry the identity 
+  of its owner. A binding to the underlying transaction carrier should be included in the signed message, e.g., 
+  the hash of the TCert the transaction is signed, such that mix\&match attacks are not possible.
+  Though we detail such attacks in Section 4.7, in these cases an attacker who sees a transaction should not be able 
+  to isolate the ciphertext corresponding to, e.g., code-info, and use it for another transaction of her own. 
+  Clearly, such an ability would disrupt the operation of the system, as a chain-code that was first created by user A,
   will now also belong to malicious user B (who is not even able to read it).
-* Ciphertexts that are encrypted with a key K are accompanied by a (Pedersen) commitment to K, while the opening
-  of this commitment value is passed to all users who are entitled access to K in contract-users, and chain-validator sections.
+* To offer the ability to the users to cross-verify they are given access to the correct key, i.e., to the same 
+  key as the other contract users, transaction ciphertexts that are encrypted with a key K are accompanied by a 
+  (Pedersen) commitment to K, while the opening of this commitment value is passed to all users who are entitled 
+  access to K in contract-users, and chain-validator sections.
   In this way, anyone who is entitled access to that key can verify that the key has been properly passed to it.
-  This part is omitted in the description of Figure 5 to avoid confusion.
+  This part is omitted in the figure above to avoid confusion.
 
 
 
-### 4.6 Invocation transaction
-A transaction invoking the chain-code triggering the execution of a function of the chain-code with user-specified arguments
-is structured as depicted in Figure 6.
+#### 4.3.1.2 Invocation transaction
+A transaction invoking the chain-code triggering the execution of a function of the chain-code with 
+user-specified arguments is structured as depicted in the figure below.
 
 ![FirstRelease-deploy](./images/sec-futrel-inv.png)
 
-Invocation transaction as in the case of deployment transaction consists of a *general-info* section, a *code-info* section, a section for the *chain-validators*, and one for the *contract users*,
-signed altogether with one of the invoker user's transaction certificates.
+Invocation transaction as in the case of deployment transaction consists of a *general-info* section, a *code-info* section, 
+a section for the *chain-validators*, and one for the *contract users*, signed altogether with one of the invoker user's 
+transaction certificates.
 
 General-info follows the same structure as the corresponding section of the deployment transaction.
-The only difference relates to the transaction type that is now set to ''InvTx'', and the chain-code identifier or name that is now encrypted under the chain-specific encryption (public) key.
+The only difference relates to the transaction type that is now set to ''InvTx'', and the chain-code identifier or 
+name that is now encrypted under the chain-specific encryption (public) key.
 
-Code-info exhibits the same structure as the one of the deployment transaction. Code payload, as in the case of deployment transaction, consists of function invocation details
-(the name of the function invoked, and associated arguments), code-metadata provided by the application, and the transaction's creator (invoker's u<sub>i</sub>) certificate, TCert<sub>u<sub>i</sub></sub>'.
-Code payload is signed by another transaction certificate TCert<sub>u<sub>i</sub></sub> of the invoker u<sub>i</sub>, and serves invocation access control enforcement purposes. The latter is
-detailed in the next Subsection. As in the case of deployment transactions, code-metadata, and tx-metadata, are fields that are provided by the application and can be used (as described in Section 7), to implement their own ACLs.
+Code-info exhibits the same structure as the one of the deployment transaction. Code payload, as in the case of deployment 
+transaction, consists of function invocation details (the name of the function invoked, and associated arguments), 
+code-metadata provided by the application, and the transaction's creator (invoker's u<sub>i</sub>) certificate, TCert<sub>u<sub>i</sub></sub>'.
+Code payload is signed by another transaction certificate TCert<sub>u<sub>i</sub></sub> of the invoker u<sub>i</sub>, 
+and serves invocation access control enforcement purposes. The latter is detailed in the next subsection. As in the case of 
+deployment transactions, code-metadata, and tx-metadata, are fields that are provided by the application and can be used 
+(as described in Section 4.4), for the latter to implement their own access control mechanisms and roles.
 
-Finally, contract-users and chain-validator sections provide the key the payload is encrypted with under the invoker�s key, and the chain encryption key respectively.
-Upon receiving such transactions, the validators, decrypt [code-name]<sub>PK<sub>chain</sub></sub> using the chain-specific secret key SK<sub>chain</sub> and obtain the invoked chain-code identifier.
-Given the latter, validators retrieve from their database the chain-code's decryption key SK<sub>c</sub>, and use it to decrypt chain-validators' message,
-that would equip them with the symmetric key K<sub>I</sub> the invocation transaction's payload was encrypted with.
-Given the latter, validators decrypt code-info, and invoke the chain-code function with the specified arguments, and the code-metadata attached(See Section X an d Y).
+Finally, contract-users and chain-validator sections provide the key the payload is encrypted with under the 
+invoker's key, and the chain encryption key respectively.
+Upon receiving such transactions, the validators decrypt [code-name]<sub>PK<sub>chain</sub></sub> using the 
+chain-specific secret key SK<sub>chain</sub> and obtain the invoked chain-code identifier.
+Given the latter, validators retrieve from their local storage the chaincode's decryption key SK<sub>c</sub>, 
+and use it to decrypt chain-validators' message, that would equip them with the symmetric key K<sub>I</sub> 
+the invocation transaction's payload was encrypted with.
+Given the latter, validators decrypt code-info, and execute the chain-code function with the specified arguments, 
+and the code-metadata attached(See, Section 4.4 for more details on the use of code-metadata).
 While the chain-code is executed, updates of the state of that chain-code are possible.
 These are encrypted using the state-specific key K<sub>s</sub> that was defined during that chain-code's deployment.
-In particular, K<sub>s</sub> is used the same way K<sub>iTx</sub> is used in the design of our first release.  
+In particular, K<sub>s</sub> is used the same way K<sub>iTx</sub> is used in the design of our first release (See, Section XX).  
 
-### 4.7 Invocation Access Control offered at the infrastructure
-Invocation access control is in place to restrict access to invoking a chain-code function to a
-subset of users of the system, as defined by the chain-code developer. We aim to offer this functionality in the future as part of our fabric.
+### 4.3.2 Invocation Access Control
 
-The following figure reflects this capability of specifying invocation ACLs in the deployment of a chain-code.
+Invocation access control is in place to restrict access the ability to invoke a chaincode to a
+subset of users of the system, as defined by the chain-code developer. 
+This functionality will offered in the future in the fabric.
+
+The following figure reflects this capability of specifying invocation access lists in the deployment of a chaincode.
 
 ![FirstRelease-deploy](./images/sec-futrel-depl.png)
 
 More specifically,
 the headers part of code-info contain the list of function prototypes exposed to the contract users each
-followed by their invocation access control list (ACL).
+followed by their invocation access control list (ACL). It is important to note that a similar approach could be used
+to accomodate contract *roles*.
 
-Function ACLs are defined by the means of certificates (enrollment or transaction) and describe the set of users who should be able to invoke that function. These ACLs, are taken in consideration
+Function ACLs are defined by the means of certificates (enrollment or transaction) and describe the set of users who 
+should be able to invoke that function. These ACLs, are taken in consideration
 when a function of that chain-code is invoked, i.e., during the processing of the corresponding invocation transaction.
 Headers are implicitly included in the payload (through their hash), but are encrypted using a different key from the code-payload.
 In this way access to the headers can be given independently of access to the code itself, and users who are only allowed to invoke
 a function, are able to do so without locally keeping state or being able to access the code.
-Notice that (T)Certs of potential invokers (contract users) are listed in a plaintext form in the transaction to facilitate
+(T)Certs of potential invokers (invocation contract users) are listed in a plaintext form in the transaction to facilitate
 efficient search over a user's trasactions.
 
 The figure below demonstrates how the invoker authorizes itself to invoke a function.
 
 ![FirstRelease-deploy](./images/sec-futrel-inv.png)
 
-It uses the (transaction) certificate of its that is present in the ACL of the invoked function in the associated deployment transaction
-and signs the plaintext payload of its invocation with this certificate.
-The invocation transaction is signed externally potentially with another (transaction) certificate of the invoker (depending on the configuration of the invoker's client). Notice that the signature on the
-cleartext plaintext of the invocation transaction is linked to the certificate used to extenrally sign the transaction, as the signed message contains a hash of the creator's transaction certificate.
-This is important, as it guarantees that copying the code-info part of the transaction to another user's transaction, and messing up with the system is not possible.
+The invoker uses the (transaction) certificate of its that is present in the ACL of the invoked function 
+(in the associated deployment transaction) and signs the plaintext payload of its invocation with this certificate.
+The invocation transaction is signed externally potentially with another (transaction) certificate of the invoker 
+(depending on the configuration of the invoker's client). Notice that the signature on the
+cleartext plaintext of the invocation transaction is linked to the certificate used to extenrally sign the transaction, 
+as the signed message contains a hash of the transactor's transaction certificate.
+This is important, as it guarantees that copying the code-info part of the transaction to another user's 
+transaction, and messing up with the system is not possible.
 
-Validators who receive this transaction evaluate the payload plaintext signature with the (T)Certs that appear in the ACLs of the deployment transaction of the invoked chain-code,
-and validate it. Based on whether the signature verification goes through the validators proceed with the execution of the transaction or output an error message.
+Validators who receive this transaction evaluate the payload plaintext signature with the (T)Certs that appear in the 
+ACLs of the deployment transaction of the invoked chain-code,
+and validate it. Based on whether the signature verification succeeds the validators proceed with the execution 
+of the transaction or output an error message.
 
-### 4.8 Replay Attack Resistance
-In replay attacks the attacker simply "replays" a message he "eavesdropped" on the network or ''saw'' on the Blockchain. Replay attacks are a big problem here, as they can incur into the validating entities re-doing a computationally intensive process (contract invocation) and/or affect the state of the corresponding contract, while it requires minimar or no power from the attacker side.  To make matters worse, if a transaction was a payment transaction, replays could potentially incur into the payment being performed more than once, without this being the intention of the payer. Existing systems resist replay attacks as follows:
-* Record hashes of transactions in the system. This solution would require that validators maintain a log of the hash of each transaction that has ever been announced through the network, and compare a new transaction against their locally stored transaction record. Clearly such approach cannot scale for large networks, and could easily result into validators spending a lot of time to do the check of whether a transaction has been replayed, than executing the actual transaction.
-* Leverage state that is maintained per user identity (Ethereum). Ethereum keeps some state, e.g., counter (initially set to 1) for each identity/pseudonym in the system. Users also maintain their own counter (initially set to 0) for each identity/pseudonym of theirs. Each time a user sends a transaction using an identity/pseudonym of his, he increases his local counter by one and adds the resulting value to the transaction. The transaction is subsequently signed by that user identity and released to the network. When picking up this transaction, validators check the counter value included within and compare it with the one they have stored locally; if the value is the same, they increase the local value of that identity's counter and accept the transaction. Otherwise, they reject the transaction as invalid or replay.  Although this would work well in cases where we have limited number of user identities/pseudonyms (e.g., not too large), it would ultimately not scale in a system where users use a different identifier (transaction certificate) per transaction, and thus have a number of user pseudonyms proportional to the number of transactions.
+### 4.3.3 Replay Attack Resistance
+In replay attacks the attacker "replays" a message it "eavesdropped" on the network or ''saw'' on the Blockchain. 
+Replay attacks are a big problem here, as they can incur into the validating entities re-doing a computationally intensive 
+process (chaincode invocation) and/or affect the state of the corresponding chaincode, while it requires minimar or no 
+power from the attacker side.  To make matters worse, if a transaction was a payment transaction, replays could 
+potentially incur into the payment being performed more than once, without this being the original intention of the payer. 
+Existing systems resist replay attacks as follows:
+* Record hashes of transactions in the system. This solution would require that validators maintain a log of the hash of 
+  each transaction that has ever been announced through the network, and compare a new transaction against their locally 
+  stored transaction record. Clearly such approach cannot scale for large networks, and could easily result into validators 
+  spending a lot of time to do the check of whether a transaction has been replayed, than executing the actual transaction.
+* Leverage state that is maintained per user identity (Ethereum). Ethereum keeps some state, e.g., counter (initially set to 1) 
+  for each identity/pseudonym in the system. Users also maintain their own counter (initially set to 0) for each 
+  identity/pseudonym of theirs. Each time a user sends a transaction using an identity/pseudonym of his, he increases 
+  his local counter by one and adds the resulting value to the transaction. The transaction is subsequently signed by that 
+  user identity and released to the network. When picking up this transaction, validators check the counter value included 
+  within and compare it with the one they have stored locally; if the value is the same, they increase the local value of 
+  that identity's counter and accept the transaction. Otherwise, they reject the transaction as invalid or replay.  
+  Although this would work well in cases where we have limited number of user identities/pseudonyms (e.g., not too large), 
+  it would ultimately not scale in a system where users use a different identifier (transaction certificate) per transaction, 
+  and thus have a number of user pseudonyms proportional to the number of transactions.
 
-Other asset management systems, e.g., Bitcoin, though not directly dealing with replay attacks, they resist them. In systems that manage (digital) assets, state is maintained on a per asset basis, i.e., validators only keep a record of who owns what. Resistance to replay attacks come as a direct result from this, as replays of transactions would be immediately be deemed as invalid by the protocol (since can only be shown to be derived from older owners of an asset/coin). While this would be appropriate for asset management systems, this does not fot the needs of a Blockchain systems with more generic use than asset management.
+Other asset management systems, e.g., Bitcoin, though not directly dealing with replay attacks, they resist them. In systems
+that manage (digital) assets, state is maintained on a per asset basis, i.e., validators only keep a record of who owns what. 
+Resistance to replay attacks come as a direct result from this, as replays of transactions would be immediately be 
+deemed as invalid by the protocol (since can only be shown to be derived from older owners of an asset/coin). While this would 
+be appropriate for asset management systems, this does not abide with the needs of a Blockchain systems with more generic 
+use than asset management.
 
 
-Detailed description of the design of replay attack protection. For replay attack protection we adopt a hybrid approach. In general, we require that users add in the transaction a nonce that is generated in a different manner depending on whether the transaction is anonymous (followed and signed by a transaction certificate) or not (followed and signed by a long term enrollment certificate). In particular:
-* Users submitting a transaction with their enrollment certificate should include in that transaction a nonce that is a function of the nonce they used in the previous transaction they issued with the same certificate (e.g., a counter function or a hash). The nonce included in the first transaction of each enrollment certificate can be either pre-fixed by the system (e.g., included in the genesis block) or chosen by the user. In the first case, the genesis block would need to include nonceall , i.e., a fixed number and the nonce used by user with identity IDA for his first enrollment certificate signed transaction would be
-  nonce_round0IDAhash(IDA, nonce<sub>all</sub>),
+**Detailed description of the design of replay attack protection.** 
+In Open Blockchain for replay attack protection a hybrid approach is adopted. 
+That is, users add in the transaction a nonce that is generated in a different manner 
+depending on whether the transaction is anonymous (followed and signed by a transaction certificate) or not 
+(followed and signed by a long term enrollment certificate). More specifically,:
+* Users submitting a transaction with their enrollment certificate should include in that 
+  transaction a nonce that is a function of the nonce they used in the previous transaction 
+  they issued with the same certificate (e.g., a counter function or a hash). The nonce included 
+  in the first transaction of each enrollment certificate can be either pre-fixed by the system 
+  (e.g., included in the genesis block) or chosen by the user. In the first case, the genesis block 
+  would need to include nonceall , i.e., a fixed number and the nonce used by user with identity 
+  IDA for his first enrollment certificate signed transaction would be
+  <center>nonce<sub>round<sub>0</sub>IDA</sub> <- hash(IDA, nonce<sub>all</sub>),</center>
   where IDA appears in the enrollment certificate. From that point onward successive transactions of
   that user with enrollment certificate would include a nonce as follows
-  nonce<sub>round<sub>i</sub>IDA</sub> <- hash(nonce<sub>round<sub>{i-1}</sub>IDA</sub>),
-  that is the nonce of the ith transaction would be using the hash of the nonce used in the {i-1}th transaction of that certificate. Validators here continue to process a transaction they receive parse, as long as it satisfies the condition mentioned above. Upon successful validation of transaction's format, the validators update their database with that nonce.
+  <center>nonce<sub>round<sub>i</sub>IDA</sub> <- hash(nonce<sub>round<sub>{i-1}</sub>IDA</sub>),</center>
+  that is the nonce of the ith transaction would be using the hash of the nonce used in the {i-1}th transaction of that certificate. 
+  Validators here continue to process a transaction they receive, as long as it satisfies the condition mentioned above. 
+  Upon successful validation of transaction's format, the validators update their database with that nonce.
 
   **Storage overhead**:
   1. on the user side: only the most recently used nonce,
@@ -1663,36 +1807,41 @@ Detailed description of the design of replay attack protection. For replay attac
   should include in the transaction a random nonce, that would guarantee that
   two transactions do not result into the same hash. Validators add the hash of
   this transaction in their local database if the transaction certificate used within
-  it has not expired. To avoid storing large amounts of hashes, we introduce validity periods
-  in the transaction certificates, and require that we maintain an updated record of received
+  it has not expired. To avoid storing large amounts of hashes, validity periods of transaction certificates
+  are leveraged. In particular validators maintain an updated record of received
   transactions' hashes within the current or future validity period.
 
   **Storage overhead** (only makes sense for validators here):  O(m), where m is the approximate number of
   transactions within a validity period and corresponding validity period identifier (see below).
 
-### 4.9 Access control on the application level
+#### Confidentiality against validators
+This section deals with ways of how to support execution of certain transactions under a different (or subset) 
+sets of validators in the current chain. To be expanded in the next week.
+
+
+### 4.9 Access Control Features on the Application level
 
 An application, is a piece of software that runs on top of a Blockchain client software, and,
 performs a special task over the Blockchain, i.e., restaurant table reservation.
 Application software have a version of
-developer, enabling the latter to generate and manage a couple of chain-codes that are necessary for
+developer, enabling the latter to generate and manage a couple of chaincodes that are necessary for
 the business this application serves, and a client-version that would allow the application's end-users
 to make use of the application, by invoking these chain-codes.
 The use of the Blockchain can be transparent to the application end-users or not.
 
-In this Section we show how an application leveraging chain-codes can implement its own accecss control,
+This section describes how an application leveraging chaincodes can implement its own accecss control policies,
 and guidelines on how our Membership services PKI can be leveraged for the same purpose.
 
-We divide our presentation into enforcement of invocation access control,
+The presentation is divided into enforcement of invocation access control,
 and enforcement of read-access control by the application.
 
 
-### 4.9.1 Invocation access control
+#### 4.9.1 Invocation access control
 To allow the application to implement its own invocation access control at the application layer securely, special support by the fabric must be provided.
 In the following we elaborate on the tools exposed by the fabric to the application for this purpose, and provide guidelines on how these should be used by the application for the latter to enforce access control securely.
 
 
-### 4.9.2 Support from the fabric layer
+**Fabric support.**
 For *u<sub>c</sub>* to be able to implement its own invocation access control at the application layer securely, special support by the fabric must be provided. More specifically
 fabric layer gives access to following capabilities:
 
@@ -1808,27 +1957,28 @@ To assist chaincode execution, at the chain-code invocation time, the validators
 
 
 
-### 4.9.3 Implementing Invocation Access Control inside the Application
-In this section, we elaborate on how the application can leverage the means provided by the fabric to implement its own access control on its chain-code functions.
-For the purpose of our discussion we consider the following entities:
+**Implementing Invocation Access Control inside the Application.**
+This section describes how how the application can leverage the means provided by the fabric 
+to implement its own access control on its chain-code functions.
+In the scenario considered here, the following entities are identified: 
 
 1. **C**: is a chaincode that contains a single function, e.g., called *hello*;
 2. **u<sub>c</sub>**: is the **C** deployer;
 3. **u<sub>i</sub>**: is a user who is authorized to invoke **C**'s functions.
 User u<sub>c</sub> wants to ensure that only u<sub>i</sub> can invoke the function *hello*.
 
-**Deployment of a Chain-code:** At deployment time, u<sub>c</sub> has full control on the deployment transaction's metadata,
+*Deployment of a Chaincode:* At deployment time, u<sub>c</sub> has full control on the deployment transaction's metadata,
  and can be used to store a list of ACLs (one per function), or a list of roles that are needed by the application. The format which is used to store these ACLs is up to the deployer's application, as the chain-code is the one
 who would need to parse the metadata at execution time.
 To define each of these lists/roles, u<sub>c</sub> can use any TCerts/Certs of the u<sub>i</sub> (or, if applicable, or other users who have been assigned that privilege or role). Let this be TCert<sub>u<sub>i</sub></sub>.
 The exchange of TCerts or Certs among the developer and authorized users is done through an out-of-band channel.
 
 Assume that the application of u<sub>c</sub>'s requires that to invoke the *hello* function, a certain message *M* has to be authenticated by an authorized invoker (u<sub>i</sub>, in our example).
-We distinguish the following two cases:
+One can distinguish the following two cases:
 1. *M* is one of the chaincode's function arguments;
 2. *M* is the invocation message itself, i.e., function-name, function-arguments.
 
-**Chain-code invocation: **
+*Chaincode invocation: *
 To invoke C, u<sub>i</sub>'s application needs to sign *M* using the TCert/ECert, that was used to identify u<sub>i</sub>'s participation in the chain-code at the associated
 deployment transaction's metadata, i.e., TCert<sub>u<sub>i</sub></sub>. More specifically, u<sub>i</sub>'s client application does the following:
 
@@ -1839,7 +1989,7 @@ deployment transaction's metadata, i.e., TCert<sub>u<sub>i</sub></sub>. More spe
 5. issues a new execute transaction by invoking, *txHandler.NewChaincodeExecute(...)*. Now, *sigma* can be included
   in the transaction as one of the arguments that are passed to the function (case 1) or as part of the code-metadata section of the payload(case 2).
 
-**Chain-code processing:**
+*Chaincode processing:*
 The validators, who receive the execute transaction issued u<sub>i</sub>, will provide to *hello* the following information:
 
 1. The *binding* of the execute transaction, that can be independently computed at the validator side;
@@ -1850,11 +2000,11 @@ Notice that *sigma* is either part of the arguments of the invoked function, or 
 Application ACLs are included in the code-metadata section, that is also passed to the chain-code at execution time.
 Function *hello* is responsible for checking that *sigma* is indeed a valid signature issued by TCert<sub>u<sub>i</sub></sub>, on *'*M* || txBinding'*.
 
-### 4.9.4 Read Access Control Enforcement by the Application
-In this section we show the way our Blockchain infrastructure offers support to the application to
+#### 4.4.2 Read Access Control Enforcement
+This section deals with the way Open Blockchain infrastructure offers support to the application to
 enforce its own read-access control policies at the level of users. As in the case of invocation access
-control, we first describe the infrastructure features that can be leveraged by the application for this
-purpose, and then proceed on the way applications should use these tools.
+control, the first part describes the infrastructure features that can be leveraged by the application for this
+purpose, and the last part details on the way applications should use these tools.
 
 For the purpose of this discussion, we leverage a similar example as before, i.e.,
 1. **C**: is a chaincode that contains a single function, e.g., called *hello*;
@@ -1862,7 +2012,7 @@ For the purpose of this discussion, we leverage a similar example as before, i.e
 3. **u<sub>r</sub>**: is a user who is authorized to read **C**'s functions.
 User u<sub>A</sub> wants to ensure that only u<sub>r</sub> can read the function *hello*.
 
-### 4.9.5 Support from the fabric layer.
+**Fabric layer support.**
 For *u<sub>A</sub>* to be able to implement its own read access control at the application layer securely, our infrastructure is required to
 support the transaction format for code deployment and invocation, as depicted in the two figures below.
 
@@ -1881,7 +2031,7 @@ More specifically fabric layer is required to provide the following functionalit
    client-application after the latter's request. Transaction metadata, as opposed to code-metadata, is not encrypted or provided to
    the chain-code at execution time. Validators treat these metadata as a list of bytes they are not responsible for checking validity of.
 
-### 4.9.6 Enforcement of read-access control on the application.
+**Enforcement of read-access control on the application.**
 For this reason the application may request and obtain access to the public encryption key of the user **u<sub>r</sub>**; let that be **PK<sub>u<sub>r</sub></sub>**. Optionally,
 **u<sub>r</sub>** may be providing **u<sub>A</sub>** with a certificate of its, that would be leveraged by the application, say, TCert<sub>u<sub>r</sub></sub>; given the latter,
 the application would, e.g., be able to trace that user's transactions w.r.t. the application's chain-codes. TCert<sub>u<sub>r</sub></sub>, and PK<sub>u<sub>r</sub></sub>, are
@@ -1891,7 +2041,7 @@ At deployment time, application **u<sub>A</sub>** performs the following steps:
 1. Uses the underlying infrastructure to encrypt the information of **C**, the application would like to make accessible to **u<sub>r</sub>**, using PK<sub>u<sub>r</sub></sub>.
    Let C<sub>u<sub>r</sub></sub> be the resulting ciphertext.
 2. (optioanal) C<sub>u<sub>r</sub></sub> is concatenated with can be (optionally) concatenated with TCert<sub>u<sub>r</sub></sub>
-3. Pass the overall string as ''Tx-metadata'' of the confidential transaction to be constructed.
+3. Passes the overall string as ''Tx-metadata'' of the confidential transaction to be constructed.
 
 At invocation time, the client-application on u<sub>r</sub>'s node, would be able, by obtaining the deployment transaction to retrieve the content of **C**.
 It just needs to retrieve the **tx-metadata** field of the associated deployment transaction, and trigger the decryption functionality offered by our Blockchain
@@ -1903,183 +2053,147 @@ to pass information to the developer of the application, etc.
 responsible for decrypting the payload of the chain-code itself (as well as the code-metadata fields near it), and provide those to containers for
 deployment/execution.
 
-### 4.10 Network security (TLS)
+### 4.5 Network security (TLS)
 The TLS CA should be capable of issuing TLS certificates to (non-validating) peers, validators, and individual clients (or browsers capable of storing a private key). Preferably, these certificates are distinguished by type, per above. TLS certificates for CAs of the various types (such as TLS CA, ECA, TCA) could be issued by an intermediate CA (i.e., a CA that is subordinate to the root CA). Where there is not a particular traffic analysis issue, any given TLS connection can be mutually authenticated, except for requests to the TLS CA for TLS certificates.
 
 In the current implementation the only trust anchor is the TLS CA self-signed certificate in order to accommodate the limitation of a single port to communicate with all three (co-located) servers, i.e., the TLS CA, the TCA and the ECA. Consequently, the TLS handshake is established with the TLS CA, which passes the resultant session keys to the co-located TCA and ECA. The trust in validity of the TCA and ECA self-signed certificates is therefore inherited from trust in the TLS CA. In an implementation that does not thus elevate the TLS CA above other CAs, the trust anchor should be replaced with a root CA under which the TLS CA and all other CAs are certified.
 
-### 4.11 Restrictions in the current release
- - we offer a minimal set of confidentiality properties where a chain-code is accessible by any entity that is member of the system, i.e., validators and users who have registered to our membership services, and not accessible by any-one else. The latter include any party that has access to the storage area where the ledger is maintained, or other entities that are able to see the transactions that are announced in the validator network. The design of the first release is detailed in subsection 4.10.1
- - the code utilizes self-signed certificates for entities such as the enrollment CA (ECA) and the transaction CA (TCA)
- - invocation access control enforcement is not currently provided
+### 4.6 Restrictions in the current release:
+This section lists the restrictions of the current release of Open Blockchain.
+A particular focus is given on the design of transaction confidentiality, as depicted in Section 4.6.1.
+
+ - A minimal set of confidentiality properties where a chain-code is accessible by any entity that is member of the system, 
+   i.e., validators and users who have registered to our membership services, and not accessible by any-one else. 
+   The latter include any party that has access to the storage area where the ledger is maintained, or other entities 
+   that are able to see the transactions that are announced in the validator network. The design of the first release is detailed in subsection 4.6.1
+ - The code utilizes self-signed certificates for entities such as the enrollment CA (ECA) and the transaction CA (TCA)
+ - Invocation access control enforcement is not currently provided
  - Replay attack resistance mechanisms is not available
- - we only offer the means to the application to implement its own invocation access control: it is up to the application to leverage the infrastructure's tools properly for security to be guaranteed. This means, that if the application ignores to *bind* the transaction binding offered by our fabric, secure transaction processing  may be at risk.
-
-### 4.11.1 Simplified Transaction Confidentiality
-
-**Disclaimer:** We emphasize that the first release design on confidentiality is a minimal design for the purpose of the first release, and will be used as an intermediate step to reach a design that allows for fine grain (invocation) access control enforcement in the next versions.
-
+ - There is a possibility for the application to implement its own invocation access control: 
+   it is up to the application to leverage the infrastructure's tools properly for security to 
+   be guaranteed. This means, that if the application ignores to *bind* the transaction binding 
+   offered by our fabric, secure transaction processing  may be at risk.
 
 
-For the first release we offer confidentiality of transactions at the chain-level, i.e., we require that the content of a transaction included in a ledger, is readable by all members of that chain, i.e., validators and users. At the same time, we offer fine-graim auditing capabilities, such that an (application) auditor can be given the means to perform auditing by passively observing the Blockchain data, and while guaranteeing that he is given access solely to the transactions related to the application under audit. State is encrypted in a way such that our auditing requirement is satisfied, while not disrupting the proper operation of the underlying consensus network.
+#### 4.6.1 Simplified Transaction Confidentiality
+
+**Disclaimer:** The current version of transaction confidentiality is minimal, and will be used as an intermediate step 
+to reach a design that allows for fine grain (invocation) access control enforcement in the next versions.
+
+In its current form, confidentiality of transactions is offered solely at the chain-level, i.e., that the 
+content of a transaction included in a ledger, is readable by all members of that chain, i.e., validators 
+and users. At the same time, fine-grain auditing capabilities are provided for external auditors, i.e.,
+application auditors that are not member of the system, such that they can be given 
+the means to perform auditing by passively observing the Blockchain data, and while 
+guaranteeing that they is given access solely to the transactions related to the application under audit. 
+State is encrypted in a way such that auditing requirements are satisfied, while not disrupting the 
+proper operation of the underlying consensus network.
+
+More specifically, currently symmetric key encryption is supported in the process of offering transaction confidentiality. 
+In this setting, one of the main threats is represented by cryptanalysis[3,4] that leverage the availability of many 
+ciphertexts being encrypted under the same key. Another important challenge that is specific to the blockchain setting, 
+is that validators need to run consensus over the state of the blockchain, that, aside the transactions themselves, 
+also includes the state updates of individual contracts or chaincodes. Though this is trivial to do for non-confidential chaincodes,  
+for confidential chaincodes, one needs to design the state encryption mechanism such that the resulting ciphertexts are 
+semantically secure, and yet, identical if the plaintext state is the same.
 
 
-
-More specifically, for this release we stay simple and efficient, and employ only symmetric key encryption. In this setting, one of the main threats is represented by cryptanalysis[3,4] that leverage the availability of many ciphertexts being encrypted under the same key. Another important challenge that is specific to the blockchain setting, is that validators need to run consensus over the state of the blockchain, that, aside the transactions themselves, also includes the state updates of individual contracts or chaincodes. Though this is trivial to do for non-confidential chaincodes,  for confidential chaincodes, one needs to design the state encryption mechanism such that the resulting ciphertexts are semantically secure, and yet, identical if the plaintext state is the same.
-
-
-
-To overcome both challenges, we design a key hierarchy that reduces the number of ciphertexts exposed, that are encrypted under the same key. At the same time, as we use some of these keys for the generation of IVs, this allows the validating parties to generate exactly the same ciphertext when executing the same transaction (this is necessary to remain agnostic to the underlying consensus algorithm) and offers the possibility of fine-grained auditing by disclosing to auditing entities only the most relevant keys.
-
+To overcome both challenges, Open Blockchain utilizes a key hierarchy that reduces the number of ciphertexts 
+that are encrypted under the same key. At the same time, as some of these keys are used for the generation of IVs, 
+this allows the validating parties to generate exactly the same ciphertext when executing the same transaction 
+(this is necessary to remain agnostic to the underlying consensus algorithm) and offers the possibility of fine-grained
+auditing by disclosing to auditing entities only the most relevant keys.
 
 
-Method description: We assume that (though we do not deal with the details of how this can be achieved) when Open Blockchain is first deployed, our membership service generates a symmetric key for the ledger (K<sub>chain</sub>) that is distributed
+**Method description:** 
+Membership service generates a symmetric key for the ledger (K<sub>chain</sub>) that is distributed
+at registration time to all the entities of the blockchain system, i.e., the clients and the 
+validating entities that have issued credentials through the membership service of the chain. 
+At enrollment phase, user obtain (as before) an enrollment certificate, denoted by Cert<sub>u<sub>i</sub></sub> 
+for user u<sub>i</sub> , while each validator v<sub>j</sub> obtain its enrollment certificate denoted by Cert<sub>v<sub>j</sub></sub>.
 
-at registration time to all the entities of the blockchain system, i.e., the clients and the validating entities that have issued credentials through the membership service of the chain. At enrollment phase, user obtain (as before) an enrollment certificate, denoted by Cert<sub>u<sub>i</sub></sub> for user u<sub>i</sub> , while each validator v<sub>j</sub> obtain its enrollment certificate denoted by Cert<sub>v<sub>j</sub></sub>.
+Entity enrollment would be enhanced, as follows. In addition to enrollment certificates, 
+users who wish to anonymously participate in transactions issue transaction certificates. 
+For simplicity transaction certificates of a user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>. 
+Transaction certificates include the public part of a signature key-pair denoted by (tpk<sub>u<sub>i</sub></sub>,tsk<sub>u<sub>i</sub></sub>).
 
-Entity enrollment would be enhanced, as follows. In addition to enrollment certificates, users who wish to anonymously participate in transactions issue transaction certificates. For simplicity transaction certificates of a user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>. Transaction certificates include the public part of a signature key-pair denoted by (tpk<sub>u<sub>i</sub></sub>,tsk<sub>u<sub>i</sub></sub>).
-
-
-
-In order to defeat crypto-analysis and enforce confidentiality, we envision the following key hierarchy, and generation and validation of confidential transactions:
-
-
-
+In order to defeat crypto-analysis and enforce confidentiality, the following key hierarchy is considered for generation and validation of confidential transactions:
 To submit a confidential transaction (Tx) to the ledger, a client first samples a nonce (N), which is required to be unique among all the transactions submitted to the blockchain, and derive a transaction symmetric
-
 key (K<sub>Tx</sub>) by applying the HMAC function keyed with K<sub>chain</sub> and on input the nonce, K<sub>Tx</sub>= HMAC(K<sub>chain</sub>, N). From K<sub>Tx</sub>, the client derives two AES keys:
-
 K<sub>TxCID</sub> as HMAC(K<sub>Tx</sub>, c<sub>1</sub>), K<sub>TxP</sub> as HMAC(K<sub>Tx</sub>, c<sub>2</sub>)) to encrypt respectively the chain-code name or identifier CID and code (or payload) P.
-
 c<sub>1</sub>, c<sub>2</sub> are public constants. The nonce, the Encrypted Chaincode ID (ECID) and the Encrypted Payload (EP) are added in the transaction Tx structure, that is finally signed and so
-
 authenticated. Figure below shows how encryption keys for the client's transaction are generated. Arrows in this figure denote application of an HMAC, keyed by the key at the source of the arrow and
-
 using the number in the arrow as argument. Deployment/Invocation transactions' keys are indicated by d/i respectively.
 
 
 
 ![FirstRelease-clientSide](./images/sec-firstrel-1.png)
 
-
-
 To validate a confidential transaction Tx submitted to the blockchain by a client,
-
 a validating entity first decrypts ECID and EP by re-deriving K<sub>TxCID</sub> and K<sub>TxP</sub>
-
 from K<sub>chain</sub> and Tx.Nonce as done before. Once the Chaincode ID and the
-
 Payload are recovered the transaction can be processed.
-
-
-
-
-
-
 
 ![FirstRelease-validatorSide](./images/sec-firstrel-2.png)
 
-
-
 When V validates a confidential transaction, the corresponding chaincode can access and modify the
-
-chaincode's state. V keeps the chaincode\'s state encrypted. In order to do so, V generates symmetric
-
+chaincode's state. V keeps the chaincode's state encrypted. In order to do so, V generates symmetric
 keys as depicted in the figure above. Let iTx be a confidential transaction invoking a function
-
 deployed at an early stage by the confidential transaction dTx (notice that iTx can be dTx itself
-
 in the case, for example, that dTx has a setup function that initializes the chaincode's state).
-
 Then, V generates two symmetric keys  K<sub>IV</sub>  and K<sub>state</sub> as follows:
 
 1. It computes  as  K<sub>dTx</sub> , i.e., the transaction key of the corresponding deployment
-
-transaction, and then N<sub>state</sub> = HMAC(K<sub>dtx</sub> ,hash(N<sub>i</sub>)), where N<sub>i</sub>
-
-is the nonce appearing in the invocation transaction, and *hash* a hash function.
-
+   transaction, and then N<sub>state</sub> = HMAC(K<sub>dtx</sub> ,hash(N<sub>i</sub>)), where N<sub>i</sub>
+   is the nonce appearing in the invocation transaction, and *hash* a hash function.
 2. It sets K<sub>state</sub> = HMAC(K<sub>dTx</sub>, c<sub>3</sub> || N<sub>state</sub>),
-
-truncated opportunely deeding on the underlying cipher used to encrypt; c<sub>3</sub> is a constant number
-
+   truncated opportunely deeding on the underlying cipher used to encrypt; c<sub>3</sub> is a constant number
 3. It sets K<sub>IV</sub> = HMAC(K<sub>dTx</sub>, c<sub>4</sub> || N<sub>state</sub>); c<sub>4</sub> is a constant number
 
 
-
-
-
 In order to encrypt a state variable S, a validator first generates the IV as HMAC(K<sub>IV</sub>, crt<sub>state</sub>)
-
 properly truncated, where crt<sub>state</sub> is a counter value that increases each time a state update
-
 is requested for the same chaincode invocation. The counter is discarded after the execution of
-
 the chaincode terminates. After IV has been generated, V encrypts with authentication (i.e., GSM mode)
-
 the value of S concatenated with Nstate(Actually, N<sub>state</sub>  doesn't need to be encrypted but
-
 only authenticated). To the resulting ciphertext (CT), N<sub>state</sub> and the IV used is appended.
-
 In order to decrypt an encrypted state CT|| N<sub>state'</sub> , a validator first generates the symmetric
-
 keys K<sub>dTX</sub>' ,K<sub>state</sub>' using N<sub>state'</sub>  and as and then decrypts CT.
 
-
-
 Generation of IVs: In order to be agnostic to any underlying consensus algorithm, all the validating
-
 parties need a method to produce the same exact ciphertexts. In order to do use, the validators need
-
 to use the same IVs. Reusing the same IV with the same symmetric key completely breaks the security
-
 of the underlying cipher. Therefore, the process described before is followed. In particular, V first
-
 derives an IV generation key K<sub>IV</sub> by computing HMAC(K<sub>dTX</sub>, c<sub>4</sub> || N<sub>state</sub> ),
-
 where c<sub>4</sub> is a constant number, and keeps a counter crt<sub>state</sub> for the pair
-
 (dTx, iTx) with is initially set to 0. Then, each time a new ciphertext has to be generated, the validator
-
 generates a new IV by computing it as the output of HMAC(K<sub>IV</sub>, crt<sub>state</sub>)
-
 and then increments the crt<sub>state</sub> by one.
 
-
-
 Another benefit that comes with the above key hierarchy is the ability to allow fine-grained auditing.
-
-For example, by releasing K<sub>chain</sub> we give access to the whole chain, by releasing only K<sub>state</sub>
-
-for a given pair of transactions (dTx,iTx) we give access to state updated by iTx, and so on.
-
+For example, while by releasing K<sub>chain</sub> one would provide read access to the whole chain, 
+by releasing only K<sub>state</sub> for a given pair of transactions (dTx,iTx) access would be granted to a state 
+updated by iTx, and so on.
 
 
-Figure 3 demonstrates the format of a deployment transaction for the first release.
-
-
+The following figures demonstrate the format of a deployment and invocation transaction currently available in the code.
 
 ![FirstRelease-deploy](./images/sec-firstrel-depl.png)
-
-
-
-
-
-Figure 4 demonstrates the format of an invocation transaction for the first release.
-
-
 
 ![FirstRelease-deploy](./images/sec-firstrel-inv.png)
 
 
-
-
-
 One can notice that both deployment and invocation transactions consist of two sections:
 
-* section general-info, that contains the administration details of the transaction, i.e., which chain this transaction corresponds to (chained), the type of transaction (that is set to ''deploymTx'' or ''invocTx'', the version number of confidentiality policy implemented, its creator identifier (expressed by means of TCert of Cert), and a nonce, that facilitates primarily replay-attack resistance techniques.
+* section general-info, that contains the administration details of the transaction, i.e., 
+  which chain this transaction corresponds to (chained), the type of transaction (that is set to ''deploymTx'' or ''invocTx'', 
+  the version number of confidentiality policy implemented, its creator identifier (expressed by means of TCert of Cert), 
+  and a nonce, that facilitates primarily replay-attack resistance techniques.
 
-* section code-info, that contains information on the chain-code source code. For deployment transaction this is essentially the chain-code identifier/name and source code, while for invocation chain-code is the name of the function invoked and its arguments. As shown in the two figures code-info in both transactions are encrypted ultimately using the chain-specific symmetric key Kchain.
+* section code-info, that contains information on the chain-code source code. 
+  For deployment transaction this is essentially the chain-code identifier/name and source code, while for 
+  invocation chain-code is the name of the function invoked and its arguments. As shown in the two figures code-info 
+  in both transactions are encrypted ultimately using the chain-specific symmetric key K<sub>chain</sub>.
 
 ## 5. Byzantine Consensus
 The ``obcpbft`` package is an implementation of the seminal [PBFT](http://dl.acm.org/citation.cfm?id=571640 "PBFT") consensus protocol [1], which provides consensus among validators despite a threshold of validators acting as _Byzantine_, i.e., being malicious or failing in an unpredictable manner. In the default configuration, PBFT tolerates up to t<n/3 Byzantine validators.
