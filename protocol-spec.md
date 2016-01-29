@@ -1425,12 +1425,12 @@ It is practical to support expiration of certificates. The time window during wh
 A special type of transactions, system transactions, and the validity period identified are used together to announce the expiration of a validity period to the Blockchain. System transactions refer to contracts that have been defined in the genesis block and are part of the infrastructure. The validity period identified is updated periodically by the TCA invoking a system chaincode. Note that only the TCA should be allowed to update the validity period. The TCA sets the validity period for each certificate by setting the appropriate integer values in the following two fields that define a range: ‘not-before’ and ‘not-after’ fields.  
 
 TCert Expiration:
-At the time of processing a TCert, validators read from the ledger the value of ‘current validity period’ to check if the certificate(s) associated the transaction being evaluated has expired. That is, the current value in the ledger has to be within the range defined by TCert fields ‘not-before’ and ‘not-after’. If this is the case the validator continues processing the transaction. In the case that the current value is not within range the TCert has expired and the validator should stop processing the transaction.
+At the time of processing a TCert associated with a transaction, validators read from the state table the value of 'current validity period' to check if the TCert is current. That is, the value in the state table has to be within the range defined by TCert fields ‘not-before’ and ‘not-after’. If this is the case, the validator continues processing the transaction. In the case that the value is not within range, the TCert has expired or is not active yet and the validator should stop processing the transaction.
 
-ECert Expiration
-Enrollment certificates have a different validity period lengths than those in transaction certificates.
+ECert Expiration:
+Enrollment certificates have a different validity period length than those in transaction certificates.
 
-Regarding revocation, it is supported in the form of Content Revocation Lists (CRLs). CRLs should include the ID corresponding to revoked certificates. Changes to the CRLs, incremental differences, are announced through the Blockchain.
+Regarding revocation, it is supported in the form of Certificate Revocation Lists (CRLs). CRLs should include the ID corresponding to revoked certificates. Changes to the CRLs, incremental differences, are announced through the Blockchain.
 
 #### 4.2.7 Online wallet service
 
