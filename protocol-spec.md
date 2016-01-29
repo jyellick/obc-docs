@@ -1429,15 +1429,13 @@ The figures below show the registration of an end-user to an online wallet servi
 
 (ii) when the user has already installed the client, and completed the enrollment phase.
 
-DIEGO - DO NOT PUT THE IMAGES YET SINCE I WANT TO CHANGE THEM
 ![ow1](images/sec-ow-1.png)
 ![ow2](images/sec-ow-2.png)
 
 There needs to be an out-of-band channel through which the user pre-registers with the online wallet service, i.e., a website, or a physical communication channel, where the end-user identifies himself/herself to the *online wallet registration authority*, and agree with the latter on the user's credentials for this service.
 The form of these credentials depend on the level of trust to the online wallet service.
 
-- **Potentially malicious wallet service.** Here authorization credentials are needed to be issued by the user.
-  In particular, at registration time the user establishes a signature key pair ( PK<sub>u-wc</sub>, SK<sub>u-wc</sub> )
+- **Potentially malicious wallet service.** Here authorization credentials are needed to be issued by the user. In particular, at registration time the user establishes a signature key pair ( PK<sub>u-wc</sub>, SK<sub>u-wc</sub> )
   with the online wallet service, where the secret  SK<sub>u-vc</sub> (denoted by AccSec<sub>u</sub>) is only known to the user, and PK<sub>u-wc</sub>
   constitutes the identity of the user to the online wallet service, i.e., AccPub, and is stored at the online wallet premise.
 
@@ -1456,8 +1454,7 @@ To enroll with the Open Blockchain, through the online wallet service, a user u 
 OBCSecCtx, refers to user OBC credentials, which depending on the stage of his enrollment process with OBC it can be either his enrollment id and password, <enrollID, enrollPWD> or his enrollment certificate and associated secret key(s)
 <ECert<sub>u</sub>, sk<sub>u</sub>>,  where  sk<sub>u</sub> denotes for simplicity signing and decryption secret of the user. The content of AccSecProof<sub>u</sub> depends again on the level of trust to the service:
 
-- **Potentially malicious wallet service.** It is a digital signature on the other parts of request, using AccSec<sub>u</sub>.
-  Special care needs to be taken in consideration to avoid replay attacks.
+- **Potentially malicious wallet service.** It is a digital signature on the other parts of request, using AccSec<sub>u</sub>.   Special care needs to be taken in consideration to avoid replay attacks.
 
 - **Trusted wallet service.** It is an HMAC on the rest fields of request using the shared secret. Nonce-based methods similar to what we have in OBC can be used to protect against replays.
 OBCSecCtx would give the online wallet service the necessary information to enroll the user to OBC or issue needed TCerts.
@@ -1472,6 +1469,9 @@ For subsequent requests, the user u should provide to the wallet service a reque
      }
 
 Here, TxDetails refer to the information needed by the online service to construct a transaction on behalf of the user, i.e., the type, and user-specified content of the transaction.
+
+
+
 Again, the content of AccSecProof<sub>u</sub> depends on the level of trust to the service:
 
 - **Potentially malicious wallet service.** It is a digital signature on the other parts of request, using AccSec<sub>u</sub>. Replay attacks should be taken in consideration.
