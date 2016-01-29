@@ -106,7 +106,12 @@ ________________________________________________________
    - 4.1.5 Flexibly accommodating usage of transaction certificates
    - 4.1.6 Expanding to support root CA functionality
    - 4.2 User Privacy through Membership Services
-   - 4.2.1 User/Client Enrollment Process
+   - 4.2.1 Introduction
+   - 4.2.2 Components
+   - 4.2.3 Credentials
+   - 4.2.4 Expiration and revocation of certificates
+   - 4.2.5 Generation and usage of certificates
+   - 4.2.6 Online wallet service
    - 4.3 Transaction security offerings at the infrastructure level
    - 4.4 Transaction Confidentiality
    - 4.5 Deployment transaction
@@ -1380,7 +1385,7 @@ Although the initial code utilizes self-signed certificates for entities such as
 A Public Key Infrastructure is a set of tools, entities, policies, etc. that use digital certificates to manage public-key encryption. The Membership Service infrastructure comprises the following entities: Enrollment Certificate Authority (ECA), Transaction Certificate Authority (TCA) and TLS Certificate Authority (TLS-CA). In this specification, membership services is expressed through following associated certificates issued by the PKI:  
 
 1. Enrollment Certificates (ECerts) - long-term certificates for each user.
-2. Transaction Certificates (TCerts) - short-term certificates for each transaction and
+2. Transaction Certificates (TCerts) - short-term certificates for each transaction.
 3. TLS-Certificates (TLS-Certs) - certificates used for system 2 system communication.
 
 * Enrollment Certificate Authority (ECA): entity that generates Enrollment Certificates (ECerts) that include signature certification and encryption keys.  ECerts contain the identity of their owner and can be used to offer only nominal entity-authentication in transactions. ECerts are issued to all roles, i.e. user, non-validating peers and validating peers. They contain the public part of two key pairs – a signature key-pair and an encryption key-pair. ECerts are accessible to everyone.
