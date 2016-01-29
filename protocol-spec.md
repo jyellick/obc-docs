@@ -109,9 +109,10 @@ ________________________________________________________
    - 4.2.1 Introduction
    - 4.2.2 Components
    - 4.2.3 Credentials
-   - 4.2.4 Expiration and revocation of certificates
+   - 4.2.4 User/Client Enrollment Process
    - 4.2.5 Generation and usage of certificates
-   - 4.2.6 Online wallet service
+   - 4.2.6 Expiration and revocation of certificates
+   - 4.2.7 Online wallet service
    - 4.3 Transaction security offerings at the infrastructure level
    - 4.4 Transaction Confidentiality
    - 4.5 Deployment transaction
@@ -1406,7 +1407,17 @@ This implementation of membership services provide the following basic functiona
 #### 4.2.2 Components
 #### 4.2.3 Credentials
 
-#### 4.2.4 Expiration and revocation of certificates
+#### 4.2.4 User/Client Enrollment Process
+
+The Registration Authority (RA) is a trusted entity that can ascertain the validity and identity of users who want to participate in the permissioned blockchain. As illustrated in Figure 1, (Fig1: User Enrollment Process) the user enrollment process is executed in two phases:
+
+*Offline Phase:* the user presents strong identification credentials (proof of ID) to a Registration Authority (RA) offline. The RA creates and stores an account for the user. The RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
+
+*Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
+
+#### 4.2.5 Generation and usage of certificates
+
+#### 4.2.6 Expiration and revocation of certificates
 
 It is practical to support expiration of certificates. The time window during which a certificate can be used is expressed by a ‘validity period’ field. The challenge about supporting expiration lies in the distributed nature of the system. That is, all validating entities must share the same information; i.e. be consistent with respect to the expiration of the validity period associated to the transactions to be executed and validated. To guarantee that the expiration of validity periods is done in a consistent manner across all validators, the concept of validity period identifier is introduced. This identified acts as a logical clock the system allowing to uniquely identify a validity period. At genesis time the “current validity period” of the chain gets initialized by the TCA. It is essential that this validity period identifier is given monotonically increasing values over time, such that it imposes a total order among validity periods.
 
@@ -1420,25 +1431,15 @@ Enrollment certificates have a different validity period lengths than those in t
 
 Regarding revocation, it is supported in the form of Content Revocation Lists (CRLs). CRLs should include the ID corresponding to revoked certificates. Changes to the CRLs, incremental differences, are announced through the Blockchain.
 
-#### 4.2.5 Generation and usage of certificates
-
-#### 4.2.6 Online wallet service
+#### 4.2.7 Online wallet service
 
 This section shows the security design of an Open Blockchain (OBC) wallet service, that is, a node where end-users can register, move their key material to, and perform transactions through.
-
 Since the wallet service is in possession of the user's key material, it is clear that without a secure authorization mechanism in place a malicious wallet service could successfully impersonate the user in the Open Blockchain.
-
-The figures below show the registration of an end-user to an online wallet service, and the protocol that should take place between the end-user and the service in the following two cases:
+There are two cases for the registration of an end-user to an online wallet service, and the protocol that should take place between the end-user and the service in the following two cases:
 
 (i) when the user has registered with the OBC registration authority and acquired his/her <enrollID, enrollPWD>, but has not installed the client to trigger and complete the enrollment process;
 
 (ii) when the user has already installed the client, and completed the enrollment phase.
-
-![ow1](images/sec-ow-1.png)
-![ow2](images/sec-ow-2.png)
-
-There needs to be an out-of-band channel through which the user pre-registers with the online wallet service, i.e., a website, or a physical communication channel, where the end-user identifies himself/herself to the *online wallet registration authority*, and agree with the latter on the user's credentials for this service.
-The form of these credentials depend on the level of trust to the online wallet service.
 
 - **Potentially malicious wallet service.** Here authorization credentials are needed to be issued by the user. In particular, at registration time the user establishes a signature key pair ( PK<sub>u-wc</sub>, SK<sub>u-wc</sub> )
   with the online wallet service, where the secret  SK<sub>u-vc</sub> (denoted by AccSec<sub>u</sub>) is only known to the user, and PK<sub>u-wc</sub>
@@ -1484,15 +1485,6 @@ Again, the content of AccSecProof<sub>u</sub> depends on the level of trust to t
 - **Trusted wallet service.** It is an HMAC on the rest fields of request using the shared secret.Nonce-based methods similar to what we have in OBC can be used to protect against replays.
 
 TLS connections can be used in each case with server side authentication to secure the request at the network layer (confidentiality, replay attack protection, etc)
-
-#### 4.2.1 User/Client Enrollment Process
-
-The Registration Authority (RA) is a trusted entity that can ascertain the validity and identity of users who want to participate in the permissioned blockchain. As illustrated in Figure 1, (Fig1: User Enrollment Process) the user enrollment process is executed in two phases:
-
-*Offline Phase:* the user presents strong identification credentials (proof of ID) to a Registration Authority (RA) offline. The RA creates and stores an account for the user. The RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
-
-*Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
-
 
 ### 4.3 Transaction security offerings at the infrastructure level
 
