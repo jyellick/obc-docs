@@ -1287,8 +1287,6 @@ Whether or not encrypted for confidentiality so as to provide resistance against
 
 In the case of access control that is not user-specific, but rather only requires, e.g., affiliation with a specific institution, there is no need to acquire TCerts of intended authorized invokers for incorporation into an ACL. This case easily lends itself to protecting against traffic analysis by having users present a different TCert each time, as long as each such TCert carries the appropriate access criterion/criteria, such as institution affiliation specified by the referenced deployment transaction.
 
-_TODO: add figure to illustrate the two cases above as in the two examples below._
-
 **Example 1:**
 
 Invocation Transaction: TCert<sub>new</sub>, Sign<sup>1</sup>(Ciphertext Transaction), Ciphertext Transaction
@@ -1382,9 +1380,9 @@ Although the initial code utilizes self-signed certificates for entities such as
 
 A Public Key Infrastructure is a set of tools, entities, policies, etc. that use digital certificates to manage public-key encryption. The Membership Service infrastructure comprises the following entities: Enrollment Certificate Authority (ECA), Transaction Certificate Authority (TCA) and TLS Certificate Authority (TLS-CA). In this specification, membership services is expressed through following associated certificates issued by the PKI:  
 
-1. Enrollment Certificates (ECerts) - long-term certificates for each user
+1. Enrollment Certificates (ECerts) - long-term certificates for each user.
 2. Transaction Certificates (TCerts) - short-term certificates for each transaction and
-3. TLS-Certificates (TLS-Certs) - certificates used for system 2 system communication
+3. TLS-Certificates (TLS-Certs) - certificates used for system 2 system communication.
 
 * Enrollment Certificate Authority (ECA): entity that generates Enrollment Certificates (ECerts) that include signature certification and encryption keys.  ECerts contain the identity of their owner and can be used to offer only nominal entity-authentication in transactions. ECerts are issued to all roles, i.e. user, non-validating peers and validating peers. They contain the public part of two key pairs – a signature key-pair and an encryption key-pair. ECerts are accessible to everyone.
 
