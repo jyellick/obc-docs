@@ -348,7 +348,7 @@ The main module on a node that is responsible to process transactions, deploy an
 <tr>
 <td width="20%"><b>Consensus</b></td>
 <td>
-The default consensus algorithm of OBC is called ND-PBFT (ND stands for non-deterministic, Note this name is temporary). ND-PBFT is a new algorithm is enhanced from the “classic” PBFT consensus algorithm. The major value of ND-PBFT is that it allows validating nodes to do a best effort in identifying ND transactions.
+The default consensus algorithm of OBC is called Sieve. It is a new algorithm, enhancing the “classic” PBFT mechanism in that it allows validating nodes to do a best effort in identifying non-deterministic transactions.
 </td>
 </tr>
 </table>
