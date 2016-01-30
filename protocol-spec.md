@@ -1418,6 +1418,10 @@ The Registration Authority (RA) is a trusted entity that can ascertain the valid
 
 *Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
 
+![Registration-high-level](./images/sec-registration-high-level.png)
+
+![Registration-detailed](./images/sec-registration-detailed.png)
+
 #### 4.2.5 Generation and usage of certificates
 
 #### 4.2.6 Expiration and revocation of certificates
