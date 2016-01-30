@@ -1424,6 +1424,11 @@ The Registration Authority (RA) is a trusted entity that can ascertain the valid
 
 #### 4.2.5 Generation and usage of certificates
 
+***TCerts***
+
+![TCerts-generation-deploy](./images/sec-request-tcerts-deployment.png)
+![TCerts-generation-invoke](./images/sec-request-tcerts-invocation.png)
+
 #### 4.2.6 Expiration and revocation of certificates
 
 It is practical to support expiration of certificates. The time window during which a certificate can be used is expressed by a ‘validity period’ field. The challenge about supporting expiration lies in the distributed nature of the system. That is, all validating entities must share the same information; i.e. be consistent with respect to the expiration of the validity period associated to the transactions to be executed and validated. To guarantee that the expiration of validity periods is done in a consistent manner across all validators, the concept of validity period identifier is introduced. This identified acts as a logical clock the system allowing to uniquely identify a validity period. At genesis time the “current validity period” of the chain gets initialized by the TCA. It is essential that this validity period identifier is given monotonically increasing values over time, such that it imposes a total order among validity periods.
