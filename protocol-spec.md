@@ -1416,9 +1416,9 @@ The Registration Authority (RA) is a trusted entity that can ascertain the valid
 
 *Offline Phase:* the user presents strong identification credentials (proof of ID) to a Registration Authority (RA) offline. The RA creates and stores an account for the user. The RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
 
-*Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
-
 ![Registration-high-level](./images/sec-registration-high-level.png)
+
+*Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
 
 ![Registration-detailed](./images/sec-registration-detailed.png)
 
