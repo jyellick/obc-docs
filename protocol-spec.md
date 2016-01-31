@@ -1542,11 +1542,10 @@ A Public Key Infrastructure is a set of tools, entities, policies, etc. that use
 The structure of a Transaction Certificate (TCert) is as follows:
 *	TCertID - transaction certificate ID
 *	TCertPub_Key - TCert public key
-*	KeyDF_Key - Key-Derivation-Function Key
 *	Validity period - the time window during which the certificate can be used
-*	AES_Encrypt <sub>TCertOwner_EncryptKey</sub>(TCertIndex)  
+*	AES_Encrypt <sub>TCertOwner_EncryptKey</sub>(TCertIndex) where TCertIndex starts at 1 for each batch of TCerts.
 
-The Transaction Certificate Authority (TCA) returns TCerts in batches, each batch contains the KeyDF_Key (Key-Derivation-Function Key) which is not included within every TCert but delivered to the client with the batch of TCerts (using TLS).
+The Transaction Certificate Authority (TCA) returns TCerts in batches, each batch contains the KeyDF_Key (Key-Derivation-Function Key) which is not included within every TCert but delivered to the client with the batch of TCerts (using TLS). The KeyDF_Key allows to derive TCertOwner_EncryptKey which in turn enables recovery of TCertIndex from AES_Encrypt<sub>TCertOwner_EncryptKey</sub>(TCertIndex).
 
 This implementation of membership services provide the following basic functionality: there is no expiration/revocation of ECerts; expiration of TCerts is provided via the validity period time window; there is no revocation of TCerts. The ECA, TCA, and TLS CA certificates are self-signed, where the TLS CA is provisioned as a trust anchor. (Comment – maybe we could add that that alternately a full PKI could be used where a root CA and potentially intermediate CAs are used)
 
