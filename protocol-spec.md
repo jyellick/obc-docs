@@ -1551,7 +1551,7 @@ The structure of a Transaction Certificate (TCert) is as follows (see Figure 2 �
 * TCertID – transaction certificate ID
 * TCertPub_Key – TCert public key
 * Validity period – the time window during which the certificate can be used
-*	AES_Encrypt <sub>TCertOwner_EncryptKey</sub>(TCertIndex) where TCertIndex starts at 1 for each batch of TCerts.
+*	AES_Encrypt <sub>TCertOwner_EncryptKey</sub>(TCertIndex) where each batch has a unique (per batch) time-stamp/random offset that is added to a counter (initialized at 1 in this implementation) in order to generate TCertIndex.
 
 The Transaction Certificate Authority (TCA) returns TCerts in batches, each batch contains the KeyDF_Key (Key-Derivation-Function Key) which is not included within every TCert but delivered to the client with the batch of TCerts (using TLS). The KeyDF_Key allows to derive TCertOwner_EncryptKey which in turn enables recovery of TCertIndex from AES_Encrypt<sub>TCertOwner_EncryptKey</sub>(TCertIndex).
 
