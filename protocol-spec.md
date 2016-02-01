@@ -106,13 +106,9 @@ ________________________________________________________
    - 4.1.5 Flexibly accommodating usage of transaction certificates
    - 4.1.6 Expanding to support root CA functionality
    - 4.2 User Privacy through Membership Services
-   - 4.2.1 Introduction
-   - 4.2.2 Components
-   - 4.2.3 Credentials
-   - 4.2.4 User/Client Enrollment Process
-   - 4.2.5 Generation and usage of certificates
-   - 4.2.6 Expiration and revocation of certificates
-   - 4.2.7 Online wallet service
+   - 4.2.1 User/Client Enrollment Process
+   - 4.2.2 Expiration and revocation of certificates
+   - 4.2.3 Online wallet service
    - 4.3 Transaction security offerings by the infrastructure
    - 4.3.1 Transaction Confidentiality
    - 4.3.1.1 Deployment transaction
@@ -1527,67 +1523,82 @@ Although the initial code utilizes self-signed certificates for entities such as
 
 ### 4.2 User Privacy through Membership Services
 
-#### 4.2.1 Introduction
+Membership Services consists of an infrastructure of several entities that together manage the identity and privacy of users on the network. As indicated in Section 4.1.1, these services validate user’s identity, register the user in the system, and provide all the credentials needed for him/her to be an active and compliant participant able to create and/or invoke transactions. A Public Key Infrastructure (PKI) is a framework based on public key cryptography that ensures not only the secure exchange of data over public networks but also affirms the identity of the other party. A PKI manages the generation, distribution and revocation of keys and digital certificates. Digital certificates are used to establish user credentials and to sign messages. Signing messages with a certificate ensures that the message has not been altered. Typically a PKI has a Certificate Authority (CA), a Registration Authority (RA), a certificate database, and a certificate storage. The CA is a trusted party that acts as the root of trust and authenticates users. An RA issues certificates for specific uses and it is certified by a root CA. Membership Services is composed of the following entities (see Figure 1 – Member Services Components):
 
-A Public Key Infrastructure is a set of tools, entities, policies, etc. that use digital certificates to manage public-key encryption. The Membership Service infrastructure comprises the following entities: Enrollment Certificate Authority (ECA), Transaction Certificate Authority (TCA) and TLS Certificate Authority (TLS-CA). In this specification, membership services is expressed through following associated certificates issued by the PKI:  
+![Figure 1](./images/sec-memserv-components.png)
 
-1. Enrollment Certificates (ECerts) - long-term certificates for each user.
-2. Transaction Certificates (TCerts) - short-term certificates for each transaction.
-3. TLS-Certificates (TLS-Certs) - certificates used for system 2 system communication.
+*Root Certificate Authority (Root CA):* entity that represents the trust anchor for the PKI scheme. Digital certificates verification follows a chain of trust. The Root CA is the top-most CA in the PKI hierarchy.
 
-* Enrollment Certificate Authority (ECA): entity that generates Enrollment Certificates (ECerts) that include signature verification and encryption keys.  ECerts contain the identity of their owner and can be used to offer only nominal entity-authentication in transactions. ECerts are issued to all roles, i.e. user, non-validating peers and validating peers. They contain the public part of two key pairs – a signature key-pair and an encryption key-pair. ECerts are accessible to everyone.
+*Registration Authority (RA):* a trusted entity that can ascertain the validity and identity of users who want to participate in the permissioned blockchain. It is responsible for out-of-band communication the user to validate his/her identity and role.  It creates registration credentials needed for enrollment and information on root of trust.
 
-* Transaction Certificate Authority (TCA): entity that generates TCerts.  A TCert securely authorizes a transaction without revealing the identities of who is involved in the transaction. In this implementation TCerts do not carry information of the identity of the user. They enable the user not only to anonymously participate in the system but also prevent linkability of transactions. However, auditbility and accountability requirements assume that the TCA is able to retrieve TCerts of a given identity, or retrieve the owner of a specific TCert.
+*Enrollment Certificate Authority (ECA):*  responsible for issuing Enrollment Certificates (ECerts) after validating the registration credentials provided by the user.
 
-* TLS Certificate Authority: Issues TLS certificates for the system participants. Peers (validating and non-validating peers) use TLS certificates.  They carry the identity of their owner and are used for network level security.
+*Transaction Certificate Authority (TCA):* responsible for issuing Transaction Certificates (TCerts) after validating the enrollment credentials provided by the user.  
 
-The structure of a Transaction Certificate (TCert) is as follows:
-*	TCertID - transaction certificate ID
-*	TCertPub_Key - TCert public key
-*	Validity period - the time window during which the certificate can be used
+*TLS Certificate Authority (TLS-CA):* responsible for issuing TLS certificates and credentials that allow the user to make use of its network. It validates the registrations credentials provided by the user.
+
+In this specification, membership services is expressed through the following associated certificates issued by the PKI:
+
+*Enrollment Certificates (ECerts)*
+ECerts are long-term certificates issued to each user and include signature verification and encryption keys.  They are issued to all roles, i.e. user, non-validating peers and validating peers. ECerts contain the identity of their owner and can be used to offer only nominal entity-authentication in transactions. They contain the public part of two key pairs – a signature key-pair and an encryption key-pair. ECerts are accessible to everyone.
+
+*Transaction Certificates (TCerts)*
+TCerts are short-term certificates for each transaction. They are issued by the TCA upon authenticated user-request. They securely authorizes a transaction without revealing the identities of who is involved in the transaction. They include the public part of a signature key-pair. They are issued only to users. They are uniquely associated to the owner – this association is only known by the TCA. In this implementation TCerts do not carry information of the identity of the user. They enable the user not only to anonymously participate in the system but also prevent linkability of transactions.
+
+However, auditability and accountability requirements assume that the TCA is able to retrieve TCerts of a given identity, or retrieve the owner of a specific TCert. For details on how TCerts are used in deployment and invocation transactions see Section 4.3, Transaction Security offerings at the infrastructure level.  
+
+The structure of a Transaction Certificate (TCert) is as follows (see Figure 2 –  Transaction Certificate Structure):
+* TCertID – transaction certificate ID
+* TCertPub_Key – TCert public key
+* Validity period – the time window during which the certificate can be used
 *	AES_Encrypt <sub>TCertOwner_EncryptKey</sub>(TCertIndex) where TCertIndex starts at 1 for each batch of TCerts.
 
 The Transaction Certificate Authority (TCA) returns TCerts in batches, each batch contains the KeyDF_Key (Key-Derivation-Function Key) which is not included within every TCert but delivered to the client with the batch of TCerts (using TLS). The KeyDF_Key allows to derive TCertOwner_EncryptKey which in turn enables recovery of TCertIndex from AES_Encrypt<sub>TCertOwner_EncryptKey</sub>(TCertIndex).
 
-This implementation of membership services provide the following basic functionality: there is no expiration/revocation of ECerts; expiration of TCerts is provided via the validity period time window; there is no revocation of TCerts. The ECA, TCA, and TLS CA certificates are self-signed, where the TLS CA is provisioned as a trust anchor. (Comment – maybe we could add that that alternately a full PKI could be used where a root CA and potentially intermediate CAs are used)
+![Figure 2](./images/sec-tcert-structure.png)
 
-#### 4.2.2 Components
-#### 4.2.3 Credentials
+*TLS-Certificates (TLS-Certs)*
+TLS-Certs are certificates used for system to system communication. They carry the identity of their owner and are used for network level security.
 
-#### 4.2.4 User/Client Enrollment Process
+This implementation of membership services provide the following basic functionality: there is no expiration/revocation of ECerts; expiration of TCerts is provided via the validity period time window; there is no revocation of TCerts. The ECA, TCA, and TLS CA certificates are self-signed, where the TLS CA is provisioned as a trust anchor.
 
-The Registration Authority (RA) is a trusted entity that can ascertain the validity and identity of users who want to participate in the permissioned blockchain. As illustrated in Figure 1, (Fig1: User Enrollment Process) the user enrollment process is executed in two phases:
+#### 4.2.1 User/Client Enrollment Process
 
-*Offline Phase:* the user presents strong identification credentials (proof of ID) to a Registration Authority (RA) offline. The RA creates and stores an account for the user. The RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
+Figure 3 has a high-level description of the user enrollment process. It has an offline and an online phase.
 
-![Registration-high-level](./images/sec-registration-high-level.png)
+![Figure 3](./images/sec-registration-high-level.png)
 
-*Online Phase:*  the user contacts the ECA sending his username, password and a certificate request. The user sends to the ECA its public key and additional identity information. This information in turn is signed by the ECA. The ECA returns to the client an enrollment certificate and the encryption key of the chain. The client saves in local storage both certificates. At this point the user enrollment has been completed.
+*Offline Process:* in Step 1, each user/non-validating peer/validating peer has to present strong identification credentials (proof of ID) to a Registration Authority (RA) offline. This has to be done out-of-band to provide the evidence needed by the RA to create (and store) an account for the user. In Step 2, the RA returns the associated username/password and Root Certificate (TLS-CA Cert in this implementation) to the user.
 
-![Registration-detailed](./images/sec-registration-detailed.png)
+*Online Phase:* In Step 3, the user connects to the client to request to be enrolled in the system. The user sends his username and password to the client.  On behalf of the user, the client sends the request to the PKI framework, Step 4, and receives a package, Step 5, containing several certificates and some additional information (i.e. secret keys used to encrypt information on the chain).  Once the client verifies that the all the crypto material in the package is correct/valid, it stores the certificates in local storage and notifies the user. At this point the user enrollment has been completed.
 
-#### 4.2.5 Generation and usage of certificates
+![Figure 4](./images/sec-registration-detailed.png)
 
-***TCerts***
+Figure 4 shows a detailed description of the enrollment process. The PKI framework has the following entities – RA, ECA, TCA and TLS-CA. After Step 1, the RA calls the function “AddEntry” to enter the (username/password) in its database. At this point the user has been formally registered into the system database. The user needs the Root Cert to verify the authenticity of information received has been signed by Root CA.  In Step 4, the client sends the registration request to the ECA along with its public key and additional identity information. The ECA verifies that such user really exists in the database. Once it gets this insurance the user has the right to submit his/her public key and the ECA will certify it. This enrollment information is of a one-time use. The ECA updates the database marking that this enrollment ID (username/password) cannot be use again. The ECA constructs, signs and sends back to the client an enrollment certificate (ECert) that contains the user’s public key (Step 5). It also sends the ECA Certificate (ECA-Cert) needed in future steps (client will need to prove to the TCA that his/hers ECert was created by the proper ECA). The client verifies, in Step 6, that the public key inside the ECert is the one originally submitted by the client (i.e. that the ECA is not cheating). It also verifies that all the expected information in the TCert is present and properly formed.
 
-![TCerts-generation-deploy](./images/sec-request-tcerts-deployment.png)
-![TCerts-generation-invoke](./images/sec-request-tcerts-invocation.png)
+Similarly, In Step 7, the client sends a registration request to the TLS-CA along with its public key and identity information. The TLS-CA verifies that such user is in the database. The TLS-CA generates, and signs a TLS-Cert that contains the user’s public key (Step 8). TLS-CA sends the TLS-Cert and its certificate (TLSCA Cert). Step 9 is analogous to Step 6, the client verifies that the public key inside the TLS Cert is the one originally submitted by the client and that the information in the TLS Cert is complete and properly formed. In Step 10, the client saves all certificates in local storage both certificates. At this point the user enrollment has been completed.
 
-#### 4.2.6 Expiration and revocation of certificates
+In this implementation the enrollment process for validators is the same as that for peers. However, it is possible that a different implementation to have validators to enroll directly through an on-line process.
+
+![Figure 5](./images/sec-request-tcerts-deployment.png)
+![Figure 6](./images/sec-request-tcerts-invocation.png))
+
+
+#### 4.2.2 Expiration and revocation of certificates
 
 It is practical to support expiration of certificates. The time window during which a certificate can be used is expressed by a ‘validity period’ field. The challenge about supporting expiration lies in the distributed nature of the system. That is, all validating entities must share the same information; i.e. be consistent with respect to the expiration of the validity period associated to the transactions to be executed and validated. To guarantee that the expiration of validity periods is done in a consistent manner across all validators, the concept of validity period identifier is introduced. This identified acts as a logical clock the system allowing to uniquely identify a validity period. At genesis time the “current validity period” of the chain gets initialized by the TCA. It is essential that this validity period identifier is given monotonically increasing values over time, such that it imposes a total order among validity periods.
 
 A special type of transactions, system transactions, and the validity period identified are used together to announce the expiration of a validity period to the Blockchain. System transactions refer to contracts that have been defined in the genesis block and are part of the infrastructure. The validity period identified is updated periodically by the TCA invoking a system chaincode. Note that only the TCA should be allowed to update the validity period. The TCA sets the validity period for each certificate by setting the appropriate integer values in the following two fields that define a range: ‘not-before’ and ‘not-after’ fields.  
 
 TCert Expiration:
-At the time of processing a TCert associated with a transaction, validators read from the state table the value of 'current validity period' to check if the TCert is current. That is, the value in the state table has to be within the range defined by TCert fields ‘not-before’ and ‘not-after’. If this is the case, the validator continues processing the transaction. In the case that the value is not within range, the TCert has expired or is not active yet and the validator should stop processing the transaction.
+At the time of processing a TCert, validators read from the ledger the value of ‘current validity period’ to check if the certificate(s) associated the transaction being evaluated has expired. That is, the current value in the ledger has to be within the range defined by TCert fields ‘not-before’ and ‘not-after’. If this is the case the validator continues processing the transaction. In the case that the current value is not within range the TCert has expired and the validator should stop processing the transaction.
 
-ECert Expiration:
-Enrollment certificates have a different validity period length than those in transaction certificates.
+ECert Expiration
+Enrollment certificates have a different validity period lengths than those in transaction certificates.
 
-Regarding revocation, it is supported in the form of Certificate Revocation Lists (CRLs). CRLs should include the ID corresponding to revoked certificates. Changes to the CRLs, incremental differences, are announced through the Blockchain.
+Regarding revocation, it is supported in the form of Content Revocation Lists (CRLs). CRLs should include the ID corresponding to revoked certificates. Changes to the CRLs, incremental differences, are announced through the Blockchain.
 
-#### 4.2.7 Online wallet service
+#### 4.2.3 Online wallet service
 
 This section shows the security design of an Open Blockchain (OBC) wallet service, that is, a node where end-users can register, move their key material to, and perform transactions through.
 Since the wallet service is in possession of the user's key material, it is clear that without a secure authorization mechanism in place a malicious wallet service could successfully impersonate the user in the Open Blockchain.
