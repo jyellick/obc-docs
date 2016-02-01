@@ -1583,6 +1583,13 @@ In this implementation the enrollment process for validators is the same as that
 ![Figure 5](./images/sec-request-tcerts-deployment.png)
 ![Figure 6](./images/sec-request-tcerts-invocation.png))
 
+*Client:* Request for TCerts batch needs to include (in addition to count), ECert and signature of request using ECert private key (where Ecert private key is pulled from Local Storage).
+
+*TCA generates TCerts for batch:* Generates KeyDF_Key as HMAC(TCA_KDF_Key, EnrollPub_Key). Generates each TCert public key (using TCertPub_Key = EnrollPub_Key + ExpansionValue G, where 384-bit ExpansionValue = HMAC(Expansion_Key, TCertIndex) and 384-bit Expansion_Key = HMAC(KeyDF_Key, “2”)). Generates each AES_Encrypt TCertOwner_EncryptKey(TCertIndex), where TCertOwner_EncryptKey is derived as [HMAC(KeyDF_Key, “1”)]256-bit truncation.
+
+*Client:* Deriving TCert private key from a TCert in order to be able to deploy or invoke:
+KeyDF_Key and Ecert private key need to be pulled from Local Storage. KeyDF_Key is used to derive TCertOwner_EncryptKey as [HMAC(KeyDF_Key, “1”)]256-bit truncation; then TCertOwner_EncryptKey is used to decrypt the TCert field AES_Encrypt TCertOwner_EncryptKey(TCertIndex); then TCertIndex is used to derive TCert private key: TCertPriv_Key = (EnrollPriv_Key + ExpansionValue) modulo n, where 384-bit ExpansionValue = HMAC(Expansion_Key, TCertIndex) and 384-bit Expansion_Key = HMAC(KeyDF_Key, “2”).
+
 
 #### 4.2.2 Expiration and revocation of certificates
 
