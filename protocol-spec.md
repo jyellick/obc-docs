@@ -109,6 +109,7 @@ ________________________________________________________
    - 4.2.1 User/Client Enrollment Process
    - 4.2.2 Expiration and revocation of certificates
    - 4.2.3 Online wallet service
+   - 4.3 Transaction security offerings at the infrastructure level
    - 4.3.1 Security lifecycle of transactions
    - 4.3.2 Transaction confidentiality
    - 4.3.2.1 Confidentiality against users
