@@ -120,13 +120,13 @@ ________________________________________________________
    - 4.4 Access control features on the application
    - 4.4.1 Invocation access control
    - 4.4.2 Read access control
-   
+
    - 4.5 Online wallet service
 
    - 4.6 Network security (TLS)
 
    - 4.7 Restrictions in the current release
-   - 4.7.1 Simplified client 
+   - 4.7.1 Simplified client
    - 4.7.1 Simplified transaction confidentiality
 
 #### 5. Byzantine Consensus
@@ -206,22 +206,22 @@ The reference architecture is aligned in 3 categories: Membership, Blockchain, a
 
 ![Reference architecture](images/refarch.png)
 
-##### 2.1.1 Membership Services
+### 2.1.1 Membership Services
 Membership provides services for managing identity, privacy, and confidentiality on the network. Participants register to get identities, which will enable the Attribute Authority to issue security keys to transact. Reputation Manager enables auditors to see transactions pertaining to a participant. Of course, auditors will have to be granted proper access authority by the participants.
 
-##### 2.1.2 Blockchain Services
+### 2.1.2 Blockchain Services
 Blockchain services manage the distributed ledger through a peer-to-peer protocol, built on HTTP/2. The data structures are highly optimized to provide the most efficient hash algorithm for maintaining the world state replication. Different consensus (PBFT, Raft, PoW, PoS) may be plugged in and configured per deployment.
 
-##### 2.1.3 Chaincode Services
+### 2.1.3 Chaincode Services
 Chaincode services provides a secured and lightweight way to sandbox the chaincode execution potentially on the validating nodes. The environment is a “locked down” and secured container along with a set of signed base images containing secure OS and chaincode language, runtime and SDK layers for Go, Java, and Node.js. Other languages can be enabled if required.
 
-##### 2.1.4 Events
+### 2.1.4 Events
 Validating peers and chaincodes can emit events on the network that applications may listen and take actions on. There is a set of pre-defined events, and chaincodes can generate custom events. Events are consumed by 1 or more event adapters. Adapters may further deliver events using other vehicles such as Web hooks or Kafka.
 
-##### 2.1.5 Application Programming Interface (API)
+### 2.1.5 Application Programming Interface (API)
 The primary interface to OBC is a REST API and its variations over Swagger 2.0. The API allows applications to register users, query the blockchain, and to issue transactions. There is a set of APIs specifically for chaincode to interact with the stack to execute transactions and query transaction results.
 
-##### 2.1.6 Command Line Interface (CLI)
+### 2.1.6 Command Line Interface (CLI)
 CLI includes a subset of APIs to enable developers to quickly test chaincodes or query for status of transactions. CLI is implemented in Golang and operable on multiple OS platforms.
 
 ### 2.2 Topology
@@ -324,7 +324,7 @@ If the block height received upon `DISC_HELLO` is higher than the current block 
 After `DISC_HELLO`, peer sends `DISC_GET_PEERS` periodically to discover any additional peers joining the network. Response to `DISC_GET_PEERS`, a peer sends `DISC_PEERS` with `payload` containing an array of `PeerEndpoint`. Other discovery message types are not used at this point.
 
 ### 3.1.2 Transaction Messages
-There are 2 types of transactions: Deploy and Invoke transactions. Deploy transaction installs the specified chaincode on the chain, invoke and query transactions call a function of a deployed chaincode. Another type in consideration is Create transaction where a deployed chaincode may be instantiated on the chain and is addressable. This type has not been implemented as of this writing.
+There are 3 types of transactions: Deploy, Invoke and Query. Deploy transaction installs the specified chaincode on the chain, invoke and query transactions call a function of a deployed chaincode. Another type in consideration is Create transaction where a deployed chaincode may be instantiated on the chain and is addressable. This type has not been implemented as of this writing.
 
 ### 3.1.2.1 Transaction Data Structure
 
@@ -381,7 +381,7 @@ enum ConfidentialityLevel {
 - `nonce` - Used for security
 - `cert` - Certificate of the transactor
 - `signature` - Signature of the transactor
-- `TransactionPayload.payload` - Bytes defining the payload of the transaction. As the payload can be large, only the payload hash is included directly in the transaction message. 
+- `TransactionPayload.payload` - Bytes defining the payload of the transaction. As the payload can be large, only the payload hash is included directly in the transaction message.
 
 More detail on transaction security in section 4.
 
@@ -640,190 +640,128 @@ The above method offers performance benefits for computing crypto-hash when a fe
 In a particular deployment, all the peer nodes are expected to use same values for the configurations `numBuckets, maxGroupingAtEachLevel, and hashFunction`. Further, if any of these configurations are to be changed at a later stage, the configurations should be changed on all the peer nodes so that the comparison of crypto-hashes across peer nodes is meaningful. Also, this may require to migrate the existing data based on the implementation. For example, an implementation is expected to store the last computed crypto-hashes for all the nodes in the tree which would need to be recalculated.
 
 ### 3.3 Chaincode
-There are three types of transactions that can be executed by a chaincode
-  - Deploy transaction - sends a request to the fabric to deploy the chaincode and returns an unique identifier for the chaincode
-  - Invoke transaction - sends an "invoke" request to the chaincode and returns a transaction identifier
-  - Query transaction - sends the "query" request to the chaincode and returns the results of the query
-
-From a developer's point of view, a chaincode will implement a chaincode interface that supports two methods
-  - A method to execute invoke transactions (called the `Run` method in rest of the doc)
-  - A method to execute query queries (called the `Query` method in rest of the doc)
-
-The `Run` and `Query` methods will take the name of a request function along with corresponding arguments for each of the invoke and query transactions it implements.
-
-The Fabric provides support for persisting and retrieving key-value pairs on a per-chaincode basis. This support is accessible from the `Run` and `Query` methods. An invoke transaction can change chaincode state by modifying key-value pairs, while a query transaction should not be allowed to modify them.
-
-### 3.3.1 Chaincode Development
-A chaincode defines `Run` and `Query` methods. The `Run` method is called by the Deploy and Invoke transactions, and the `Query` method would be called Query transactions.
-
-Additionally, on initialization the chaincode establishes a bi-directional communication stream with the validating peer that launched the chaincode. This is done using an initialization function provided by the Fabric.
-
-The `Run` method can create, change, delete or retrieve key-value pairs, but the `Query` method to can only retrieve key-value pairs but not modify them.
-
-The Fabric would serialize Run method calls by serializing the Deploy and Invoke transactions. However multiple Query method calls can be called concurrently.
-
-### 3.3.2 Chaincode runtime
-A high level life-cycle is as follows
-  - A deploy transaction is executed on the Validating Node
-    - The chaincode is extracted and is executed
-    - On successful execution the chaincode creates a communication channel to the Validating Node
-    - The chaincode listens on the communication channel for invoke and query requests
-  - An invoke or query transaction is executed on the validating node
-    - Chaincode is restarted if not running
-    - invoke or query transaction is sent to the chaincode
-
-### 3.3.3 Chaincode Protocol
-The communication between the Validator Node and the chaincode is based on gRPC. The Fabric provides a reference implementation for chaincode written in golang. The chaincode performs its functions by exchanging messages on a bidirectional gRPC stream.
-
-The approach taken by the reference implementation is to provide a thin "shim" layer which shields developer written chaincode from communication details. The shim layer handles the interaction between the user written chaincode and the Validating Node. All communication is accomplished using the protobuf "ChaincodeMessage"  structure.
-
-Rest of this section specifies the details of that communication protocol. We use pseudo-golang syntax to describe message structures.
-
-### 3.3.3.1 Chaincode Initialization
-This section describes the interactions between chaincode and Validator Node when the Fabric launches a chaincode.
-
-The shim layer sends a one time registration message to the Validator Node
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_REGISTER, Payload: marshalled_ChaincodeID } where "marshalled_ChaincodeID" is ChaincodeID{ Name: < name of the chaincode > } marshalled using gRPC
-
-On success, the shim would receive a ChaincodeMessage with Type ChaincodeMessage_Type_REGISTERED
-
-On failure, the shim would receive a ChaincodeMessage with Type ChaincodeMessage_Type_ERROR. The shim should close the gRPC channel and exit.
-
-After registration, the shim receives an init message from the Validator Node
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_INIT, Payload: marshalled_ChaincodeInput, Uuid: "< a unique id" > } where "marshalled_ChaincodeInput" is ChaincodeInput { Function: "<name of function>", Args: { "arg1", "arg2", ..}
-
-The shim should call the Run method of the chaincode with parameters Function and Args received from the above message.
-
-The chaincode can return an error or a response message. The shim would send response message back to the Validator Node using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: <response message as bytes>, Uuid: "the unique id received on the init message from the Validator Node" }
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the init message from the Validator Node" }
-
-At this point the chaincode initialization is complete and is ready to receive Invoke and Query Transactions.
-
-### 3.3.3.2 Chaincode Invoke
-This section describes the interactions between the chaincode and the Validator Node when the Fabric sends an Invoke message to the chaincode. The Validator Node will serialize invoke transactions so that the shim will receive one transaction at a time.
-
-The shim layer receives invoke transaction message from the Validator Node
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_TRANSACTION, Payload: marshalled_ChaincodeInput } where "marshalled_ChaincodeInput" is ChaincodeInput { Function: "<name of function>", Args: { "arg1", "arg2", ..}
-
-The shim should call the Run method of the chaincode with parameters Function and Args received from the above message.
-
-The chaincode can return an error or a response message. The shim would send response message back to the Validator Node using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: <response message as bytes>, Uuid: "the unique id received on the request message from the Validator Node" }
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the request message from the Validator Node" }
-
-At this point the invoke transaction is complete and the shim layer is ready to receive another invoke transaction.
-
-
-### 3.3.3.3 Chaincode Query
-This section describes the interactions between the chaincode and the Validator Node when the Fabric sends an Query message to the chaincode. The Validator Node can send multiple Query requests concurrently.
-
-The shim layer receives query request message from the Validator Node
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_QUERY, Payload: marshalled_ChaincodeInput } where "marshalled_ChaincodeInput" is ChaincodeInput { Function: "<name of function>", Args: { "arg1", "arg2", ..}
-
-The shim should call the Query method of the chaincode with parameters Function and Args received from the above message.
-
-The chaincode can return an error or a response message. The shim would send response message back to the Validator Node using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: <response message as bytes>, Uuid: "the unique id received on the request message from the Validator Node" }
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the request message from the Validator Node" }
-
-At this point the query request is complete.
-
-### 3.3.3.4 Chaincode State
-
-The sections above dealt with how a user can send requests to the chaincode via the Fabric.This section deals with the protocol by which chaincode can store, modify and retrieve state information in the Fabric. The primitives of interaction are
-  - PUT_STATE - store a (key, value) pair with the Fabric
-  - GET_STATE - given a key, get its value from the Fabric
-  - DEL_STATE - delete a key and its value from the Fabric
-  - RANGE_QUERY_STATE - get a range of key values from the Fabric
-  - INVOKE_CHAINCODE - invoke another chaincode by supplying (function name, arguments)
-  - QUERY_CHAINCODE - query another chaincode by supplying (function name, arguments)
-
-These state requests can be initiated by the chaincode as part of the processing of the init, invoke or query requests described in the previous sections (referred to as "initiating request" below).
-
-#### 3.3.3.4.1 PUT_STATE
-On receiving {key, value} from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_PUT_STATE, Payload: <marshalled_PutStateInfo>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_PutStateInfo" is PutStateInfo{ Key: key, Value: value }
-
-The Fabric can return an error or a response message which the shim would report back to the chaincode appropriately.
-
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-#### 3.3.3.4.2 GET_STATE
-On receiving a key from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_GET_STATE, Payload: <marshalled_key>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_key" is the key marshalled as raw bytes.
-
-The Fabric can return an error or a response message.
-
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: bytes_value, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
-
-#### 3.3.3.4.3 DEL_STATE
-On receiving a key from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_DEL_STATE, Payload: <marshalled_key>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_key" is the key marshalled as raw bytes.
-
-The Fabric can return an error or a response message which the shim would report back to the chaincode appropriately.
-
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-#### 3.3.3.4.4 RANGE_QUERY_STATE
-
-On receiving a "start-key" an "end-key" and a "limit" from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RANGE_QUERY_STATE, Payload: <marshalled_RangeQueryStateInfo>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_RangeQueryStateInfo" is RangeQueryStateInfo{StartKey: start-key, EndKey: end-key, Limit: limit} marshalled as raw bytes.
-
-The Fabric can return an error or a response message.
-
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: marshalled_RangeQueryStateResponse, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_RangeQueryStateResponse" is the marshalled bytes of RangeQueryStateResponse. RangeQueryStateResponse contains an array of {key,value} pairs starting with the "start-key", ending with the "end-key" and limited by the specified by the "limit" value.
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
-
-#### 3.3.3.4.5 INVOKE_CHAINCODE
-
-On receiving a "chaincode name", a "function name" and "arguments" from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_INVOKE_CHAINCODE, Payload: <marshalled_ChaincodeSpec>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_ChaincodeSpec" is ChaincodeSpec{ChaincodeID: <the chaincode name>, ChaincodeInput{ Function: <function name>, Args: <arguments>} } marshalled as raw bytes.
-
-The Fabric can return an error or a response message.
-
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: bytes_value, Uuid: "the unique id received on the initiating request from the Validator Node" } where "bytes_value" is response from called chaincode marshalled as raw bytes.
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
-
-#### 3.3.3.4.6 QUERY_CHAINCODE
-
-On receiving a "chaincode name", a "function name" and "arguments" from the chaincode, the shim would send the following message to the Fabric
-  - ChaincodeMessage
-  { Type: ChaincodeMessage_Type_QUERY_CHAINCODE, Payload: <marshalled_ChaincodeSpec>, Uuid: "the unique id received on the initiating request from the Validator Node" } where "marshalled_ChaincodeSpec" is ChaincodeSpec{ChaincodeID: <the chaincode name>, ChaincodeInput{ Function: <function name>, Args: <arguments>} } marshalled as raw bytes.
-
-The Fabric can return an error or a response message.
-
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_RESPONSE, Payload: bytes_value, Uuid: "the unique id received on the initiating request from the Validator Node" } where "bytes_value" is response from called chaincode marshalled as raw bytes.
-
-and would send an error using the following message
-  - ChaincodeMessage { Type: ChaincodeMessage_Type_ERROR, Payload: <response message as bytes if any>, Uuid: "the unique id received on the initiating request from the Validator Node" }
-
-The shim would extract the Payload from a successful response message or the error and send them to the chaincode.
+Chaincode is an application-level code deployed as a transaction (see section 3.1.2) to be distributed to the network and managed by each validating peer as isolated sandbox. Though any virtualization technology can support the sandbox, currently Docker container is utilized to run the chaincode. The protocol described in this section enables different virtualization support implementation to plug and play.
+
+### 3.3.1 Virtual Machine Instantiation
+A virtual machine implements the VM interface:  
+```
+type VM interface {
+	build(ctxt context.Context, id string, args []string, env []string, attachstdin bool, attachstdout bool, reader io.Reader) error
+	start(ctxt context.Context, id string, args []string, env []string, attachstdin bool, attachstdout bool) error
+	stop(ctxt context.Context, id string, timeout uint, dontkill bool, dontremove bool) error
+}
+```
+The fabric instantiates the VM when it processes a Deploy transaction or other transactions on the chaincode while the VM for that chaincode is not running (either crashed or previously brought down due to inactivity). Each chaincode image is built by the `build` function, started by `start` and stopped by `stop` function.
+
+Once the chaincode container is up, it makes a gRPC connection back to the validating peer that started the chaincode, and that establishes the channel for Invoke and Query transactions on the chaincode.
+
+### 3.3.1 Chaincode Protocol
+Communication between a validating peer and its chaincodes is based on a bidirectional gRPC stream. There is a shim layer on the chaincode container to handle the message protocol between the chaincode and the validating peer using protobuf message.
+```
+message ChaincodeMessage {
+
+    enum Type {
+        UNDEFINED = 0;
+        REGISTER = 1;
+        REGISTERED = 2;
+        INIT = 3;
+        READY = 4;
+        TRANSACTION = 5;
+        COMPLETED = 6;
+        ERROR = 7;
+        GET_STATE = 8;
+        PUT_STATE = 9;
+        DEL_STATE = 10;
+        INVOKE_CHAINCODE = 11;
+        INVOKE_QUERY = 12;
+        RESPONSE = 13;
+        QUERY = 14;
+        QUERY_COMPLETED = 15;
+        QUERY_ERROR = 16;
+        RANGE_QUERY_STATE = 17;
+    }
+
+    Type type = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    bytes payload = 3;
+    string uuid = 4;
+}
+```
+**Definition of fields:**
+- `Type` is the type of the message.
+- `payload` is the payload of the message. Each payload depends on the `Type`.
+- `uuid` is a unique identifier of the message.
+
+The message types are described in the following sub-sections.
+
+A chaincode implements the `Chaincode` interface, which is called by the validating peer when it processes Deploy, Invoke or Query transactions.
+```
+type Chaincode interface {
+	Invoke(stub *ChaincodeStub, function string, args []string) (error)
+	Query(stub *ChaincodeStub, function string, args []string) ([]byte, error)
+}
+```
+The parameters `function` and `args` point to the function implemented by the chaincode that the `Invoke` calls and passes the `args`. Similar behavior for the `Query` function. The `Query` function is not allowed to modify the state of the chaincode; it can only read and calculate the return value as a byte array.
+
+### 3.3.1.1 Chaincode Deploy
+Upon deployed (chaincode container started), the shim layer sends a one time `REGISTER` message to the validating peer with the `payload` containing the `ChaincodeID`. The validating peer responds with `REGISTERED` or `ERROR` on success or failure respectively. The shim closes the connection and exits if receiving `ERROR`.
+
+After registration, the validating peer sends `INIT` with the `payload` containing `ChaincodeInput` object. The shim calls `Invoke` function with the parameters from the `ChaincodeInput`, enabling the chaincode to perform any initialization, such as setting up the persistent state.
+
+The shim responds with `RESPONSE` or `ERROR` message depending on the returned value from the chaincode `Invoke` function. If no errors, the chaincode initialization is complete and is ready to receive Invoke and Query transactions.
+
+### 3.3.1.2 Chaincode Invoke
+On processing Invoke transaction, the validating peer sends `TRANSACTION` message to the chaincode container shim, which calls the chaincode `Invoke` function, passing the parameters from the `ChaincodeInput` object. The shim responds to the validating peer with `RESPONSE` or `ERROR` message, indicating the completion of the function. If `ERROR`, the `payload` contains the error message generated by the chaincode.
+
+### 3.3.1.3 Chaincode Query
+Similar to Invoke transaction, on Query transaction, the validating peer sends `QUERY` message to the chaincode container shim, which call the chaincode `Query` function, passing the parameters from the `ChaincodeInput` object. The `Query` function may return a value or an error, which the shim forwards to the validating peer using `RESPONSE` or `ERROR` message respectively.
+
+### 3.3.1.4 Chaincode State
+Each chaincode may define its own persistent state variables. For example, a chaincode may create assets such as TVs, cars, stocks using state variables to hold the assets attributes. During `Invoke` function processing, the chaincode may update the state variables, for example, changing an asset owner. A chaincode manipulates the state variables by using the following message types:
+
+#### PUT_STATE
+Chaincode sends `PUT_STATE` message to persist a key-value pair with the `payload` containing `PutStateInfo` object.
+```
+message PutStateInfo {
+    string key = 1;
+    bytes value = 2;
+}
+```
+
+#### GET_STATE
+Chaincode sends `GET_STATE` message to get the value whose key is specified in the `payload`.
+
+#### DEL_STATE
+Chaincode sends `DEL_STATE` message to delete the value whose key is specified in the `payload`.
+
+#### RANGE_QUERY_STATE
+Chaincode sends `RANGE_QUERY_STATE` message to get a range of values. The message `payload` contains a `RangeQueryStateInfo` object.
+```
+message RangeQueryStateInfo {
+    string startKey = 1;
+    string endKey = 2;
+    uint32 limit = 3;
+}
+```
+The `startKey` and `endKey` are inclusive and assumed lexical order. The `limit` specifies the maximum number of values returned.
+
+The validating peer responds with `RESPONSE` message whose `payload` is a `RangeQueryStateResponse` object:
+```
+message RangeQueryStateResponse {
+    repeated RangeQueryStateKeyValue keysAndValues = 1;
+    bool hasMore = 2;
+}
+message RangeQueryStateKeyValue {
+    string key = 1;
+    bytes value = 2;
+}
+```
+
+#### INVOKE_CHAINCODE
+Chaincode may call another chaincode in the same transaction context by sending a `INVOKE_CHAINCODE` message to the validating peer with the `payload` containing a `ChaincodeSpec` object.
+
+#### QUERY_CHAINCODE
+Chaincode may query another chaincode in the same transaction context by sending a `QUERY_CHAINCODE` message with the `payload` containing a `ChaincodeSpec` object.
 
 
 ### 3.4 Pluggable Consensus Framework
@@ -1244,31 +1182,22 @@ The function inspects the `Type` of the incoming `OpenchainMessage`. There are f
   3. Equal to `pb.OpenchainMessage_CHAIN_QUERY` (i.e. a query): passed to the `helper.doChainQuery` method so as to get executed locally.
   4. Otherwise: passed to the `HandleMessage` method of the next handler down the stack.
 
+
 ### 3.5 Events
-
-The Fabric provides a framework for generating events as well the mechanism for consuming them. The goals of the event framework are
-  - ability to easily create new event types
-  - ability to easily generate new events from the Fabric
-  - ability to easily consume events generated by the Fabric
-  - provide a mechanism to generate arbitrary events whose event types are not registered with the Fabric 
-
-The event framework consists of three components
+The event framework provide ability to generate and consume predefined and custom events. There are 3 basic components:
   - Event Stream
   - Event Adapters
-  - Event Structure 
-
-The rest of this document goes in the the details of the above components.
+  - Event Structure
 
 #### 3.5.1 Event Stream
-
-The Event Stream is broad classification for a system for producing and consuming events generated by the fabric. Every consumer has its own channel to the Fabric. The channel is implemented on top of gRPC streams.
+An event stream is a gRPC channel capable of sending and receiving events. Each consumer establishes an event stream to the event framework and expresses the events that it is interested in, and event producer only sends appropriate events to the consumer.
 
 ##### Event Producer Framework
-The event producer framework is responsible for maintaining consumers to the event stream and stream events to them. It exposes a single "Send(event)" api to the Fabric. The event is a strongly typed gRPC message and has to  be one of the event types registered with the Fabric or should be a GenericEvent. This allows events to be quickly generated from any part of the system.
+The event producer framework maintains consumers to the event stream and sends events to the consumers. The framework exposes a single `Send(event)` function. The event is a strongly typed gRPC message and has to  be one of the event types registered with the Fabric or should be a GenericEvent. This allows events to be quickly generated from any part of the system.
 
 The Fabric initializes the event framework with buffer and timeout parameters. These parameters are intended to ensure the framework has as little performance impact on the system as possible.
   - buffer - number of events that can be buffered
-  - timeout - has no effect if buffer is not full. On buffer-full 
+  - timeout - has no effect if buffer is not full. On buffer-full
     - if timeout is negative Send(event) drops the event
     - if timeout is 0 Send(event) blocks on the event till the buffer becomes available
     - if timeout is positive Send(event) waits for the specified timeout and will drop the event if buffer remains full after timeout
@@ -1280,12 +1209,12 @@ Events are sent to consumers (described in Event Consumer Framework) based on th
 Every event consumer creates a bidirectional gRPC stream to the event producer. This stream provides the transport layer for the event bus. Consumers create the event bus as follows
   - connect to the event producer in the Fabric
   - send interested event types
- 
+
 The event bus can be terminated either by the consumer or the producer. On termination, the event producer framework will remove the the client along with its registration entries.
 
 ##### Event Consumer Framework
 
-The intent of the consumer framework is to provide the ability for external applications to use them to consume events generated by the fabric. The consumer framework manages the life-cycle and maintainence of the event bus on behalf of event consumers. Every consumer registers an Adapter with the framework (see Event Adapters). The consumer framework can be viewed as bridge between the event bus and the Adapter. A typical use of the event consumer framework 
+The intent of the consumer framework is to provide the ability for external applications to use them to consume events generated by the fabric. The consumer framework manages the life-cycle and maintainence of the event bus on behalf of event consumers. Every consumer registers an Adapter with the framework (see Event Adapters). The consumer framework can be viewed as bridge between the event bus and the Adapter. A typical use of the event consumer framework
 
         adapter = <adapter supplied by the client application to register fo and receive events>
         consumerClient = NewOpenchainEventsClient(<event consumer address>, adapter)
@@ -1299,17 +1228,17 @@ The events are sent to the adapter.
 #### 3.5.2 Event Adapters
 The Adapter encapsulates three facets of event bus interaction
   - provide interested events callback called by the Event Consumer framework at registration time
-  - an interface called by the Event Consumer framework on receipt of an event 
+  - an interface called by the Event Consumer framework on receipt of an event
   - an interface called by the Event Consumer framework when the event bus terminates
 
 The reference implementation provides golang specific language binding.
-
+```
       EventAdapter interface {
          GetInterestedEvents() ([]*ehpb.Interest, error)
          Recv(msg *ehpb.OpenchainEvent) (bool,error)
          Disconnected(err error)
       }
-
+```
 Using gRPC as the event bus protocol allows the Event Consumer framework to be ported to different language bindings without affecting the Event Producer framework.
 
 #### 3.5.3 Event Structure
@@ -1326,7 +1255,7 @@ The core message used for communication between the Event Consumer and Producer 
             //producer events
             Block block = 2;
             Generic generic = 3;
-       } 
+       }
     }
 
 Per above definition, an event has to be one of "Register", "Block" or "Generic".
@@ -1362,36 +1291,36 @@ Currently the producer framework can generate a Block or Generic event. A Block 
 
 
 For this section we will be considering the setting depicted in Figure I. In particular, the system
-consists of the following entities: membership management infrastructure, i.e., a set of entities 
-that are responsible for identifying an individual user (using any form of identification 
-considered in the system, e.g., credit cards, id-cards), open an account for that user to be 
-able to register, and issue the necessary credentials to successfully create transactions 
+consists of the following entities: membership management infrastructure, i.e., a set of entities
+that are responsible for identifying an individual user (using any form of identification
+considered in the system, e.g., credit cards, id-cards), open an account for that user to be
+able to register, and issue the necessary credentials to successfully create transactions
 and deploy or invoke chain-codes successfully through Hyperledger.
 
- * Peers, that are classified in validating peers, and non-validating peers. 
-   Validating peers (also known as validators), order and process (check validity, execute, 
-   and add to the blockchain) user-messages (transactions) submitted to the network. 
-   Non validating peers (also known as peers) receive user transactions on behalf of users, 
-   and after some fundamental validity checks, they forward the transactions to their 
-   neighboring validating peers. Peers maintain an up-to-date copy of the blockchain, 
-   but in contradiction to validators, they do not execute transactions 
+ * Peers, that are classified in validating peers, and non-validating peers.
+   Validating peers (also known as validators), order and process (check validity, execute,
+   and add to the blockchain) user-messages (transactions) submitted to the network.
+   Non validating peers (also known as peers) receive user transactions on behalf of users,
+   and after some fundamental validity checks, they forward the transactions to their
+   neighboring validating peers. Peers maintain an up-to-date copy of the blockchain,
+   but in contradiction to validators, they do not execute transactions
    (a process also known as *transaction validation*).
- * End users of the system, that have registered to our membership service administration, 
-   after having demonstrated ownership of what is considered *identity* in the system, 
+ * End users of the system, that have registered to our membership service administration,
+   after having demonstrated ownership of what is considered *identity* in the system,
    and have obtained credentials to install the client-software and submit transactions
    to the system.
- * Client-software, the software that needs to be installed at the client side for the 
-   latter to be able to complete his registration to our membership service and submit 
+ * Client-software, the software that needs to be installed at the client side for the
+   latter to be able to complete his registration to our membership service and submit
    transactions to the system.
- * Online wallets, entities that are trusted by a user to maintain that user's credentials, 
-   and submit transactions solely upon user request to the network. Online wallets come 
-   with their own software at the client-side, that is usually light-weight, as the 
-   client only needs to authenticate himself and his requests to the wallet. 
-   While it can be the case that peers can play the role of *online wallet* for a set of 
+ * Online wallets, entities that are trusted by a user to maintain that user's credentials,
+   and submit transactions solely upon user request to the network. Online wallets come
+   with their own software at the client-side, that is usually light-weight, as the
+   client only needs to authenticate himself and his requests to the wallet.
+   While it can be the case that peers can play the role of *online wallet* for a set of
    users, in the following sessions the security of online wallets is detailed separately.
 
-Users who wish to make use of Open Blockchain, open an account at the membership management 
-administration, by proving ownership of as discussed in previous sections, new chain-codes 
+Users who wish to make use of Open Blockchain, open an account at the membership management
+administration, by proving ownership of as discussed in previous sections, new chain-codes
 are announced to the Blockchain by the chain-code creator (developer) through the means of a deployment transaction that the client-software would construct on behalf of the developer. Such transaction is first received by a peer or validator, and afterwards circulated in the entire network of validators, this transaction is executed and finds its place to the Blockchain. Users can also invoke a function of an already deployed chain-code through an invocation transaction.
 In the following we provide an overview of the desired business security requirements w.r.t. our system, and how do these map to our security goals. We then overview the security components and their operation and show how our design achieves the prescribed goals.
 
@@ -1513,69 +1442,69 @@ The Registration Authority (RA) is a trusted entity that can ascertain the valid
 
 ### 4.3 Transaction security offerings at the infrastructure level
 
-Transactions in Open Blockchain are user-messages submitted to be included in the ledger. 
-As discussed in previous sections, these messages have a specific structure, and enable users 
+Transactions in Open Blockchain are user-messages submitted to be included in the ledger.
+As discussed in previous sections, these messages have a specific structure, and enable users
 to deploy new chaincodes, invoke existing chaincodes, or query the state of existing chaincodes.
-Therefore, the way transactions are formed, announced and processed plays an important role to 
+Therefore, the way transactions are formed, announced and processed plays an important role to
 the privacy and security offerings of the entire system.
 
-On one hand our membership service provides the means to authenticate transactions as 
-having originated by valid users of the system, to disassociate transactions with user identities, 
-but while efficiently tracing the transactions a particular individual under certain conditions 
-(law enforcement, auditing). In other words, membership services offer to transactions authentication 
+On one hand our membership service provides the means to authenticate transactions as
+having originated by valid users of the system, to disassociate transactions with user identities,
+but while efficiently tracing the transactions a particular individual under certain conditions
+(law enforcement, auditing). In other words, membership services offer to transactions authentication
 mechanisms that marry user-privacy with accountability and non-repudiation.
 
 On the other hand, membership services alone cannot offer full privacy of user-activities within
 Openblockhain. First of all, for privacy provisions offered by Open Blockchain to be complete,
 privacy-preserving authentication mechanisms need to be accompanied by transaction confidentiality.
 This becomes clear if one considers that the content of a chaincode, may leak information on who may have
-created it, and thus break the privacy of that chaincode's creator. The first subsection 
-discusses transaction confidentiality. 
+created it, and thus break the privacy of that chaincode's creator. The first subsection
+discusses transaction confidentiality.
 
 Enforcing access control on the invocation of chaincodes is another requirement associated
-to the security of chaincodes. Though for this one can leverage authentication mechanisms 
-of membership services, one would need to design invocation ACLs and perform their 
-validation in a way that non-authorized parties cannot link multiple invocations of 
+to the security of chaincodes. Though for this one can leverage authentication mechanisms
+of membership services, one would need to design invocation ACLs and perform their
+validation in a way that non-authorized parties cannot link multiple invocations of
 the same chaincode by the same user. Subection 5.2.2 elaborates on this.
 
-Finally, replay attacks is another crucial aspect of the security of the chaincode, 
-as a malicious user may copy a transaction that was added to the Blockchain in the past, 
+Finally, replay attacks is another crucial aspect of the security of the chaincode,
+as a malicious user may copy a transaction that was added to the Blockchain in the past,
 and replay it in the network to distort its operation. This is the topic of Section 5.3.
 
-In the following we provide an overview of how security mechanisms in the infrastructure 
-are incorporated in the transactions' lifecycle, and then proceed with investigating 
+In the following we provide an overview of how security mechanisms in the infrastructure
+are incorporated in the transactions' lifecycle, and then proceed with investigating
 each security mechanism separately.
 
 
-#### 4.3.1 Security Lifecycle of Transactions 
+#### 4.3.1 Security Lifecycle of Transactions
 Transactions are created on the client side. The client can be either plain Open Blockchain client, or a more
-specialized application, i.e., piece of software that handles (server) or invokes (client) specific chaincodes 
+specialized application, i.e., piece of software that handles (server) or invokes (client) specific chaincodes
 through the blockchain. Such applications are built on top of the Open Blockchain platform (client) and
 are detailed in Section 4.4.
 
-Developers of new chaincodes create a new transaction by passing to the Open Blockchain infrastructure 
+Developers of new chaincodes create a new transaction by passing to the Open Blockchain infrastructure
 * the confidentiality/security version or type they want the transaction to conform with,
-* the set of users who wish to be given access to parts of the chaincode and a proper representation of their 
-  access rights (read-access code/state/activity, invocation-access) 
-* the chaincode specification, 
-* code metadata, containing information that should be passed to the chaincode at the time of its execution 
-  (e.g., configuration parameters), and 
-* transaction metadata, that is attached to the transaction structure, 
+* the set of users who wish to be given access to parts of the chaincode and a proper representation of their
+  access rights (read-access code/state/activity, invocation-access)
+* the chaincode specification,
+* code metadata, containing information that should be passed to the chaincode at the time of its execution
+  (e.g., configuration parameters), and
+* transaction metadata, that is attached to the transaction structure,
   and is only used by the application that deployed the chain-code.
 
 Invocation and query transactions corresponding to chaincodes with confidentiality restrictions
-are created using a similar approach. The transactor provides the identifier of the chaincode to be executed, 
-the name of the function to be invoked and its arguments. Optionally, the invoker can pass to the 
-transaction creation function, code invocation metadata, that will be provided to the chaincode 
+are created using a similar approach. The transactor provides the identifier of the chaincode to be executed,
+the name of the function to be invoked and its arguments. Optionally, the invoker can pass to the
+transaction creation function, code invocation metadata, that will be provided to the chaincode
 at the time of its execution. Transaction metadata is another field that the application of the invoker
 or the invoker himself can leverage for their own purposes.
 
-Finally transactions at the client side, are signed by a certificate of their creator and released to the network 
+Finally transactions at the client side, are signed by a certificate of their creator and released to the network
 of validators. Validators receive the confidential transactions, and pass them through the following phases:
-* *pre-validation* phase, where validators validate the transaction certificate against the accepted root certificate authority, 
+* *pre-validation* phase, where validators validate the transaction certificate against the accepted root certificate authority,
   verify transaction certificate signature included in the transaction (statically), and check whether the transaction is a replay (see, later section for details on replay attack protection).
 * *consensus* phase, where the validators add this transaction to the total order of transactions (ultimately included in the ledger)
-* *pre-execution* phase, where validators verify the validity of the transaction / enrollment certificate against the current validity period, 
+* *pre-execution* phase, where validators verify the validity of the transaction / enrollment certificate against the current validity period,
   decrypt the transaction (if the transaction is encrypted), and check that the transaction's plaintext is correctly formed(e.g., invocation access control is respected, included TCerts are correctly formed);
   mini replay-attack check is also performed here within the transactions of the currently processed block.
 * *execution* phase, where the (decrypted) chaincode is passed to a container, along with the associated code metadata, and is executed
@@ -1584,53 +1513,53 @@ of validators. Validators receive the confidential transactions, and pass them t
 
 #### 4.3.2 Transaction confidentiality
 
-Transaction confidentiality requires that under the request of the developer, the plain-text 
-of a chaincode, i.e., code, description, is not accessible or inferable (assuming a computational 
-attacker) by any unauthorized entities(i.e., user or peer not authorized by the developer). 
-For the latter it is important that for chaincodes with confidentiality requirements the 
+Transaction confidentiality requires that under the request of the developer, the plain-text
+of a chaincode, i.e., code, description, is not accessible or inferable (assuming a computational
+attacker) by any unauthorized entities(i.e., user or peer not authorized by the developer).
+For the latter it is important that for chaincodes with confidentiality requirements the
 content of both deployment and invocation transactions remains concealed. In the same spirit,
-non-authorized parties, should not be able to associate invocations (invocation transactions) of a 
-chaincode to the chaincode itself (deployment transaction) or these invocations to each other. 
+non-authorized parties, should not be able to associate invocations (invocation transactions) of a
+chaincode to the chaincode itself (deployment transaction) or these invocations to each other.
 
-Additional requirements for any candidate solution is that it respects and supports the privacy 
+Additional requirements for any candidate solution is that it respects and supports the privacy
 and security provisions of the underlying membership service. In addition, it should not prevent
-the enforcement of any invocation access control of the chain-code functions in the fabric, or 
+the enforcement of any invocation access control of the chain-code functions in the fabric, or
 the implementation of enforcement of access-control mechanisms on the application (See Subsection 4.4).
 
-In the following is provided the specification of transaction confidentiality 
-mechanisms at the granularity of users. The last subsection provides some guidelines 
-on how to extend this functionality at the level of validators. 
-Information on the features supported in current release and 
+In the following is provided the specification of transaction confidentiality
+mechanisms at the granularity of users. The last subsection provides some guidelines
+on how to extend this functionality at the level of validators.
+Information on the features supported in current release and
 its security provisions, you can find in Section 4.7.  
 
-The goal is to achieve a design that will allow for granting or restricting access to an 
+The goal is to achieve a design that will allow for granting or restricting access to an
 entity to any subset of the following parts of a chain-code:
-1. chaincode content & roles of users in that chaincode, i.e., complete (source) code of the 
+1. chaincode content & roles of users in that chaincode, i.e., complete (source) code of the
    chaincode,
-2. chaincode function headers, access control lists, i.e., the prototypes of the functions included 
-   in a chaincode, and their respective list of (anonymous) identifiers of users who should be 
+2. chaincode function headers, access control lists, i.e., the prototypes of the functions included
+   in a chaincode, and their respective list of (anonymous) identifiers of users who should be
    able to invoke each function (*)
 3. chaincode [invocations &] state, i.e., successive updates to the state of a specific chaincode,
    when one or more functions of its are invoked
 4. all the above
 
-Notice, that this design offers the application the capability to leverage Open Blockchain 
-membership service infrastructure and public key infrastructure its to build their own access 
+Notice, that this design offers the application the capability to leverage Open Blockchain
+membership service infrastructure and public key infrastructure its to build their own access
 control policies and enforcement mechanisms.
 
 #### 4.3.2.1 Confidentiality against users
 
-To support finer-grain confidentiality, i.e., restrict read-access to the plain-text of a 
-chaincode to a subset of users that the chaincode creator defines, a chain is bound to a 
+To support finer-grain confidentiality, i.e., restrict read-access to the plain-text of a
+chaincode to a subset of users that the chaincode creator defines, a chain is bound to a
 single long-term encryption key-pair (PK<sub>chain</sub>, SK<sub>chain</sub>).
-Though initially this key-pair is to be stored and maintained by each chain's PKI, in later releases, 
-however, this restriction will be moved away, as chains (and the associated key-pairs) 
-can be triggered through the Blockchain by any user with *special* (admin) privileges 
-(See, multi-chain sub-section). 
+Though initially this key-pair is to be stored and maintained by each chain's PKI, in later releases,
+however, this restriction will be moved away, as chains (and the associated key-pairs)
+can be triggered through the Blockchain by any user with *special* (admin) privileges
+(See, multi-chain sub-section).
 
-**Setup**. At enrollment phase, users obtain (as before) an enrollment certificate, 
-denoted by Cert<sub>u<sub>i</sub></sub> for user u<sub>i</sub>, while each validator v<sub>j</sub> 
-obtain its enrollment certificate denoted by Cert<sub>v<sub>j</sub></sub>. 
+**Setup**. At enrollment phase, users obtain (as before) an enrollment certificate,
+denoted by Cert<sub>u<sub>i</sub></sub> for user u<sub>i</sub>, while each validator v<sub>j</sub>
+obtain its enrollment certificate denoted by Cert<sub>v<sub>j</sub></sub>.
 Enrollment would grant users and validators the following credentials:
 
 1. Users
@@ -1648,13 +1577,13 @@ Thus, enrollment certificates contain the public part of two key-pairs:
 
 Chain, validator and user enrollment public keys are accessible to everyone.
 
-In addition to enrollment certificates, users who wish to anonymously participate in 
-transactions issue transaction certificates. For simplicity transaction certificates of a 
+In addition to enrollment certificates, users who wish to anonymously participate in
+transactions issue transaction certificates. For simplicity transaction certificates of a
 user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>. Transaction certificates
 include the public part of a signature key-pair denoted by  (tpk<sub>u<sub>i</sub></sub>,tsk<sub>u<sub>i</sub></sub>).
 
 
-The following section provides a high level description of how transaction format accommodates read-access restrictions 
+The following section provides a high level description of how transaction format accommodates read-access restrictions
 at the granularity of users.
 
 **Structure of deployment transaction.**
@@ -1663,29 +1592,29 @@ The following figure depicts the structure of a typical deployment transaction w
 ![FirstRelease-deploy](./images/sec-futrel-depl.png)
 
 One can notice that a deployment transaction consists of several sections:
-* section *general-info*, that contains the administration details of the transaction, 
-  i.e., which chain this transaction corresponds to (chained), 
-  the type of transaction (that is set to ''deploymetTx''), the version number of 
-  confidentiality policy implemented, its creator identifier (expressed by means of 
-  transaction certificate TCert of enrollment certificate Cert), and a Nonce, that 
+* section *general-info*, that contains the administration details of the transaction,
+  i.e., which chain this transaction corresponds to (chained),
+  the type of transaction (that is set to ''deploymetTx''), the version number of
+  confidentiality policy implemented, its creator identifier (expressed by means of
+  transaction certificate TCert of enrollment certificate Cert), and a Nonce, that
   facilitates primarily replay-attack resistance techniques.
-* section *code-info*, that contains information on the chain-code source code, function 
-  headers, (invocation) access list, etc. In the version of the transaction format depicted 
+* section *code-info*, that contains information on the chain-code source code, function
+  headers, (invocation) access list, etc. In the version of the transaction format depicted
   in Figure 5, there is a symmetric key used for the source-code of the chain-code (K<sub>C</sub>),
-  and another symmetric key used for the function prototypes and ACLs (K<sub>H</sub>). 
+  and another symmetric key used for the function prototypes and ACLs (K<sub>H</sub>).
   A hash of the headers (function-prototypes & ACL) is computed and added in the source-code
   section, such that the latter is uniquely associated with the former.
-* section *chain-validators*, where appropriate key material is passed to the validators for 
-  the latter to be able to (i) decrypt the chain-code source (K<sub>C</sub>), (ii) decrypt the 
-  headers and ACLs(K<sub>H</sub>),  and (iii) encrypt the state when the chain-code has been 
+* section *chain-validators*, where appropriate key material is passed to the validators for
+  the latter to be able to (i) decrypt the chain-code source (K<sub>C</sub>), (ii) decrypt the
+  headers and ACLs(K<sub>H</sub>),  and (iii) encrypt the state when the chain-code has been
   invoked accordingly(K<sub>S</sub>). In particular, the chain-code creator generates an encryption
-  key-pair for the chain-code it deploys (PK<sub>C</sub>, SK<sub>C</sub>). It then uses PK<sub>C</sub> 
+  key-pair for the chain-code it deploys (PK<sub>C</sub>, SK<sub>C</sub>). It then uses PK<sub>C</sub>
   to encrypt all the keys associated to the chain-code:
 <center> [(''code'',K<sub>C</sub>) ,(''headr'',K<sub>H</sub>),(''code-state'',K<sub>S</sub>), Sig<sub>TCert<sub>u<sub>c</sub></sub></sub>(\*)]<sub>PK<sub>c</sub></sub>, </center>
   and passes the secret key SK<sub>C</sub> to the validators using the chain-specific public key:
 <center>[(''chaincode'',SK<sub>C</sub>), Sig<sub>TCert<sub>u<sub>c</sub></sub></sub>(*)]<sub>PK<sub>chain</sub></sub>.</center>
-* section *contract-users*, where the public encryption keys of the contract users, 
-  i.e., users who are given read-access to parts of the chain-code, are used to encrypt 
+* section *contract-users*, where the public encryption keys of the contract users,
+  i.e., users who are given read-access to parts of the chain-code, are used to encrypt
   the keys  associated to their access rights:
 
   1. SK<sub>c</sub> for the users to be able to read any message associated to that chain-code (invocation, state, etc),
@@ -1699,21 +1628,21 @@ One can notice that a deployment transaction consists of several sections:
  latter to be able to retrieve this transaction through parsing the ledger and without keeping any state locally.
 
 
-The entire transaction is signed by a certificate of the chaincode creator, i.e., enrollment 
+The entire transaction is signed by a certificate of the chaincode creator, i.e., enrollment
 or transaction certificate as decided by the latter.
 Two noteworthy points:
-* Messages that are included in a transaction in an encrypted format, i.e., code-functions, code-hdrs, 
-  are signed before they are encrypted using the same TCert the entire transaction is signed with, or 
-  even with a different TCert or the ECert of the user (if the transaction deployment should carry the identity 
-  of its owner. A binding to the underlying transaction carrier should be included in the signed message, e.g., 
+* Messages that are included in a transaction in an encrypted format, i.e., code-functions, code-hdrs,
+  are signed before they are encrypted using the same TCert the entire transaction is signed with, or
+  even with a different TCert or the ECert of the user (if the transaction deployment should carry the identity
+  of its owner. A binding to the underlying transaction carrier should be included in the signed message, e.g.,
   the hash of the TCert the transaction is signed, such that mix\&match attacks are not possible.
-  Though we detail such attacks in Section 4.4, in these cases an attacker who sees a transaction should not be able 
-  to isolate the ciphertext corresponding to, e.g., code-info, and use it for another transaction of her own. 
+  Though we detail such attacks in Section 4.4, in these cases an attacker who sees a transaction should not be able
+  to isolate the ciphertext corresponding to, e.g., code-info, and use it for another transaction of her own.
   Clearly, such an ability would disrupt the operation of the system, as a chain-code that was first created by user A,
   will now also belong to malicious user B (who is not even able to read it).
-* To offer the ability to the users to cross-verify they are given access to the correct key, i.e., to the same 
-  key as the other contract users, transaction ciphertexts that are encrypted with a key K are accompanied by a 
-  (Pedersen) commitment to K, while the opening of this commitment value is passed to all users who are entitled 
+* To offer the ability to the users to cross-verify they are given access to the correct key, i.e., to the same
+  key as the other contract users, transaction ciphertexts that are encrypted with a key K are accompanied by a
+  (Pedersen) commitment to K, while the opening of this commitment value is passed to all users who are entitled
   access to K in contract-users, and chain-validator sections.
   In this way, anyone who is entitled access to that key can verify that the key has been properly passed to it.
   This part is omitted in the figure above to avoid confusion.
@@ -1721,55 +1650,55 @@ Two noteworthy points:
 
 
 **Structure of invocation transaction.
-A transaction invoking the chain-code triggering the execution of a function of the chain-code with 
+A transaction invoking the chain-code triggering the execution of a function of the chain-code with
 user-specified arguments is structured as depicted in the figure below.
 
 ![FirstRelease-deploy](./images/sec-futrel-inv.png)
 
-Invocation transaction as in the case of deployment transaction consists of a *general-info* section, a *code-info* section, 
-a section for the *chain-validators*, and one for the *contract users*, signed altogether with one of the invoker user's 
+Invocation transaction as in the case of deployment transaction consists of a *general-info* section, a *code-info* section,
+a section for the *chain-validators*, and one for the *contract users*, signed altogether with one of the invoker user's
 transaction certificates.
 
 General-info follows the same structure as the corresponding section of the deployment transaction.
-The only difference relates to the transaction type that is now set to ''InvTx'', and the chain-code identifier or 
+The only difference relates to the transaction type that is now set to ''InvTx'', and the chain-code identifier or
 name that is now encrypted under the chain-specific encryption (public) key.
 
-Code-info exhibits the same structure as the one of the deployment transaction. Code payload, as in the case of deployment 
-transaction, consists of function invocation details (the name of the function invoked, and associated arguments), 
+Code-info exhibits the same structure as the one of the deployment transaction. Code payload, as in the case of deployment
+transaction, consists of function invocation details (the name of the function invoked, and associated arguments),
 code-metadata provided by the application, and the transaction's creator (invoker's u<sub>i</sub>) certificate, TCert<sub>u<sub>i</sub></sub>'.
-Code payload is signed by another transaction certificate TCert<sub>u<sub>i</sub></sub> of the invoker u<sub>i</sub>, 
-and serves invocation access control enforcement purposes. The latter is detailed in the next subsection. As in the case of 
-deployment transactions, code-metadata, and tx-metadata, are fields that are provided by the application and can be used 
+Code payload is signed by another transaction certificate TCert<sub>u<sub>i</sub></sub> of the invoker u<sub>i</sub>,
+and serves invocation access control enforcement purposes. The latter is detailed in the next subsection. As in the case of
+deployment transactions, code-metadata, and tx-metadata, are fields that are provided by the application and can be used
 (as described in Section 4.4), for the latter to implement their own access control mechanisms and roles.
 
-Finally, contract-users and chain-validator sections provide the key the payload is encrypted with under the 
+Finally, contract-users and chain-validator sections provide the key the payload is encrypted with under the
 invoker's key, and the chain encryption key respectively.
-Upon receiving such transactions, the validators decrypt [code-name]<sub>PK<sub>chain</sub></sub> using the 
+Upon receiving such transactions, the validators decrypt [code-name]<sub>PK<sub>chain</sub></sub> using the
 chain-specific secret key SK<sub>chain</sub> and obtain the invoked chain-code identifier.
-Given the latter, validators retrieve from their local storage the chaincode's decryption key SK<sub>c</sub>, 
-and use it to decrypt chain-validators' message, that would equip them with the symmetric key K<sub>I</sub> 
+Given the latter, validators retrieve from their local storage the chaincode's decryption key SK<sub>c</sub>,
+and use it to decrypt chain-validators' message, that would equip them with the symmetric key K<sub>I</sub>
 the invocation transaction's payload was encrypted with.
-Given the latter, validators decrypt code-info, and execute the chain-code function with the specified arguments, 
+Given the latter, validators decrypt code-info, and execute the chain-code function with the specified arguments,
 and the code-metadata attached(See, Section 4.4 for more details on the use of code-metadata).
 While the chain-code is executed, updates of the state of that chain-code are possible.
 These are encrypted using the state-specific key K<sub>s</sub> that was defined during that chain-code's deployment.
 In particular, K<sub>s</sub> is used the same way K<sub>iTx</sub> is used in the design of our first release (See, Section XX).  
 
 **Structure of query transaction.**
-Query transactions have the same format as invocation transactions. 
+Query transactions have the same format as invocation transactions.
 The only difference is that Query transactions do not affect the state of the chaincode,
-and thus there is no need for the state to be retrieved (decrypted) and/or updated (encrypted) 
+and thus there is no need for the state to be retrieved (decrypted) and/or updated (encrypted)
 after the execution of the chaincode completes.
 
 #### 4.3.2.2 Confidentiality against validators
-This section deals with ways of how to support execution of certain transactions under a different (or subset) 
+This section deals with ways of how to support execution of certain transactions under a different (or subset)
 sets of validators in the current chain. This section inhibits IP restrictions and will be expanded in the following few weeks.
 
 
 ### 4.3.3 Invocation access control
 
 Invocation access control is in place to restrict access the ability to invoke a chaincode to a
-subset of users of the system, as defined by the chain-code developer. 
+subset of users of the system, as defined by the chain-code developer.
 This functionality will offered in the future in the fabric.
 
 The following figure reflects this capability of specifying invocation access lists in the deployment of a chaincode.
@@ -1781,7 +1710,7 @@ the headers part of code-info contain the list of function prototypes exposed to
 followed by their invocation access control list (ACL). It is important to note that a similar approach could be used
 to accomodate contract *roles*.
 
-Function ACLs are defined by the means of certificates (enrollment or transaction) and describe the set of users who 
+Function ACLs are defined by the means of certificates (enrollment or transaction) and describe the set of users who
 should be able to invoke that function. These ACLs, are taken in consideration
 when a function of that chain-code is invoked, i.e., during the processing of the corresponding invocation transaction.
 Headers are implicitly included in the payload (through their hash), but are encrypted using a different key from the code-payload.
@@ -1794,75 +1723,75 @@ The figure below demonstrates how the invoker authorizes itself to invoke a func
 
 ![FirstRelease-deploy](./images/sec-futrel-inv.png)
 
-The invoker uses the (transaction) certificate of its that is present in the ACL of the invoked function 
+The invoker uses the (transaction) certificate of its that is present in the ACL of the invoked function
 (in the associated deployment transaction) and signs the plaintext payload of its invocation with this certificate.
-The invocation transaction is signed externally potentially with another (transaction) certificate of the invoker 
+The invocation transaction is signed externally potentially with another (transaction) certificate of the invoker
 (depending on the configuration of the invoker's client). Notice that the signature on the
-cleartext of the invocation transaction is linked to the certificate used to extenrally sign the transaction, 
+cleartext of the invocation transaction is linked to the certificate used to extenrally sign the transaction,
 as the signed message contains a hash of the transactor's transaction certificate.
-This is important, as it guarantees that copying the code-info part of the transaction to another user's 
+This is important, as it guarantees that copying the code-info part of the transaction to another user's
 transaction, and messing up with the system is not possible.
 
-Validators who receive this transaction evaluate the payload plaintext signature with the (T)Certs that appear in the 
+Validators who receive this transaction evaluate the payload plaintext signature with the (T)Certs that appear in the
 ACLs of the deployment transaction of the invoked chain-code,
-and validate it. Based on whether the signature verification succeeds the validators proceed with the execution 
+and validate it. Based on whether the signature verification succeeds the validators proceed with the execution
 of the transaction or output an error message.
 
-As in the case of transaction confidentiality, query transactions have the same 
-format as invocation transactions. The only difference is that Query transactions do 
+As in the case of transaction confidentiality, query transactions have the same
+format as invocation transactions. The only difference is that Query transactions do
 not affect the state of the chaincode. Query transactions could be used for a client to
 request for the state of a chaincode, assuming that this function is implemented at the chaincode;
-in this way, restricting access to the chaincode state can be achieved through the associated function's invocation 
+in this way, restricting access to the chaincode state can be achieved through the associated function's invocation
 access control list.
 
 
 ### 4.3.4 Replay attack resistance
-In replay attacks the attacker "replays" a message it "eavesdropped" on the network or ''saw'' on the Blockchain. 
-Replay attacks are a big problem here, as they can incur into the validating entities re-doing a computationally intensive 
-process (chaincode invocation) and/or affect the state of the corresponding chaincode, while it requires minimar or no 
-power from the attacker side.  To make matters worse, if a transaction was a payment transaction, replays could 
-potentially incur into the payment being performed more than once, without this being the original intention of the payer. 
+In replay attacks the attacker "replays" a message it "eavesdropped" on the network or ''saw'' on the Blockchain.
+Replay attacks are a big problem here, as they can incur into the validating entities re-doing a computationally intensive
+process (chaincode invocation) and/or affect the state of the corresponding chaincode, while it requires minimar or no
+power from the attacker side.  To make matters worse, if a transaction was a payment transaction, replays could
+potentially incur into the payment being performed more than once, without this being the original intention of the payer.
 Existing systems resist replay attacks as follows:
-* Record hashes of transactions in the system. This solution would require that validators maintain a log of the hash of 
-  each transaction that has ever been announced through the network, and compare a new transaction against their locally 
-  stored transaction record. Clearly such approach cannot scale for large networks, and could easily result into validators 
+* Record hashes of transactions in the system. This solution would require that validators maintain a log of the hash of
+  each transaction that has ever been announced through the network, and compare a new transaction against their locally
+  stored transaction record. Clearly such approach cannot scale for large networks, and could easily result into validators
   spending a lot of time to do the check of whether a transaction has been replayed, than executing the actual transaction.
-* Leverage state that is maintained per user identity (Ethereum). Ethereum keeps some state, e.g., counter (initially set to 1) 
-  for each identity/pseudonym in the system. Users also maintain their own counter (initially set to 0) for each 
-  identity/pseudonym of theirs. Each time a user sends a transaction using an identity/pseudonym of his, he increases 
-  his local counter by one and adds the resulting value to the transaction. The transaction is subsequently signed by that 
-  user identity and released to the network. When picking up this transaction, validators check the counter value included 
-  within and compare it with the one they have stored locally; if the value is the same, they increase the local value of 
+* Leverage state that is maintained per user identity (Ethereum). Ethereum keeps some state, e.g., counter (initially set to 1)
+  for each identity/pseudonym in the system. Users also maintain their own counter (initially set to 0) for each
+  identity/pseudonym of theirs. Each time a user sends a transaction using an identity/pseudonym of his, he increases
+  his local counter by one and adds the resulting value to the transaction. The transaction is subsequently signed by that
+  user identity and released to the network. When picking up this transaction, validators check the counter value included
+  within and compare it with the one they have stored locally; if the value is the same, they increase the local value of
   that identity's counter and accept the transaction. Otherwise, they reject the transaction as invalid or replay.  
-  Although this would work well in cases where we have limited number of user identities/pseudonyms (e.g., not too large), 
-  it would ultimately not scale in a system where users use a different identifier (transaction certificate) per transaction, 
+  Although this would work well in cases where we have limited number of user identities/pseudonyms (e.g., not too large),
+  it would ultimately not scale in a system where users use a different identifier (transaction certificate) per transaction,
   and thus have a number of user pseudonyms proportional to the number of transactions.
 
 Other asset management systems, e.g., Bitcoin, though not directly dealing with replay attacks, they resist them. In systems
-that manage (digital) assets, state is maintained on a per asset basis, i.e., validators only keep a record of who owns what. 
-Resistance to replay attacks come as a direct result from this, as replays of transactions would be immediately be 
-deemed as invalid by the protocol (since can only be shown to be derived from older owners of an asset/coin). While this would 
-be appropriate for asset management systems, this does not abide with the needs of a Blockchain systems with more generic 
+that manage (digital) assets, state is maintained on a per asset basis, i.e., validators only keep a record of who owns what.
+Resistance to replay attacks come as a direct result from this, as replays of transactions would be immediately be
+deemed as invalid by the protocol (since can only be shown to be derived from older owners of an asset/coin). While this would
+be appropriate for asset management systems, this does not abide with the needs of a Blockchain systems with more generic
 use than asset management.
 
 
-In Open Blockchain for replay attack protection a hybrid approach is adopted. 
-That is, users add in the transaction a nonce that is generated in a different manner 
-depending on whether the transaction is anonymous (followed and signed by a transaction certificate) or not 
+In Open Blockchain for replay attack protection a hybrid approach is adopted.
+That is, users add in the transaction a nonce that is generated in a different manner
+depending on whether the transaction is anonymous (followed and signed by a transaction certificate) or not
 (followed and signed by a long term enrollment certificate). More specifically,:
-* Users submitting a transaction with their enrollment certificate should include in that 
-  transaction a nonce that is a function of the nonce they used in the previous transaction 
-  they issued with the same certificate (e.g., a counter function or a hash). The nonce included 
-  in the first transaction of each enrollment certificate can be either pre-fixed by the system 
-  (e.g., included in the genesis block) or chosen by the user. In the first case, the genesis block 
-  would need to include nonceall , i.e., a fixed number and the nonce used by user with identity 
+* Users submitting a transaction with their enrollment certificate should include in that
+  transaction a nonce that is a function of the nonce they used in the previous transaction
+  they issued with the same certificate (e.g., a counter function or a hash). The nonce included
+  in the first transaction of each enrollment certificate can be either pre-fixed by the system
+  (e.g., included in the genesis block) or chosen by the user. In the first case, the genesis block
+  would need to include nonceall , i.e., a fixed number and the nonce used by user with identity
   IDA for his first enrollment certificate signed transaction would be
   <center>nonce<sub>round<sub>0</sub>IDA</sub> <- hash(IDA, nonce<sub>all</sub>),</center>
   where IDA appears in the enrollment certificate. From that point onward successive transactions of
   that user with enrollment certificate would include a nonce as follows
   <center>nonce<sub>round<sub>i</sub>IDA</sub> <- hash(nonce<sub>round<sub>{i-1}</sub>IDA</sub>),</center>
-  that is the nonce of the ith transaction would be using the hash of the nonce used in the {i-1}th transaction of that certificate. 
-  Validators here continue to process a transaction they receive, as long as it satisfies the condition mentioned above. 
+  that is the nonce of the ith transaction would be using the hash of the nonce used in the {i-1}th transaction of that certificate.
+  Validators here continue to process a transaction they receive, as long as it satisfies the condition mentioned above.
   Upon successful validation of transaction's format, the validators update their database with that nonce.
 
   **Storage overhead**:
@@ -1986,9 +1915,9 @@ type Client interface {
 }
 ```
 
-To support application-level ACLs, the fabric's transaction and chaincode specification format 
+To support application-level ACLs, the fabric's transaction and chaincode specification format
 have an additional field to store application-specific metadata.
-This field is depicted in both figures 1, by code-metadata. The content of this field is decided 
+This field is depicted in both figures 1, by code-metadata. The content of this field is decided
 by the application, at the transaction creation time.
 The fabric layer treats it as an unstructured stream of bytes.
 
@@ -2022,9 +1951,9 @@ To assist chaincode execution, at the chain-code invocation time, the validators
 
 
 **Application invocation access control.**
-This section describes how how the application can leverage the means provided by the fabric 
+This section describes how how the application can leverage the means provided by the fabric
 to implement its own access control on its chain-code functions.
-In the scenario considered here, the following entities are identified: 
+In the scenario considered here, the following entities are identified:
 
 1. **C**: is a chaincode that contains a single function, e.g., called *hello*;
 2. **u<sub>c</sub>**: is the **C** deployer;
@@ -2117,7 +2046,7 @@ to pass information to the developer of the application, etc.
 responsible for decrypting the payload of the chain-code itself (as well as the code-metadata fields near it), and provide those to containers for
 deployment/execution.
 
-### 4.5 Online wallet service 
+### 4.5 Online wallet service
 
 
 
@@ -2135,22 +2064,22 @@ A particular focus is given on client operationsa and the design of transaction 
 
  - Client side enrollment and transaction creation is performed entirely by a non-validating peer that is trusted not to impersonate the user.
    See, Section 4.7.1 for more information.
- - A minimal set of confidentiality properties where a chain-code is accessible by any entity that is member of the system, 
-   i.e., validators and users who have registered to our membership services, and not accessible by any-one else. 
-   The latter include any party that has access to the storage area where the ledger is maintained, or other entities 
+ - A minimal set of confidentiality properties where a chain-code is accessible by any entity that is member of the system,
+   i.e., validators and users who have registered to our membership services, and not accessible by any-one else.
+   The latter include any party that has access to the storage area where the ledger is maintained, or other entities
    that are able to see the transactions that are announced in the validator network. The design of the first release is detailed in subsection 4.6.1
  - The code utilizes self-signed certificates for entities such as the enrollment CA (ECA) and the transaction CA (TCA)
  - Invocation access control enforcement is not currently provided
  - Replay attack resistance mechanism is not available
- - Invocation access control can be enforced only at the application layer: 
-   it is up to the application to leverage the infrastructure's tools properly for security to 
-   be guaranteed. This means, that if the application ignores to *bind* the transaction binding 
+ - Invocation access control can be enforced only at the application layer:
+   it is up to the application to leverage the infrastructure's tools properly for security to
+   be guaranteed. This means, that if the application ignores to *bind* the transaction binding
    offered by our fabric, secure transaction processing  may be at risk.
 
 #### 4.7.1 Simplified client
 
-Client side enrollment and transaction creation is performed entirely by a non-validating peer who plays the role of an online wallet. 
-In particular, the end-user leverages his registration credentials <username, password> to open an accoutn to a non-validating peer 
+Client side enrollment and transaction creation is performed entirely by a non-validating peer who plays the role of an online wallet.
+In particular, the end-user leverages his registration credentials <username, password> to open an accoutn to a non-validating peer
 and uses these credentials to further authorize the peer to build transactions on the user's behalf. It needs to be noted, that such
 a design does not provide secure **authorization** for the peer to submit transactions on behalf of the user, as a malicious peer
 could impersonate the user. Details on the specifications of a design that deals with the security issues of online wallet can be found is Section 4.6.
@@ -2158,44 +2087,44 @@ Currently the maximum number of peers a user can register to and perform transac
 
 #### 4.7.2 Simplified transaction confidentiality
 
-**Disclaimer:** The current version of transaction confidentiality is minimal, and will be used as an intermediate step 
+**Disclaimer:** The current version of transaction confidentiality is minimal, and will be used as an intermediate step
 to reach a design that allows for fine grain (invocation) access control enforcement in the next versions.
 
-In its current form, confidentiality of transactions is offered solely at the chain-level, i.e., that the 
-content of a transaction included in a ledger, is readable by all members of that chain, i.e., validators 
+In its current form, confidentiality of transactions is offered solely at the chain-level, i.e., that the
+content of a transaction included in a ledger, is readable by all members of that chain, i.e., validators
 and users. At the same time, fine-grain auditing capabilities are provided for external auditors, i.e.,
-application auditors that are not member of the system, such that they can be given 
-the means to perform auditing by passively observing the Blockchain data, and while 
-guaranteeing that they is given access solely to the transactions related to the application under audit. 
-State is encrypted in a way such that auditing requirements are satisfied, while not disrupting the 
+application auditors that are not member of the system, such that they can be given
+the means to perform auditing by passively observing the Blockchain data, and while
+guaranteeing that they is given access solely to the transactions related to the application under audit.
+State is encrypted in a way such that auditing requirements are satisfied, while not disrupting the
 proper operation of the underlying consensus network.
 
-More specifically, currently symmetric key encryption is supported in the process of offering transaction confidentiality. 
-In this setting, one of the main threats is represented by cryptanalysis[3,4] that leverage the availability of many 
-ciphertexts being encrypted under the same key. Another important challenge that is specific to the blockchain setting, 
-is that validators need to run consensus over the state of the blockchain, that, aside the transactions themselves, 
+More specifically, currently symmetric key encryption is supported in the process of offering transaction confidentiality.
+In this setting, one of the main threats is represented by cryptanalysis[3,4] that leverage the availability of many
+ciphertexts being encrypted under the same key. Another important challenge that is specific to the blockchain setting,
+is that validators need to run consensus over the state of the blockchain, that, aside the transactions themselves,
 also includes the state updates of individual contracts or chaincodes. Though this is trivial to do for non-confidential chaincodes,  
-for confidential chaincodes, one needs to design the state encryption mechanism such that the resulting ciphertexts are 
+for confidential chaincodes, one needs to design the state encryption mechanism such that the resulting ciphertexts are
 semantically secure, and yet, identical if the plaintext state is the same.
 
 
-To overcome both challenges, Open Blockchain utilizes a key hierarchy that reduces the number of ciphertexts 
-that are encrypted under the same key. At the same time, as some of these keys are used for the generation of IVs, 
-this allows the validating parties to generate exactly the same ciphertext when executing the same transaction 
+To overcome both challenges, Open Blockchain utilizes a key hierarchy that reduces the number of ciphertexts
+that are encrypted under the same key. At the same time, as some of these keys are used for the generation of IVs,
+this allows the validating parties to generate exactly the same ciphertext when executing the same transaction
 (this is necessary to remain agnostic to the underlying consensus algorithm) and offers the possibility of fine-grained
 auditing by disclosing to auditing entities only the most relevant keys.
 
 
-**Method description:** 
+**Method description:**
 Membership service generates a symmetric key for the ledger (K<sub>chain</sub>) that is distributed
-at registration time to all the entities of the blockchain system, i.e., the clients and the 
-validating entities that have issued credentials through the membership service of the chain. 
-At enrollment phase, user obtain (as before) an enrollment certificate, denoted by Cert<sub>u<sub>i</sub></sub> 
+at registration time to all the entities of the blockchain system, i.e., the clients and the
+validating entities that have issued credentials through the membership service of the chain.
+At enrollment phase, user obtain (as before) an enrollment certificate, denoted by Cert<sub>u<sub>i</sub></sub>
 for user u<sub>i</sub> , while each validator v<sub>j</sub> obtain its enrollment certificate denoted by Cert<sub>v<sub>j</sub></sub>.
 
-Entity enrollment would be enhanced, as follows. In addition to enrollment certificates, 
-users who wish to anonymously participate in transactions issue transaction certificates. 
-For simplicity transaction certificates of a user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>. 
+Entity enrollment would be enhanced, as follows. In addition to enrollment certificates,
+users who wish to anonymously participate in transactions issue transaction certificates.
+For simplicity transaction certificates of a user u<sub>i</sub> are denoted by TCert<sub>u<sub>i</sub></sub>.
 Transaction certificates include the public part of a signature key-pair denoted by (tpk<sub>u<sub>i</sub></sub>,tsk<sub>u<sub>i</sub></sub>).
 
 In order to defeat crypto-analysis and enforce confidentiality, the following key hierarchy is considered for generation and validation of confidential transactions:
@@ -2252,8 +2181,8 @@ generates a new IV by computing it as the output of HMAC(K<sub>IV</sub>, crt<sub
 and then increments the crt<sub>state</sub> by one.
 
 Another benefit that comes with the above key hierarchy is the ability to allow fine-grained auditing.
-For example, while by releasing K<sub>chain</sub> one would provide read access to the whole chain, 
-by releasing only K<sub>state</sub> for a given pair of transactions (dTx,iTx) access would be granted to a state 
+For example, while by releasing K<sub>chain</sub> one would provide read access to the whole chain,
+by releasing only K<sub>state</sub> for a given pair of transactions (dTx,iTx) access would be granted to a state
 updated by iTx, and so on.
 
 
@@ -2266,14 +2195,14 @@ The following figures demonstrate the format of a deployment and invocation tran
 
 One can notice that both deployment and invocation transactions consist of two sections:
 
-* section general-info, that contains the administration details of the transaction, i.e., 
-  which chain this transaction corresponds to (chained), the type of transaction (that is set to ''deploymTx'' or ''invocTx'', 
-  the version number of confidentiality policy implemented, its creator identifier (expressed by means of TCert of Cert), 
+* section general-info, that contains the administration details of the transaction, i.e.,
+  which chain this transaction corresponds to (chained), the type of transaction (that is set to ''deploymTx'' or ''invocTx'',
+  the version number of confidentiality policy implemented, its creator identifier (expressed by means of TCert of Cert),
   and a nonce, that facilitates primarily replay-attack resistance techniques.
 
-* section code-info, that contains information on the chain-code source code. 
-  For deployment transaction this is essentially the chain-code identifier/name and source code, while for 
-  invocation chain-code is the name of the function invoked and its arguments. As shown in the two figures code-info 
+* section code-info, that contains information on the chain-code source code.
+  For deployment transaction this is essentially the chain-code identifier/name and source code, while for
+  invocation chain-code is the name of the function invoked and its arguments. As shown in the two figures code-info
   in both transactions are encrypted ultimately using the chain-specific symmetric key K<sub>chain</sub>.
 
 ## 5. Byzantine Consensus
