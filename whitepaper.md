@@ -27,7 +27,7 @@ Entering 2016, Blockchain awareness has now reached the point where the demand f
 
 ## Why a new fabric:
 
-Blockchain technology is still in its infancy, and is often not well-suited for the needs of industry. Scalability challenges, and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important business applications. To meet the demands of modern markets, Open Blockchain is designed for the varied requirements of industry-focused use cases, extending the learning of the pioneers in this field by addressing the existing shortcomings. 
+Blockchain technology is still in its infancy, and is often not well-suited for the needs of industry. Scalability challenges, and the lack of support for confidential and private transactions, among other issues, make its use infeasible for many important business applications. To meet the demands of modern markets, Open Blockchain is designed for the varied requirements of industry-focused use cases, extending the learning of the pioneers in this field by addressing the existing shortcomings.
 
 &nbsp;
 
@@ -97,7 +97,7 @@ _Still have questions on identity and auditability? Check out the [identity mana
 
 
 #### Private transactions and confidential contracts
-If transaction patterns are too easily observed and interpreted, shared ledgers could give away details about a supplier relationship that should not be revealed to competitors. In tight supplier/buyer communities, even one party's relative volume of trade is information which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business-ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from unauthorized third parties. 
+If transaction patterns are too easily observed and interpreted, shared ledgers could give away details about a supplier relationship that should not be revealed to competitors. In tight supplier/buyer communities, even one party's relative volume of trade is information which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business-ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from unauthorized third parties.
 
 Within Open Blockchain, content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, a.k.a. smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) so that it only gets loaded and decrypted at runtime. (see architecture below for details)
 
@@ -218,8 +218,6 @@ Chaincode transactions are time bounded and configured during chaincode deployme
 
 As transactions are run in a new block, a delta from the world state in the last block on the blockchain is maintained. If consensus is reached for the current block, the changes are committed to the database, and the world state block number is incremented by 1. If peers do not reach consensus, the delta is discarded and the database is not modified.
 
-To meet the confidentiality requirement required by some business agreements written in chaincode, appropriate validators must be assigned before deployment to create quorums of validators during execution of transaction blocks. Validation nodes that are not selected to validate a confidential chaincode can simply request the state updates from those that are selected. At the end of each successful block execution consensus, the world state must be consistent on all validating nodes.
-
 
 &nbsp;
 
@@ -286,11 +284,11 @@ The <b>Participant hosted intranet</b> environment uses networks that are owned 
 
 The sole mission of Open Blockchain (OBC) is to bring blockchain technology to mass markets. After reviewing the available blockchain solutions and hearing use cases from both industry leaders and technology evangelists, we are convinced that blockchain will be an extremely important technology pattern that could revolutionize many industries and businesses.
 
-We have observed that industry is urgently calling for a business-ready blockchain fabric that is both efficient and scalable, and offers enterprise-grade support for privacy and confidentiality. We have also discovered many different categories of use cases, and each may require a different underlying blockchain implementation. 
+We have observed that industry is urgently calling for a business-ready blockchain fabric that is both efficient and scalable, and offers enterprise-grade support for privacy and confidentiality. We have also discovered many different categories of use cases, and each may require a different underlying blockchain implementation.
 
 To fully realize the potential of blockchain technology and to create a standard that can be adopted into many different uses, we designed the open blockchain fabric to be both flexible and extensible. In addition, we are also leading the default implementation of the OBC protocol, which includes many of the latest advances in the various computer science disciplines.
 
-To enhance your understanding of the Open Blockchain protocol, we invite you to read our [protocol specification] (protocol-spec.md), which will prepare you to start using OBC to build your applications, and to contribute to the project. 
+To enhance your understanding of the Open Blockchain protocol, we invite you to read our [protocol specification] (protocol-spec.md), which will prepare you to start using OBC to build your applications, and to contribute to the project.
 
 
 ## References
