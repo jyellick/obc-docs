@@ -52,7 +52,7 @@ Screenhero or Google Hangouts&trade; for screen sharing between developers. Regi
 
 ## Coding Golang
 - We require a file [header](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/headers.txt) in all source code files. Simply copy and paste the header when you create a new file.
-- We code in Go and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
+- We code in Go&trade; and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
 and will not accept any deviations. You must run the following tools against your Go code and fix all errors and warnings:
 	- [golint](https://github.com/golang/lint)
 	- [go vet](https://golang.org/cmd/vet/)
