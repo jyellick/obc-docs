@@ -1290,7 +1290,7 @@ consists of the following entities: membership management infrastructure, i.e., 
 that are responsible for identifying an individual user (using any form of identification
 considered in the system, e.g., credit cards, id-cards), open an account for that user to be
 able to register, and issue the necessary credentials to successfully create transactions
-and deploy or invoke chain-codes successfully through Hyperledger.
+and deploy or invoke chain-codes successfully through Open Blockchain.
 
  * Peers, that are classified in validating peers, and non-validating peers.
    Validating peers (also known as validators), order and process (check validity, execute,
@@ -1798,7 +1798,7 @@ Two noteworthy points:
 
 
 
-**Structure of invocation transaction.
+**Structure of invocation transaction.**
 A transaction invoking the chain-code triggering the execution of a function of the chain-code with
 user-specified arguments is structured as depicted in the figure below.
 
