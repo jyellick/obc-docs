@@ -14,6 +14,9 @@ This model allows developers to leverage their favorite OS/editors and execute t
 * [Go](https://golang.org/) - 1.5.2 or later
 * [Vagrant](https://www.vagrantup.com/) - 1.7.4 or later
 * [VirtualBox](https://www.virtualbox.org/) - 5.0 or later
+* BIOS Enabled Virtualization - Varies based on hardware
+
+- Note: The BIOS Enabled Virtualization may be within the CPU or Security settings of the BIOS
 
 ### Steps
 
@@ -21,6 +24,7 @@ This model allows developers to leverage their favorite OS/editors and execute t
 Make sure you have properly setup your Host's [GOPATH environment variable](https://github.com/golang/go/wiki/GOPATH). This allows for both building within the Host and the VM.
 
 #### Note to Windows users
+
 If you are running Windows, before running any `git clone` commands, run the following command.
 ```
 git config --get core.autocrlf
