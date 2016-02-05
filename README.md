@@ -17,7 +17,7 @@ In addition to the <b>Getting started</b> documentation, the following topics ar
 - [Development environment set-up](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/devenv.md)
 - [Chain code development environment](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md)
 - [Open Blockchain APIs](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md)
-- [Open Blockchain network setup](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/DevnetSetup.md)
+- [Open Blockchain network setup](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/devnet-setup.md)
 - [Technical implementation details](https://github.com/openblockchain/obc-docs/tree/master/tech)
 
 ## License
