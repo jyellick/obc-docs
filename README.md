@@ -11,13 +11,13 @@ If you are new to Open Blockchain, and want to learn about our position and the 
 When you are ready to start using OBC to build applications or to otherwise contribute to the project, we strongly recommend that you read our [protocol specification](protocol-spec.md) for the technical details. Procedurally, we use the agile methodology with a weekly sprint, organized by [issues](https://github.com/openblockchain/obc-peer/issues) and [milestones](https://github.com/openblockchain/obc-peer/milestones), so take a look to familiarize yourself with the current work.
 
 ## Documentation
-To find documentation on a specific topic please browse the documentation directories within this repository:
-- [Openchain FAQs](https://github.com/openblockchain/obc-docs/tree/master/FAQ)
+In addition to the <b>Getting started</b> documentation, the following topics are also available:
+- [Open Blockchain FAQs](https://github.com/openblockchain/obc-docs/tree/master/FAQ)
 - [Canonical use cases](https://github.com/openblockchain/obc-docs/blob/master/biz/usecases.md)
 - [Development environment set-up](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/devenv.md)
 - [Chain code development environment](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md)
-- [Openchain APIs](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md)
-- [Openchain network setup](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/DevnetSetup.md)
+- [Open Blockchain APIs](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20API.md)
+- [Open Blockchain network setup](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/DevnetSetup.md)
 - [Technical implementation details](https://github.com/openblockchain/obc-docs/tree/master/tech)
 
 ## License
@@ -52,7 +52,7 @@ Screenhero or Google Hangouts&trade; for screen sharing between developers. Regi
 
 ## Coding Golang
 - We require a file [header](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/headers.txt) in all source code files. Simply copy and paste the header when you create a new file.
-- We code in Go&Trade;, and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
+- We code in Go and strictly follow the [best practices](http://golang.org/doc/effective_go.html)
 and will not accept any deviations. You must run the following tools against your Go code and fix all errors and warnings:
 	- [golint](https://github.com/golang/lint)
 	- [go vet](https://golang.org/cmd/vet/)
