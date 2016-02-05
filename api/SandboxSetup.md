@@ -241,7 +241,7 @@ The invoke transaction runs the specified chaincode function name "invoke" with 
 
 #### Chaincode query via CLI and REST
 
-Run a query on the chaincode to retrieve the desired values. The <b>-n</b> argument should match the value provided in the chaincode window:
+Run a query on the chaincode to retrieve the desired values. The <b>-n</b> argument should match the value provided in the chaincode window (started in Vagrant terminal 2):
 
     ./obc-peer chaincode query -l golang -n mycc -c '{"Function": "query", "Args": ["b"]}'
 
@@ -309,11 +309,15 @@ POST localhost:3000/devops/query
 
 #### Removing temporary files when security is enabled
 
-After the completion of a chaincode test with security enabled, remove the temporary files that were created by the CA server runtime process. To remove the client enrollment certificate, enrollment key, transaction certificate chain, etc., run the following commands. Note that you must run these commands if you want to register a user who has already been registered previously:
+After the completion of a chaincode test with security enabled, remove the temporary files that were created by the CA server process. To remove the client enrollment certificate, enrollment key, transaction certificate chain, etc., run the following commands. Note that you must run these commands if you want to register a user who has already been registered previously.
 
-    rm -rf /var/openchain/production/
+From your command line terminal, log into a Vagrant terminal by executing the following commands:
+
+    cd $WORKSPACE/obc-dev-env
+    vagrant ssh
 
 And then run:
 
+    rm -rf /var/openchain/production/
     cd $GOPATH/src/github.com/openblockchain/obc-peer/obc-ca
     rm -rf .obcca
