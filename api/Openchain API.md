@@ -1,8 +1,8 @@
-# Openchain APIs - CLI, REST, and Node.js
+# Open Blockchain APIs - CLI, REST, and Node.js
 
 ## Overview
 
-This document covers the available APIs to interact with an Openchain peer node. The three approaches described are:
+This document covers the available APIs for interacting with an Open Blockchain peer node. Three interface choices are provided:
 
 1. [CLI Interface](#openchain-cli)
 2. [REST Interface](#openchain-rest-api)
@@ -10,14 +10,14 @@ This document covers the available APIs to interact with an Openchain peer node.
 
 **Note:** If you are working with APIs with security enabled, please review the [security setup instructions](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md#security-setup-optional) before proceeding.
 
-## Openchain CLI:
+## Open Blockchain CLI:
 
-To see what CLI commands are available, execute the following:
+To view the available CLI commands, execute the following command:
 
     cd $GOPATH/src/github.com/openblockchain/obc-peer
     ./obc-peer
 
-You will see output similar to below (**NOTE:** rootcommand below is hardcoded in [main.go](https://github.com/openblockchain/obc-peer/blob/master/main.go). Currently, the build will create an *obc-peer* executable file).
+You will see output similar to the example below (**NOTE:** rootcommand below is hardcoded in [main.go](https://github.com/openblockchain/obc-peer/blob/master/main.go). Currently, the build will create an *obc-peer* executable file).
 
 ```
     Usage:
@@ -123,11 +123,11 @@ message Block {
 }
 ```
 
-## Openchain REST API:
+## Open Blockchain REST API:
 
-You can work with the Openchain REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. You can likewise trigger REST requests directly through [Swagger](http://swagger.io/). However, until these APIs become public, we ask that you set up the Swagger-UI package locally on your machine instead of uploading them directly to the Swagger service. To set up Swagger locally, follow the instructions [here](#to-set-up-swagger-ui).
+You can work with the Open Blockchain REST API through any tool of your choice. For example, the curl command line utility or a browser based client such as the Firefox Rest Client or Chrome Postman. You can likewise trigger REST requests directly through [Swagger](http://swagger.io/). However, until these APIs become public, we ask that you set up the Swagger-UI package locally on your machine instead of uploading them directly to the Swagger service. To set up Swagger locally, follow the instructions [here](#to-set-up-swagger-ui).
 
-**Note:** The Openchain REST interface port is defined as port 5000 inside the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml). If you are sending REST requests to the peer node from the same machine, use port 5000. If you are sending REST requests through Swagger, the port specified in the Swagger file is port 3000. This is done to emphasize that Swagger will likely not run on the same machine as the peer process or outside Vagrant. In order to send requests from the Swagger-UI or Swagger-Editor interface edit the Swagger file to the port number of your choice.
+**Note:** The Open Blockchain REST interface port is defined as port 5000 inside the [openchain.yaml](https://github.com/openblockchain/obc-peer/blob/master/openchain.yaml). If you are sending REST requests to the peer node from the same machine, use port 5000. If you are sending REST requests through Swagger, the port specified in the Swagger file is port 3000. This is done to emphasize that Swagger will likely not run on the same machine as the peer process or outside Vagrant. In order to send requests from the Swagger-UI or Swagger-Editor interface edit the Swagger file to the port number of your choice.
 
 **Note on test blockchain** If you want to test the REST APIs locally, construct a test blockchain by running the TestServerOpenchain_API_GetBlockCount test implemented inside [api_test.go](https://github.com/openblockchain/obc-peer/blob/master/openchain/api_test.go). This test will create a test blockchain with 5 blocks. Subsequently restart the peer process.
 
@@ -138,7 +138,7 @@ You can work with the Openchain REST API through any tool of your choice. For ex
 
 ### REST Endpoints
 
-To learn about the Openchanin REST API through Swagger, please take a look at the Swagger document [here](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json) and the instructions on how to set up Swagger locally on your machine [here](#to-set-up-swagger-ui).
+To learn about the Open Blockchain REST API through Swagger, please take a look at the Swagger document [here](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json) and the instructions on how to set up Swagger locally on your machine [here](#to-set-up-swagger-ui).
 
 * [Block](#block)
   * GET /chain/blocks/{Block}
@@ -345,7 +345,7 @@ The GET /registrar/{enrollmentID}/ecert endpoint is used to retrieve the enrollm
 
 ### To set up Swagger-UI
 
-[Swagger](http://swagger.io/) is a convenient package that allows us to describe and document our API in a single file. The Openchain REST API is described in [rest_api.json](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). To interact with the peer node directly through the Swagger-UI, please follow the instructions below.
+[Swagger](http://swagger.io/) is a convenient package that allows us to describe and document our API in a single file. The Open Blockchain REST API is described in [rest_api.json](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/rest_api.json). To interact with the peer node directly through the Swagger-UI, please follow the instructions below.
 
 1. You can use Node.js to serve up the rest_api.json locally. To do so, make sure you have Node.js installed on your local machine. If it is not installed, please download the [Node.js](https://nodejs.org/en/download/) package and install it.
 
@@ -410,7 +410,7 @@ You can interface to the obc-peer process from a Node.js application in one of t
     go test -v -run TestServerOpenchain_API_GetBlockCount github.com/openblockchain/obc-peer/openchain
     ```
 
-4. Set up HTTP server to serve up the Openchain API Swagger doc at a non-public URL:
+4. Set up HTTP server to serve up the Open Blockchain API Swagger doc at a non-public URL:
 
     ```
     npm install http-server -g
@@ -438,7 +438,7 @@ You will observe several responses on the console and the program will appear to
 ### [OpenchainSample_2](https://github.com/openblockchain/obc-docs/blob/master/api/Openchain%20Samples/openchain_2.js)
 
 * Demonstrates an alternative way of interfacing with a peer node from a Node.js app.
-* Utilizes the TypeScript description of Openchain REST API generated through the Swagger-Editor.
+* Utilizes the TypeScript description of Open Blockchain REST API generated through the Swagger-Editor.
 * Utilizes the DefinitelyTyped TypeScript definitions manager package: https://github.com/DefinitelyTyped/tsd
 
 **To run:**
@@ -471,7 +471,7 @@ You will observe several responses on the console and the program will appear to
 
 ### To Regenerate TypeScript
 
-If you update the [rest_api.json](https://github.com/angrbrd/obc-peer/blob/master/openchain/rest/rest_api.json) Swagger description, you must regenerate the associated TypeScript file for your Node.js application. The current TypeScript file describing the Openchain API is [api.ts](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/api.ts).
+If you update the [rest_api.json](https://github.com/angrbrd/obc-peer/blob/master/openchain/rest/rest_api.json) Swagger description, you must regenerate the associated TypeScript file for your Node.js application. The current TypeScript file describing the Open Blockchain API is [api.ts](https://github.com/openblockchain/obc-peer/blob/master/openchain/rest/api.ts).
 
 Swagger produces TypeScript files with its Swagger-Editor package. If you would like to use Swagger-Editor before these APIs become public, please set it up locally on your machine. To set up the Swagger-Editor locally please follow the steps below.
 
