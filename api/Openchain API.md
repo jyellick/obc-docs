@@ -39,6 +39,24 @@ You will see output similar to the example below (**NOTE:** rootcommand below is
     Use "openchain [command] --help" for more information about a command.
 ```
 
+The `obc-peer` command supports several subcommands as shown above. To
+facilitate its use in scripted applications, the `obc-peer` command always
+produces a non-0 return code in the event of command failure. Upon success,
+many of the subcommands produce a result on **stdout** as shown in the table
+below:
+
+Command | **stdout** result in the event of success
+--- | ---
+`peer`   | N/A
+`status` | String form of ServerStatus_StatusCode
+`stop`   | String form of ServerStatus_StatusCode
+`login`  | N/A
+`vm`     | String form of ServerStatus_StatusCode
+`chaincode deploy` | The chaincode container name (hash) required for subsequent `chaincode invoke` and `chaincode query` commands
+`chaincode invoke` | The transaction ID (UUID)
+`chaincode query`  | By default, the query result is formatted as a printable string. Command line options support writing this value as raw bytes (-r, --raw), or formatted as the hexadecimal representation of the raw bytes (-x, --hex). If the query response is empty then nothing is output.
+
+
 ### Deploy a Chaincode
 
 Deploy creates the docker image for the chaincode and subsequently deploys the package to the validating peer. An example is below.

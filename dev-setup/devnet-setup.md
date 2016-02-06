@@ -76,9 +76,15 @@ OPENCHAIN_PEER_ADDRESS=172.17.0.2:30303 ./obc-peer chaincode deploy -u jim -p gi
 
 You can watch for the message "Received build request for chaincode spec" on the output screen of all validating peers.
 
-On successful completion, the above command will return a "name:" along with other information. This is the name assigned to the deployed chaincode and is the value of the "-n" parameter in invoke and query commands described below. For example the value of "name:" could be
+On successful completion, the above command will print the "name" assigned to the deployed chaincode. This "name" is used as the value of the "-n" parameter in invoke and query commands described below. For example the value of "name" could be
 
     bb540edfc1ee2ac0f5e2ec6000677f4cd1c6728046d5e32dede7fea11a42f86a6943b76a8f9154f4792032551ed320871ff7b7076047e4184292e01e3421889c
+
+In a script the name can be captured for subsequent use. For example, run
+
+    NAME=`OPENCHAIN_PEER_ADDRESS=172.17.0.2:30303 ./obc-peer chaincode deploy ...`
+
+and then replace <name_value_returned_from_deploy_command\> in the examples below with `$NAME`.
 
 We can run an invoke transaction to move 10 units from 'a' to 'b':
 
