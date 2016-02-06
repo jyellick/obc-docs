@@ -84,7 +84,7 @@ In a script the name can be captured for subsequent use. For example, run
 
     NAME=`OPENCHAIN_PEER_ADDRESS=172.17.0.2:30303 ./obc-peer chaincode deploy ...`
 
-and then replace <name_value_returned_from_deploy_command\> in the examples below with `$NAME`.
+and then replace `<name_value_returned_from_deploy_command>` in the examples below with `$NAME`.
 
 We can run an invoke transaction to move 10 units from 'a' to 'b':
 
