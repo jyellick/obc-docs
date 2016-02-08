@@ -13,6 +13,9 @@ Multiple terminal windows inside the Vagrant development environment are require
     * [Chaincode query via CLI and REST](#chaincode-query-via-cli-and-rest)
 * [Removing temporary files when security is enabled](#removing-temporary-files-when-security-is-enabled)
 
+See [Logging Control](../dev-setup/logging-control.md) for information on controlling
+logging output from the `obc-peer` and chaincodes.
+
 ###Security Setup (optional)
 From your command line terminal, log into a Vagrant terminal by executing the following commands:
 

@@ -3,6 +3,9 @@
 This document covers setting up an Openchain network on your local machine for development using Docker containers.
 
 All commands should be run from within the Vagrant environment described in [Setting Up Development Environment](https://github.com/openblockchain/obc-docs/blob/master/dev-setup/devenv.md).
+See [Logging Control](logging-control.md) for information on controlling
+logging output from the `obc-peer` and chaincodes.
+
 
 **Note:** When running with security enabled, follow the security setup instructions described in [Chaincode Development](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md#security-setup-optional) to set up the CA server and log in registered users before sending chaincode transactions.
 
