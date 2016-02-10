@@ -30,11 +30,12 @@ We have created a development environment for this project such that each contri
 We are using the [GitHub Flow](https://guides.github.com/introduction/flow/) process to manage code contributions.
 
 Note the following GitHub Flow highlights:
+
 - Anything in the master branch is deployable
 - To work on something new, create a descriptively-named branch off of your fork ([more detail on fork](https://help.github.com/articles/syncing-a-fork/))
 - Commit to that branch locally, and regularly push your work to the same branch on the server
 - When you need feedback or help, or you think the branch is ready for merging,
-open a pull request (make sure you have first successfully built and tested with the test-suite)
+open a pull request (make sure you have first successfully built and tested with the [Unit and Behave Tests](https://github.com/openblockchain/obc-peer))
 - After your pull request has been reviewed and signed off, a committer can merge it into the master branch.
 
 We use the same approach&mdash;the [Developer's Certificate of Origin (DCO)](https://github.com/openblockchain/obc-docs/blob/master/biz/DCO1.1.txt)&mdash;that the Linux&reg; Kernel [community](http://elinux.org/Developer_Certificate_Of_Origin) uses to manage code contributions.
