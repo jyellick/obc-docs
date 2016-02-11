@@ -1182,10 +1182,10 @@ The function inspects the `Type` of the incoming `OpenchainMessage`. There are f
 The event framework provide ability to generate and consume predefined and custom events. There are 3 basic components:
   - Event Stream
   - Event Adapters
-  - Event Structure
+  - Event Structures
 
 #### 3.5.1 Event Stream
-An event stream is a gRPC channel capable of sending and receiving events. Each consumer establishes an event stream to the event framework and expresses the events that it is interested in, and event producer only sends appropriate events to the consumer.
+An event stream is a gRPC channel capable of sending and receiving events. Each consumer establishes an event stream to the event framework and expresses the events that it is interested in. Event producer only sends appropriate events to the consumers who connected to the producer over event stream.
 
 ##### Event Producer Framework
 The event producer framework maintains consumers to the event stream and sends events to the consumers. The framework exposes a single `Send(event)` function. The event is a strongly typed gRPC message and has to  be one of the event types registered with the Fabric or should be a GenericEvent. This allows events to be quickly generated from any part of the system.
