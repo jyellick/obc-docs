@@ -5,7 +5,7 @@
 
 ## Abstract
 
-This paper describes industry use cases that drive the principles behind a new blockchain fabric, and outlines the basic requirements and high-level architecture based on those use cases. The design presented here describes this evolving blockchain fabric, called <b>Open Blockchain</b>, as a protocol for business-to-business and business-to-customer transactions. Based on industry use cases, Open Blockchain allows for compliance with regulations, while supporting the varied requirements that arise when competing businesses work together on the same network. The central elements of this specification (described below) are smart contracts (a.k.a. chaincode), digital assets, record repositories, a decentralized network and cryptographic security. To these blockchain staples, industry requirements for performance, verified identities, private and confidential transactions, and a pluggable consensus model have been added.   
+This paper describes industry use cases that drive the principles behind a new blockchain fabric, and outlines the basic requirements and high-level architecture based on those use cases. The design presented here describes this evolving blockchain fabric, called <b>Open Blockchain</b>, as a protocol for business-to-business and business-to-customer transactions. Based on industry use cases, Open Blockchain allows for compliance with regulations, while supporting the varied requirements that arise when competing businesses work together on the same network. The central elements of this specification (described below) are smart contracts (a.k.a. chaincode), digital assets, record repositories, a decentralized network providing consensus, and cryptographic security. To these blockchain staples, industry requirements for performance, verified identities, private and confidential transactions, and a pluggable consensus model have been added.   
 
 
 _For questions regarding terminologies used in OBC, check out our [glossary] (glossary.md)_
@@ -19,9 +19,13 @@ _For questions regarding terminologies used in OBC, check out our [glossary] (gl
 
 Blockchain is a peer-to-peer distributed ledger technology that first gained traction in the financial industry because of its capacity to issue, trade, manage, and service assets efficiently and securely. The distributed ledger makes it easy to create cost-efficient business networks without requiring a central point of control, in marked contrast to the world of SoR (System of Records), where every member in the ecosystem needs to maintain its own ledger system and reconcile transaction updates with one another in inefficient, expensive, and often non-standardized inter-organizational operation flows.  
 
-As the shared ledger concept gains tracking in the business world, blockchain’s added feature – <b>smart contract</b> – is also getting a lot of attention from industry. Smart contract is a collection of business rules which are deployed on a blockchain and shared and validated collectively by the participant stakeholders. Smart contract can be very useful in automating business processes in a trusted way by allowing all stakeholders to process and validate contractual rules as a group.
+As the shared ledger concept gains tracking in the business world, blockchain’s added feature – <b>smart contract</b> – is also getting a lot of attention from industry [Eth]. A smart contract is a collection of business rules which are deployed on a blockchain and shared and validated collectively by a group of stakeholders. A smart contract can be very useful in automating business processes in a trusted way by allowing all stakeholders to process and validate contractual rules as a group. Smart contracts in Open Blockchain are implemented by chaincode.
 
-Entering 2016, Blockchain awareness has now reached the point where the demand for a solution that is suitable for industry is surging.
+Bitcoin and other cryptocurrencies were designed to resist any censorship, anyone can participate without establishing an identity first, one only has to contribute by spending computation cycles. There is no central authority that controls admission. Such networks have been called permissionless. Through their nature of requiring enormous proof-of-work computations, they are costly to operate [N09].
+
+Open Blockchain uses a slightly different model and introduces a notion of identiy and controls the admission of participating nodes at its core. In other words, it is a permissioned shared ledger. Compared to permissioned ledgers, this approach wastes less computation cycles, scales much better, and responds to many requirements arising in industrial uses, such as strong identity, auditability, and privacy.
+
+Entering 2016, blockchain awareness has now reached the point that the demand for a solution suitable for industry is surging.
 
 &nbsp;
 
@@ -39,7 +43,7 @@ _Note: To prepare you to go through the material below, we strongly recommend yo
 
 
 #### A world of many networks
-Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different purposes. While a popular single instance of a general-use network could evolve, there is no requirement for any one network ledger to rely upon any other network for its core functionality. Despite this level of network independence, Open Blockchain still requires an addressing system that allows transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
+Open Blockchain is based on the expectation that there will be many blockchain networks, with each network ledger serving different a different goal. While there may be a popular single instance of a general-use network, there is no requirement for any one network ledger to rely upon any other network for its core functionality. Despite this level of network independence, Open Blockchain still requires an addressing system that allows transactions on one ledger to discover and utilize appropriate transactions and smart contracts (chaincode) on other ledgers.
 
 &nbsp;
 <img src="images/world_view.png" width="748">
@@ -49,7 +53,7 @@ _Figure 1:  A world of many blockchain networks_
 
 
 #### Increasing demand for permissioned networks
-We describe permissioned networks as those where validating and non-validating nodes are run by known whitelisted organizations, and where transactors on the network are granted an identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority assigns the appropriate level of access that is required to obtain an identity and transact on the network. A network can be run very publicly, making it easy to integrate into a mobile app project, or it can be completely private and known only to invited participants whose identities have been validated. Because the Open Blockchain fabric is designed to support many networks with varied purposes, and to allow addressing between them, the protocol must allow for different types of uses and distinct levels of permissioning.
+We describe permissioned networks as those where validating and non-validating nodes are run by known whitelisted organizations, and where transactors on the network are granted an identity from an issuing authority service on the network. Depending on the purpose of the network, the issuing authority assigns the appropriate level of access that is required to obtain an identity and transact on the network. A network can be run very publicly, making it easy to integrate into a mobile app project, or it can be completely private and known only to invited participants whose identities have been validated. Because the Open Blockchain fabric is designed to support many networks with many different purposes, and to allow addressing between them, the protocol must allow for different types of uses and distinct levels of permissioning.
 
 #### Importance of both privacy and confidentiality
 We believe that one of the fundamental requirements for any blockchain fabric is that the identity and patterns of behavior of any party on a network must be impossible for unauthorized parties to ascertain by inspecting the ledger. We also anticipate a requirement to allow blockchain users to make certain business logics and/or other parameters of a transaction confidential, rendering them inaccessible to anyone other than the stakeholders for the contract or the asset being transferred.
@@ -86,7 +90,7 @@ _For more details about use cases and their requirements, and to visualize how t
 
 ## Featured requirements  
 
-The featured requirements (described below) are based on robust industry use cases which were driven into the resulting Open Blockchain architecture. These requirements include identity and auditability, private transactions, confidential contracts, modular consensus, performance, scalability, chain code and smart contracts.
+The featured requirements (described below) are based on robust industry use cases which were driven into the resulting Open Blockchain architecture. These requirements include identity and auditability, private transactions, confidential contracts, modular consensus, performance, scalability, chaincode and smart contracts.
 
 #### Identity and auditability
 Although private transactions are important, business usage of blockchain also requires compliance with regulations and access for regulators to investigate transaction records. A party to a transaction must also be able to prove its identity and ownership of an asset after the fact (sometimes years after the fact), without the mechanism for establishing that identity also enabling the determination of a party's identity and/or their activities on the ledger.
@@ -97,14 +101,14 @@ _Still have questions on identity and auditability? Check out the [identity mana
 
 
 #### Private transactions and confidential contracts
-If transaction patterns are too easily observed and interpreted, shared ledgers could give away details about a supplier relationship that should not be revealed to competitors. In tight supplier/buyer communities, even one party's relative volume of trade is information which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business-ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from unauthorized third parties.
+If transaction patterns are too easily observed and interpreted, shared ledgers could give away details about business relationships that should not be revealed to competitors. In tight supplier/buyer communities, even one party's relative volume of trade is information which would not be appropriate for a system supporting trade between parties to reveal. Therefore, a business-ready blockchain must provide mechanisms to conceal identity, transaction patterns, and terms of confidential contracts from unauthorized third parties.
 
-Within Open Blockchain, content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (chaincode, a.k.a. smart-contract) can also be cryptographically secured (if its confidentiality is required by its stakeholders) so that it only gets loaded and decrypted at runtime. (see architecture below for details)
+Within Open Blockchain, content confidentiality is achieved by encrypting the transactions such that only the stakeholders can decrypt and execute them. In addition, a piece of business logic (realized by a smart contract) can also be cryptographically secured (if confidentiality is required by its stakeholders) so that it only gets loaded and decrypted at runtime. This is further explained in the architecture below.
 
 _Still have questions on confidentiality? Check out the [confidentiality section] (FAQ/confidentiality_FAQ.md) of FAQ_
 
 #### Modular consensus
-Because different industries and regions may run their own networks, different networks might need to deploy different consensus algorithms to fit their usage scenarios. Consensus algorithms under the Open Blockchain protocol must be pluggable, allowing users to select the consensus algorithm of their choice during deployment. The Open Blockchain protocol will provide an initial out of the box Practical Byzantine Fault Tolerance (PBFT) [1] implementation in its initial release, and we anticipate that the community will contribute additional consensus algorithm modules in the future.
+Because different industries and regions may run their own networks, different networks might need to deploy different consensus algorithms to fit their usage scenarios. Consensus algorithms under the Open Blockchain protocol must be pluggable, allowing users to select the consensus algorithm of their choice during deployment. The Open Blockchain protocol will provide an implementation of Byzantine Fault Tolerance (BFT) in its initial release, using the PBFT protocol [CL02]. We anticipate that the community will contribute additional consensus algorithm modules in the future.
 
 
 _Still have questions on consensus and want to explore more about OBC's pre-packaged consensus implementations ? Check out the [consensus section] (FAQ/consensus_FAQ.md) of FAQ_
@@ -112,7 +116,7 @@ _Still have questions on consensus and want to explore more about OBC's pre-pack
 #### Logic = Chaincode = Smart contracts
 Blockchain logic, often referred to as "<b>smart contracts</b>," are self-executing agreements between parties that have all relevant covenants spelled out in code, are settled automatically, and can be dependent upon future signatures or trigger events. In the Open Blockchain project, we call this "chaincode" to help establish clarity between blockchain logic and the human-written contracts that they can sometimes represent. (This term is still under review and may change.)  
 
-The chaincode concept is more general than the smart contract concept that was defined by Nick Szabo [2]. Chaincode can be written in any mainstream programming language, and executed in containers inside the Open Blockchain context layer. Chaincode provides the capability to define smart contract templating language (similar to Velocity or Jade), and to restrict the functionality of the execution environment and the degree of computing flexibility to satisfy the legal contractual requirements.
+The chaincode concept is more general than the smart contract concept that was defined by Nick Szabo [SC]. Chaincode can be written in any mainstream programming language, and executed in containers inside the Open Blockchain context layer. Chaincode provides the capability to define smart contract templating language (similar to Velocity or Jade), and to restrict the functionality of the execution environment and the degree of computing flexibility to satisfy the legal contractual requirements.
 
 _Still have questions on chaincode and how is it used to create business contracts and digital assets? Check out the [chaincode section] (FAQ/chaincode_FAQ.md) of FAQ_
 
@@ -128,16 +132,16 @@ _Still have usage related questions? Check out the [usage section] (FAQ/usage_FA
 
 Figure 2 below shows the reference architecture aligned in three categories: Membership, Blockchain and Chaincode. These categories are a logical structure, not a physical depiction of partitioning of components into separate processes, address spaces or (virtual) machines.
 
-Some of these components will be built from the ground up, some will use existing open source code as appropriate, and some will just interface with existing services to fulfill the required functions.
+Some of these components will be built from the ground up, some will use existing open-source code as appropriate, and some will just interface with existing services to fulfill the required functions.
 
 ![Reference architecture](images/refarch.png)
 Figure 2:  Open Blockchain reference architecture
 
 Membership services manages identity, privacy and confidentiality on the network. Participants register to obtain identities, which enables the Attribute Authority to issue security keys for transacting. Reputation Manager enables auditors to view  transactions pertaining to a participant, assuming that each auditor has been granted proper access authority by the participants.
 
-Blockchain services manages the distributed ledger through a peer-to-peer protocol, which is built on HTTP/2. The data structures are highly optimized to provide the most efficient hash algorithm for maintaining the world state replication. Different consensus algorithms (PBFT, Raft, PoW, PoS) can be plugged in and configured for specific deployments.
+Blockchain services manage the distributed ledger through a peer-to-peer protocol, which is built on HTTP/2. The data structures are optimized to provide efficient schemes for maintaining the world state replicated at many participants.  Different consensus algorithms guaranteeing strong consistency (tolerating misbehavior with BFT, tolerating delays and outages with crash-tolerance, or tolerating censorship with proof-of-work) may be plugged in and configured per deployment.
 
-Chaincode services provides a secure and lightweight method to sandbox chaincode execution on validating nodes. The environment is a "locked down" and secured container with a set of signed base images which contain secure OS and chaincode language, runtime and SDK images for Golang (ready), Java (planned), and Node.js (planned). Additional programming languages can be enabled if required.
+Chaincode services are a secured and lightweight way to sandbox the chaincode execution on validating nodes. The environment is a "locked down" and secured container with a set of signed base images which contain secure OS and chaincode language, runtime and SDK images for Golang (ready), Java (planned), and Node.js (planned). Additional programming languages can be enabled if required.
 
 
 #### MEMBERSHIP
@@ -150,11 +154,11 @@ Chaincode services provides a secure and lightweight method to sandbox chaincode
 <td valign="top">
 Open Blockchain is a private-validator network protocol, so all entities are required to register with membership services to obtain an identity with access and transaction authority on the network. Validators during network setup can determine the level of permission that is required to transact. Network setup also defines the network as permissive, allowing ease of access and support for rapid and high adoption, or restrictive for a more controlled environment.<p><p>
 
-Registration Authority issues the enrollment certificate that is required to establish an identity for a member. Once registered, the member has the credentials required to participate in the network; there is no requirement for proof-of-work or proof-of-stake at this point. <p><p>
+The Registration Authority issues the enrollment certificate that is required to establish an identity for a member. Once registered, the member has the credentials required to participate in the network; there is no requirement for proof-of-work or proof-of-stake at this point. <p><p>
 
-Attributes Authority issues security keys to members to transact and to ensure the privacy of the members on the network. Non-stakeholders cannot link transactions to members; transactions appear to originate from random addresses, and are completely shuffled by the system. <p><p>
+The Attributes Authority issues security keys to members to transact and to ensure the privacy of the members on the network. Non-stakeholders cannot link transactions to members; transactions appear to originate from random addresses, and are completely shuffled by the system. <p><p>
 
-Reputation Manager allows authorized auditors to link security keys to identity, and consequently, to prove the relationship between transactions and members.
+The Reputation Manager allows authorized auditors to link security keys to identity, and consequently, to prove the relationship between transactions and members.
 </td>
 </tr>
 </table>
@@ -259,7 +263,7 @@ An Open Blockchain application follows a MVC-B architecture – Model, View, Con
   <li>BLOCKCHAIN  LOGIC – Blockchain logic are extensions of the Controller Logic and Data Model into the Blockchain realm.    Controller logic is enhanced by chaincode, and the data model is enhanced with transactions on the blockchain.</li>
 </ul>
 <p>
-For example, a Bluemix PaaS application using Node.js might have a Web front-end user interface or a native mobile app with a backend model on a Cloudant data service. The control logic may interact with one or more chaincodes to process transactions on the blockchain.
+For example, a PaaS application using Node.js might have a Web front-end user interface or a native mobile app with a backend model provided by a data management service. The control logic may interact with one or more chaincodes to process transactions on the blockchain.
 
 </td>
 </tr>
@@ -292,7 +296,7 @@ To enhance your understanding of the Open Blockchain protocol, we invite you to 
 
 
 ## References
-- [1] Miguel Castro and Barbara Liskov; [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
-- [2] [Wikipedia Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
-- [3] Satoshi Nakamoto, [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
-- [4] [Ethereum Whitepaper] (https://github.com/ethereum/wiki/wiki/White-Paper)
+- [CL02] Miguel Castro and Barbara Liskov, [Practical Byzantine Fault Tolerance] (http://dl.acm.org/citation.cfm?id=296824)
+- [SC] Wikipedia, [Smart Contract](https://en.wikipedia.org/wiki/Smart_contract)
+- [N09] Satoshi Nakamoto, [Bitcoin: A Peer-to-Peer Electronic Cash System](https://bitcoin.org/bitcoin.pdf)
+- [Eth] [Ethereum Whitepaper] (https://github.com/ethereum/wiki/wiki/White-Paper)
