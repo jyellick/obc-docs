@@ -1,7 +1,8 @@
-## Your voice here
+## Notice regarding the Linux Foundation's Hyperledger project
 
-If you are reading this, it means that anything said in this open source repository is open for your input. Apply your experience, lend your voice, and show with your code how the Open Blockchain (OBC) specification and implementation should be taken forward. If you don’t like something you see here, help us to understand your point of view (in a respectful and positive way). Or even better, bring some code that shows us the way!
+The openblockchain project is IBM's proposed contribution to the Linux Foundation's [Hyperledger](https://www.hyperledger.org/) project. We have made it available as open source to enable others to explore our architecture and design. IBM's intention is to engage rigorously in the Linux Foundation's [Hyperledger](https://www.hyperledger.org/) project as the community establishes itself, and decides on a code base. Once established, we will transition our development focus to the [Hyperledger](https://www.hyperledger.org/) effort, and this code will be maintained as needed for IBM's use.
 
+While we invite [contribution](#contrib) to the openblockchain project, we believe that the broader blockchain community's focus should be the [Hyperledger](https://www.hyperledger.org/) project.
 
 ## Getting started
 Welcome to Open Blockchain (OBC) development!
@@ -26,7 +27,7 @@ This software is made available under the [Apache License Version 2.0](LICENSE).
 ## Setting up the development environment
 We have created a development environment for this project such that each contributor has the same set-up and can be productive within a few minutes. Follow the [instructions](dev-setup/devenv.md) to download and start using Open Blockchain.
 
-## Code contributions
+## Code contributions <a name="contrib"></a>
 We are using the [GitHub Flow](https://guides.github.com/introduction/flow/) process to manage code contributions.
 
 Note the following GitHub Flow highlights:
