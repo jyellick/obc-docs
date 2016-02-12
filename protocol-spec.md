@@ -1,4 +1,4 @@
-﻿# Open Blockchain Protocol Specification
+# Open Blockchain Protocol Specification
 
 _Draft 0.01_
 
@@ -691,6 +691,7 @@ message ChaincodeMessage {
     string uuid = 4;
 }
 ```
+
 **Definition of fields:**
 - `Type` is the type of the message.
 - `payload` is the payload of the message. Each payload depends on the `Type`.
@@ -699,12 +700,14 @@ message ChaincodeMessage {
 The message types are described in the following sub-sections.
 
 A chaincode implements the `Chaincode` interface, which is called by the validating peer when it processes Deploy, Invoke or Query transactions.
+
 ```
 type Chaincode interface {
 	Invoke(stub *ChaincodeStub, function string, args []string) (error)
 	Query(stub *ChaincodeStub, function string, args []string) ([]byte, error)
 }
 ```
+
 The parameters `function` and `args` point to the function implemented by the chaincode that the `Invoke` calls and passes the `args`. Similar behavior for the `Query` function. The `Query` function is not allowed to modify the state of the chaincode; it can only read and calculate the return value as a byte array.
 
 ### 3.3.2.1 Chaincode Deploy
@@ -725,6 +728,7 @@ Each chaincode may define its own persistent state variables. For example, a cha
 
 #### PUT_STATE
 Chaincode sends `PUT_STATE` message to persist a key-value pair with the `payload` containing `PutStateInfo` object.
+
 ```
 message PutStateInfo {
     string key = 1;
@@ -739,27 +743,44 @@ Chaincode sends `GET_STATE` message to get the value whose key is specified in t
 Chaincode sends `DEL_STATE` message to delete the value whose key is specified in the `payload`.
 
 #### RANGE_QUERY_STATE
-Chaincode sends `RANGE_QUERY_STATE` message to get a range of values. The message `payload` contains a `RangeQueryStateInfo` object.
+Chaincode sends a `RANGE_QUERY_STATE` message to get a range of values. The message `payload` contains a `RangeQueryStateInfo` object.
+
 ```
-message RangeQueryStateInfo {
-    string startKey = 1;
-    string endKey = 2;
-    uint32 limit = 3;
+message RangeQueryState {
+	string startKey = 1;
+	string endKey = 2;
 }
 ```
-The `startKey` and `endKey` are inclusive and assumed lexical order. The `limit` specifies the maximum number of values returned.
 
-The validating peer responds with `RESPONSE` message whose `payload` is a `RangeQueryStateResponse` object:
+The `startKey` and `endKey` are inclusive and assumed lexical order. The validating peer responds with `RESPONSE` message whose `payload` is a `RangeQueryStateResponse` object.
+
 ```
 message RangeQueryStateResponse {
     repeated RangeQueryStateKeyValue keysAndValues = 1;
     bool hasMore = 2;
+    string ID = 3;
 }
 message RangeQueryStateKeyValue {
     string key = 1;
     bytes value = 2;
 }
 ```
+
+If `hasMore=true` in the response, this indicates that additional keys are available in the requested range. The chaincode can request the next set of keys and values by sending a `RangeQueryStateNext` message with an ID that matches the ID returned in the response.
+
+```
+message RangeQueryStateNext {
+    string ID = 1;
+}
+```
+When the chaincode is finished reading from the range, it should send a `RangeQueryStateClose` message with the ID it wishes to close.
+
+```
+message RangeQueryStateClose {
+  string ID = 1;
+}
+```
+
 
 #### INVOKE_CHAINCODE
 Chaincode may call another chaincode in the same transaction context by sending a `INVOKE_CHAINCODE` message to the validating peer with the `payload` containing a `ChaincodeSpec` object.
