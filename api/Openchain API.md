@@ -4,8 +4,8 @@
 
 This document covers the available APIs for interacting with an Open Blockchain peer node. Three interface choices are provided:
 
-1. [CLI Interface](#openchain-cli)
-2. [REST Interface](#openchain-rest-api)
+1. [CLI Interface](#open-blockchain-cli)
+2. [REST Interface](#open-blockchain-rest-api)
 3. [Node.js Application](#nodejs)
 
 **Note:** If you are working with APIs with security enabled, please review the [security setup instructions](https://github.com/openblockchain/obc-docs/blob/master/api/SandboxSetup.md#security-setup-optional) before proceeding.
@@ -160,19 +160,21 @@ To learn about the Open Blockchain REST API through Swagger, please take a look 
 
 * [Block](#block)
   * GET /chain/blocks/{Block}
-* [Chain](#chain)
+* [Blockchain](#blockchain)
   * GET /chain
-* [Transactions](#transactions)
-  * GET /transactions/{UUID}
 * [Devops](#devops)
   * POST /devops/deploy
   * POST /devops/invoke
   * POST /devops/query
+* [Network](#network)
+  * GET /network/peers
 * [Registrar](#registrar)
   * POST /registrar
-  * GET /registrar/{enrollmentID}
   * DELETE /registrar/{enrollmentID}
+  * GET /registrar/{enrollmentID}
   * GET /registrar/{enrollmentID}/ecert
+* [Transactions](#transactions)
+    * GET /transactions/{UUID}
 
 #### Block
 
@@ -190,7 +192,7 @@ message Block {
 }
 ```
 
-#### Chain
+#### Blockchain
 
 * **GET /chain**
 
@@ -201,36 +203,6 @@ message BlockchainInfo {
     uint64 height = 1;
     bytes currentBlockHash = 2;
     bytes previousBlockHash = 3;
-}
-```
-
-#### Transactions
-
-* **GET /transactions/{UUID}**
-
-Use the /transactions/{UUID} endpoint to retrieve an individual transaction matching the UUID from the blockchain. The returned transaction message is defined inside [openchain.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/openchain.proto) .
-
-```
-message Transaction {
-    enum Type {
-        UNDEFINED = 0;
-        CHAINCODE_NEW = 1;
-        CHAINCODE_UPDATE = 2;
-        CHAINCODE_EXECUTE = 3;
-        CHAINCODE_QUERY = 4;
-        CHAINCODE_TERMINATE = 5;
-    }
-    Type type = 1;
-    bytes chaincodeID = 2;
-    bytes payload = 3;
-    string uuid = 4;
-    google.protobuf.Timestamp timestamp = 5;
-
-    ConfidentialityLevel confidentialityLevel = 6;
-    bytes nonce = 7;
-
-    bytes cert = 8;
-    bytes signature = 9;
 }
 ```
 
@@ -330,11 +302,45 @@ With security enabled, modify the payload to include the secureContext element p
 
 **Note:** The deployment process will take a little time as the docker image is being created.
 
+#### Network
+
+* **GET /network/peers**
+
+Use the Network APIs to retrieve information about the network of peer nodes comprising the blockchain fabric.
+
+The /network/peers endpoint returns a list of all existing network connections for the target peer node. The list includes both validating and non-validating peers. The list of peers is returned as type `PeersMessage`, containing an array of `PeerEndpoint`.
+
+```
+message PeersMessage {
+    repeated PeerEndpoint peers = 1;
+}
+```
+
+```
+message PeerEndpoint {
+    PeerID ID = 1;
+    string address = 2;
+    enum Type {
+      UNDEFINED = 0;
+      VALIDATOR = 1;
+      NON_VALIDATOR = 2;
+    }
+    Type type = 3;
+    bytes pkiID = 4;
+}
+```
+
+```
+message PeerID {
+    string name = 1;
+}
+```
+
 #### Registrar
 
 * **POST /registrar**
-* **GET /registrar/{enrollmentID}**
 * **DELETE /registrar/{enrollmentID}**
+* **GET /registrar/{enrollmentID}**
 * **GET /registrar/{enrollmentID}/ecert**
 
 Use the Registrar APIs to manage end user registration with the CA. These API endpoints are used to register a user with the CA, determine whether a given user is registered, and to remove any login tokens for a target user preventing them from executing any further transactions. The Registrar APIs are also used to retrieve user enrollment certificates from the system.
@@ -360,6 +366,36 @@ The response to the registration request is either a confirmation of successful 
 The GET /registrar/{enrollmentID} endpoint is used to confirm whether a given user is registered with the CA. If so, a confirmation will be returned. Otherwise, an authorization error will result. The DELETE /registrar/{enrollmentID} endpoint is used to delete login tokens for a target user. If the login tokens are deleted successfully, a confirmation will be returned. Otherwise, an authorization error will result. No payload is required for this endpoint.
 
 The GET /registrar/{enrollmentID}/ecert endpoint is used to retrieve the enrollment certificate of a given user from local storage. If the target user has already registered with the CA, the response will include a URL-encoded version of the enrollment certificate. If the target user has not yet registered, an error will be returned. If the client wishes to use the returned enrollment certificate after retrieval, keep in mind that it must be URl-decoded. This can be accomplished with the QueryUnescape method in the "net/url" package.
+
+#### Transactions
+
+* **GET /transactions/{UUID}**
+
+Use the /transactions/{UUID} endpoint to retrieve an individual transaction matching the UUID from the blockchain. The returned transaction message is defined inside [openchain.proto](https://github.com/openblockchain/obc-peer/blob/master/protos/openchain.proto) .
+
+```
+message Transaction {
+    enum Type {
+        UNDEFINED = 0;
+        CHAINCODE_NEW = 1;
+        CHAINCODE_UPDATE = 2;
+        CHAINCODE_EXECUTE = 3;
+        CHAINCODE_QUERY = 4;
+        CHAINCODE_TERMINATE = 5;
+    }
+    Type type = 1;
+    bytes chaincodeID = 2;
+    bytes payload = 3;
+    string uuid = 4;
+    google.protobuf.Timestamp timestamp = 5;
+
+    ConfidentialityLevel confidentialityLevel = 6;
+    bytes nonce = 7;
+
+    bytes cert = 8;
+    bytes signature = 9;
+}
+```
 
 ### To set up Swagger-UI
 
