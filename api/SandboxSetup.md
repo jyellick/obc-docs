@@ -99,7 +99,7 @@ To log in through the REST API, send a POST request to the <b>/registrar</b> end
 POST localhost:3000/registrar
 
 {
-  "enrollId": "lukas",
+  "enrollId": "jim",
   "enrollSecret": "NPKYL39uKbkj"
 }
 ```
@@ -108,7 +108,7 @@ POST localhost:3000/registrar
 ```
 200 OK
 {
-    "OK": "Login successful for user 'lukas'."
+    "OK": "Login successful for user 'jim'."
 }
 ```
 
