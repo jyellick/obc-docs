@@ -1382,9 +1382,9 @@ As described later in this document, the approach taken here to reconcile identi
 
 2. utilize a two-level system:
 
-1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
+   1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
 
-2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
+   2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
 
 3. offer mechanisms to conceal the content of transactions to unauthorized members of the system
 
