@@ -1338,11 +1338,7 @@ in the entire network of validators, this transaction is executed and finds its 
 the Blockchain. Users can also invoke a function of an already deployed chain-code
 through an invocation transaction.
 
-In the following we provide an overview of the desired business security requirements
-of our system, and how these requirements map to our security goals. We then
-overview the security components and their operation and show how our design
-achieves the prescribed goals.
-
+The next section provides a summary of the business goals of the system that drive the security requirements. We then overview the security components and their operation and show how this design fulfills the security requirements.  
 
 ### 4.1 Business security requirements
 This section presents business security requirements that are relevant to the context of Open Blockchain.
