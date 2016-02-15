@@ -1,4 +1,4 @@
-# Open Blockchain Protocol Specification
+﻿# Open Blockchain Protocol Specification
 
 _Draft 0.01_
 
@@ -1373,10 +1373,15 @@ Transactional privacy is strongly associated to the confidentiality of the conte
 
 As described later in this document, the approach taken here to reconcile identity management with user privacy and to enable competitive institutions to transact effectively on a common blockchain (for both intra- and inter-institutional transactions) is as follows:
 
-1. add certificates to transactions to implement a “permissioned” blockchain by utilizing a two-level system:
-  1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
-  2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
-2. offer mechanisms to conceal the content of transactions to unauthorized members of the system.
+1. add certificates to transactions to implement a “permissioned” blockchain
+
+2. utilize a two-level system:
+
+   1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
+
+   2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
+
+3. offer mechanisms to conceal the content of transactions to unauthorized members of the system.
 
 **Audit support.** Commercial systems are occasionally subjected to audits. Auditors in such cases should be given the means to check a certain transaction, or a certain group of transactions, the activity of a particular user of the system, or the operation of the system itself. Thus, such capabilities should be offered by any system featuring transactions containing contractual agreements between business partners.
 
@@ -2103,20 +2108,26 @@ the code-metadata fields near it), and provide those to containers for deploymen
 
 ### 4.5 Online wallet service
 
-This section shows the security design of an Open Blockchain wallet service, that is, a node where end-users can register, move their key material to, and perform transactions through.
-Since the wallet service is in possession of the user's key material, it is clear that without a secure authorization mechanism in place a malicious wallet service could successfully impersonate the user in the Open Blockchain.
-There are two cases for the registration of an end-user to an online wallet service, and the protocol that should take place between the end-user and the service in the following two cases:
 
-(i) when the user has registered with the Open Blockchain registration authority and acquired his/her <enrollID, enrollPWD>, but has not installed the client to trigger and complete the enrollment process;
-(ii) when the user has already installed the client, and completed the enrollment phase.
+This section shows the security design of an Open Blockchain wallet service, that is, a node where end-users can register,
+move their key material to, and perform transactions through.
+Since the wallet service is in possession of the user's key material, it is clear that without a secure authorization
+mechanism in place a malicious wallet service could successfully impersonate the user in the Open Blockchain.
+We thus emphasize that this design corresponds to a wallet service that is **trusted** to only perform transactions
+on behalf of its clients, with the concent of the latter.
+There are two cases for the registration of an end-user to an online wallet service:
 
-- **Potentially malicious wallet service.** Here authorization credentials are needed to be issued by the user. In particular, at registration time the user establishes a signature key pair ( PK<sub>u-wc</sub>, SK<sub>u-wc</sub> )
-  with the online wallet service, where the secret  SK<sub>u-vc</sub> (denoted by AccSec<sub>u</sub>) is only known to the user, and PK<sub>u-wc</sub>
-  constitutes the identity of the user to the online wallet service, i.e., AccPub, and is stored at the online wallet premise.
+1. when the user has registered with the Open Blockchain registration authority and acquired his/her <enrollID, enrollPWD>,
+   but has not installed the client to trigger and complete the enrollment process;
+2. when the user has already installed the client, and completed the enrollment phase.
 
-- **Trusted wallet service.** Here the user issues credentials that would allow him to authenticate to the wallet service. That is, the user is given a username, and password, where username plays the role of AccPub, and password is the associated secret AccSec **shared** by both user and service.
+Initially, the user interracts with the online wallet service to issue credentials that would allow him to authenticate
+to the wallet service. That is, the user is given a username, and password, where username identifies the user in the
+membership service, denoted by AccPub, and password is the associated secret, denoted by AccSec, that is **shared** by
+both user and service.
 
-To enroll with the Open Blockchain, through the online wallet service, a user u will need to provide the following request object to the wallet service:
+To enroll with the Open Blockchain, through the online wallet service, a user u will need to provide the following request
+object to the wallet service:
 
 
     AccountRequest /* account request of u \*/
@@ -2126,34 +2137,30 @@ To enroll with the Open Blockchain, through the online wallet service, a user u 
         AccSecProof<sub>u</sub>  /* proof of AccSec<sub>u</sub>\*/
      }
 
-OBCSecCtx, refers to user Open Blockchain credentials, which depending on the stage of his enrollment process with Open Blockchain it can be either his enrollment id and password, <enrollID, enrollPWD> or his enrollment certificate and associated secret key(s)
-<ECert<sub>u</sub>, sk<sub>u</sub>>,  where  sk<sub>u</sub> denotes for simplicity signing and decryption secret of the user. The content of AccSecProof<sub>u</sub> depends again on the level of trust to the service:
-
-- **Potentially malicious wallet service.** It is a digital signature on the other parts of request, using AccSec<sub>u</sub>.   Special care needs to be taken in consideration to avoid replay attacks.
-
-- **Trusted wallet service.** It is an HMAC on the rest fields of request using the shared secret. Nonce-based methods similar to what we have in OBC can be used to protect against replays.
-OBCSecCtx would give the online wallet service the necessary information to enroll the user to OBC or issue needed TCerts.
+OBCSecCtx, refers to user Open Blockchain credentials, which depending on the stage of his enrollment process with Open Blockchain
+it can be either his enrollment id and password, <enrollID, enrollPWD> or his enrollment certificate and associated secret key(s)
+(ECert<sub>u</sub>, sk<sub>u</sub>),  where  sk<sub>u</sub> denotes for simplicity signing and decryption secret of the user.
+The content of AccSecProof<sub>u</sub> is an HMAC on the rest fields of request using the shared secret. Nonce-based methods
+similar to what we have in Open Blockchain can be used to protect against replays.
+OBCSecCtx would give the online wallet service the necessary information to enroll the user to Open Blockchain or issue needed TCerts.
 
 For subsequent requests, the user u should provide to the wallet service a request of similar format.
 
      TransactionRequest /* account request of u \*/
      {
           TxDetails,			/* specifications for the new transaction \*/
-          AccPub<sub>u</sub>,	/* account identifier of u \*/
+          AccPub<sub>u</sub>,		/* account identifier of u \*/
           AccSecProof<sub>u</sub>	/* proof of AccSec<sub>u</sub> \*/
      }
 
-Here, TxDetails refer to the information needed by the online service to construct a transaction on behalf of the user, i.e., the type, and user-specified content of the transaction.
+Here, TxDetails refer to the information needed by the online service to construct a transaction on behalf of the user, i.e.,
+the type, and user-specified content of the transaction.
 
+AccSecProof<sub>u</sub> is again an HMAC on the rest fields of request using the shared secret.
+Nonce-based methods similar to what we have in Open Blockchain can be used to protect against replays.
 
-
-Again, the content of AccSecProof<sub>u</sub> depends on the level of trust to the service:
-
-- **Potentially malicious wallet service.** It is a digital signature on the other parts of request, using AccSec<sub>u</sub>. Replay attacks should be taken in consideration.
-
-- **Trusted wallet service.** It is an HMAC on the rest fields of request using the shared secret.Nonce-based methods similar to what we have in Open Blockchain can be used to protect against replays.
-
-TLS connections can be used in each case with server side authentication to secure the request at the network layer (confidentiality, replay attack protection, etc)
+TLS connections can be used in each case with server side authentication to secure the request at the
+network layer (confidentiality, replay attack protection, etc)
 
 
 
