@@ -1377,16 +1377,10 @@ Transactional privacy is strongly associated to the confidentiality of the conte
 **Reconciling transactional privacy with identity management.**
 
 As described later in this document, the approach taken here to reconcile identity management with user privacy and to enable competitive institutions to transact effectively on a common blockchain (for both intra- and inter-institutional transactions) is as follows:
-
-1. add certificates to transactions to implement a “permissioned” blockchain
-
-2. utilize a two-level system:
-
-1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
-
-2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
-
-3. offer mechanisms to conceal the content of transactions to unauthorized members of the system
+1. add certificates to transactions to implement a “permissioned” blockchain by utilizing a two-level system:
+  1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
+  2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
+2. offer mechanisms to conceal the content of transactions to unauthorized members of the system.
 
 **Audit support.** Commercial systems are occasionally subjected to audits. Auditors in such cases should be given the means to check a certain transaction, or a certain group of transactions, the activity of a particular user of the system, or the operation of the system itself. Thus, such capabilities should be offered by any system featuring transactions containing contractual agreements between business partners.
 
@@ -1432,6 +1426,9 @@ There are at least three useful ways to consider configuring the key distributio
 *(a)* Pre-K is distributed during enrollment to user clients, peers and auditors, and is available to the TCA and authorized auditors. It may, for example, be derived from K<sub>chain</sub> (described subsequently in this specification) or be independent of key(s) used for chaincode confidentiality.
 
 *(b)* Pre-K is available to validators, the TCA and authorized auditors. K is made available by a validator to a user (under TLS) in response to a successful query transaction. The query transaction can have the same format as the invocation transaction. Corresponding to Example 1 there, the querying user would learn the enrollmentID of the user who created the Deployment Transaction if the querying user owns one of the TCerts in the ACL of the Deployment Transaction. Corresponding to Example 2 there, the querying user would learn the enrollmentID of the user who created the Deployment Transaction if the enrollmentID of the TCert used to query matches one of the affiliations/roles in the Access Control field of the Deployment Transaction.
+
+![Example 1](./images/sec-example-1.png)
+![Example 2](./images/sec-example-2.png)
 
 *(c)* Pre-K is available to the TCA and authorized auditors. The TCert-specific K can be distributed the TCert owner (under TLS) along with the TCert, for each TCert in the batch. This enables targeted release by the TCert owner of K (and thus trusted notification of the TCert owner’s enrollmentID). Such targeted release can use key agreement public keys of the intended recipients and/or PK<sub>chain</sub> where SK<sub>chain</sub> is available to validators as described subsequently in this specification. Such targeted release to other contract participants can be incorporated into a transaction or done out-of-band.
 
