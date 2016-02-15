@@ -1376,6 +1376,7 @@ Transactional privacy is strongly associated to the confidentiality of the conte
 **Reconciling transactional privacy with identity management.**
 
 As described later in this document, the approach taken here to reconcile identity management with user privacy and to enable competitive institutions to transact effectively on a common blockchain (for both intra- and inter-institutional transactions) is as follows:
+
 1. add certificates to transactions to implement a “permissioned” blockchain by utilizing a two-level system:
   1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
   2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
