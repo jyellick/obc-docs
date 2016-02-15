@@ -1411,16 +1411,13 @@ where Plaintext Transaction includes, in particular, TCert<sub>acl</sub>, Sign<s
 
 <sup>2</sup><sub>signature computed using private key corresponding to TCert<sub>acl</sub>, where TCert<sub>acl</sub> is one of the TCerts from the referenced Deployment Transaction</sub>
 
+![Example 1](./images/sec-example-1.png)
 
 **Example 2:**
 
 Deployment Transaction specifies invocation criteria, e.g., affiliation with Institution A
 
 Invocation Transaction signed using TCert, where TCert specifies affiliation with Institution A. Another such TCert (from the same batch or a different batch) is used the next time, if any, the same user invokes.
-
-Example 1 and Example 2 are illustrated in the following two figures, respectively.
-
-![Example 1](./images/sec-example-1.png)
 
 ![Example 2](./images/sec-example-2.png)
 
