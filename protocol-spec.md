@@ -1298,8 +1298,7 @@ Currently the producer framework can generate a Block or Generic event. A Block 
 
 ## 4. Security
 
-
-For this section we will be considering the setting depicted in figure below.
+This section discusses the setting depicted in the figure below.
 In particular, the system consists of the following entities:
 membership management infrastructure, i.e., a set of entities that are
 responsible for identifying an individual user (using any form of identification
