@@ -1420,8 +1420,9 @@ Invocation Transaction signed using TCert, where TCert specifies affiliation wit
 
 Example 1 and Example 2 are illustrated in the following two figures, respectively.
 
-**(figure for Example 1 goes here)**
-**(figure for Example 2 goes here)**
+![Example 1](./images/sec-example-1.png)
+
+![Example 2](./images/sec-example-2.png)
 
 #### 4.1.3 Addressing reputation/risk management
 
