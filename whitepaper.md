@@ -154,11 +154,11 @@ Chaincode services are a secured and lightweight way to sandbox the chaincode ex
 <td valign="top">
 Open Blockchain is a private-validator network protocol, so all entities are required to register with membership services to obtain an identity with access and transaction authority on the network. Validators during network setup can determine the level of permission that is required to transact. Network setup also defines the network as permissive, allowing ease of access and support for rapid and high adoption, or restrictive for a more controlled environment.<p><p>
 
-The Registration service offers the control and management of authorizations for Openchain participation<p><p>
+<b>Registration service<b> offers the control and management of authorizations for Openchain participation<p><p>
 
-Identity Management service provides the management of assurance and authorized disclosure of association of identities and roles to Openchain participants<p><p>
+<b>Identity Management<b> service provides the management of assurance and authorized disclosure of association of identities and roles to Openchain participants<p><p>
 
-Auditability service offers the capability to  provide authorized entities with the means to link transactions  of individual users, or groups of users according to affiliations or roles, and to access the activity of a particular user of the system, or the operation of the system itself. <p><p>
+<b>Auditability<b> service offers the capability to  provide authorized entities with the means to link transactions  of individual users, or groups of users according to affiliations or roles, and to access the activity of a particular user of the system, or the operation of the system itself. <p><p>
 
 </td>
 </tr>
