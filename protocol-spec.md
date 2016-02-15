@@ -98,12 +98,6 @@ ________________________________________________________
 #### 4. Security
    - 4. Security
    - 4.1 Business security requirements
-   - 4.1.1 Preserving user privacy while incorporating identity and role management
-   - 4.1.2 Supporting invocation access control without precluding privacy
-   - 4.1.3 Addressing reputation/risk management
-   - 4.1.4 Enabling a system transactions capability
-   - 4.1.5 Flexibly accommodating usage of transaction certificates
-   - 4.1.6 Expanding to support root CA functionality
    - 4.2 User Privacy through Membership Services
    - 4.2.1 User/Client Enrollment Process
    - 4.2.2 Expiration and revocation of certificates
@@ -1352,110 +1346,49 @@ achieves the prescribed goals.
 
 
 ### 4.1 Business security requirements
-#### 4.1.1 Preserving user privacy while incorporating identity and role management
-In order to adequately support real business applications and scenarios it is necessary to progress beyond ensuring “cryptographic continuity” (where, as in Bitcoin for example, outputs are to one or more addresses / hashes of public keys so as to require knowledge of the corresponding private keys in order to further transact). A workable B2B system must consequently move towards addressing proven/demonstrated identities or other attributes relevant to conducting business. Even within the consumer space, digital currency that is convertible back into standard monetary instruments requires a degree of identity management in order to provide accountability to detect and trace money laundering. It is insufficient to revoke anonymity only under conditions of double spending. Business transactions and consumer interactions with financial institutions need to be unambiguously mapped to accountholders. Business contracts typically require demonstrable affiliation with specific institutions and/or possession of other specific properties of transacting parties.
+This section presents business security requirements that are relevant to the context of Open Blockchain.
+**Incorporation of identity and role management.**
 
-The approach taken here to reconcile identity management with user privacy and to enable competitive institutions to transact effectively on a common blockchain (for both intra- and inter- institutional transactions) is as follows:
+In order to adequately support real business applications it is necessary to progress beyond ensuring cryptographic continuity. A workable B2B system must consequently move towards addressing proven/demonstrated identities or other attributes relevant to conducting business. Business transactions and consumer interactions with financial institutions need to be unambiguously mapped to account holders. Business contracts typically require demonstrable affiliation with specific institutions and/or possession of other specific properties of transacting parties. Accountability and non-frameability are two reasons that identity management is a critical component of such systems.
+
+Accountability means that users of the system, individuals, or corporations, who misbehave can be traced back and be set accountable for their actions. In many cases, members of a B2B system are required to use their identities (in some form) to participate in the system, in a way such that accountability is guaranteed. Accountability and non-frameability are both essential security requirements in B2B systems and they are closely related. That is, a B2B system should guarantee that an honest user of such system cannot be framed to be accused as responsible for transactions originated by other users.
+
+In addition a B2B system should be renewable and flexible in order to accommodate changes of participants’s roles and/or affiliations.
+
+**Transactional privacy.**
+
+In B2B relationships there is a strong need for transactional privacy, i.e., allowing the end-user of a system to control the degree to which it interacts and shares information with its environment. For example, a corporation doing business through a transactional B2B system requires that its transactions are not visible to other corporations or industrial partners that are not authorized to share classified information with.
+
+
+Transactional privacy in Open Blockchain is offered by the mechanisms to achieve two properties with respect to non authorized users:
+
+* Transaction anonymity, where the owner of a transaction is hidden among the so called *anonymity set*,
+
+which in Open Blockchain case, is the set of Open Blockchain users.
+
+* Transaction unlinkability, where two or more transactions of the same user should
+
+not be linked as such.
+
+Clearly depending on the context, non-authorized users can be anyone outside the system, or a subset of users.
+
+Transactional privacy is strongly associated to the confidentiality of the content of a contractual agreement between two or more members of a B2B system, as well as to the anonymity and unlinkability of any authentication mechanism that should be in place within transactions.
+
+**Reconciling transactional privacy with identity management.**
+
+As described later in this document, the approach taken here to reconcile identity management with user privacy and to enable competitive institutions to transact effectively on a common blockchain (for both intra- and inter-institutional transactions) is as follows:
 
 1. add certificates to transactions to implement a “permissioned” blockchain
+
 2. utilize a two-level system:
-  1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
-  2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
 
-An enrollment certificate includes an enrollment ID (or EnrollID). Such enrollment ID may incorporate actual user identity and/or institutional affiliation(s), roles, etc. (e.g., demonstrated or proven by the user via some established out-of-band means). If one uses an enrollment certificate directly as part of a transaction to meet a requirement of attestation of, say, institutional affiliation, even if such information is hashed, encrypted or otherwise hidden within the formulation of the enrollment certificate, use of the enrollment certificate across transactions will leak common ownership. Instead, one can use transaction certificates (TCerts) generated by the Transaction Certificate Authority (TCA) that extracts information from the enrollment certificate (where such information can be encrypted within the TCert to enable control of to which entities such information is visible). Through proper use of TLS, enrollment certificates need not be exposed to eavesdroppers during their delivery to clients from the enrollment certificate authority (ECA) or their transmission from clients to the TCA for TCert batch requests. Batch requests are signed using the private key that corresponds to the subject public key within the enrollment certificate.
+1. (relatively) static enrollment certificates (ECerts), acquired via registration with an enrollment certificate authority (CA).
 
-Enrollment certificates need be used only by the TCA, in order to respond to TCert batch requests as the relying party. In that case, non-repudiation of (signed) transactions is handled exclusively through the use of TCerts.
+2. transaction certificates (TCerts) that faithfully but pseudonymously represent enrolled users, acquired via a transaction CA.
 
-The basic aspects and core usage of enrollment certificates and transaction certificates are presented in section 4.2.
+3. offer mechanisms to conceal the content of transactions to unauthorized members of the system
 
-The enrollment certificate acquisition process should be renewable in order to accommodate changes such as to roles or affiliations reflected by enrollment ID.
-
-TCerts can accommodate encryption or key agreement public keys (as well as digital signature verification public keys).
-If TCerts are thus equipped, then enrollment certificates need not also contain encryption or key agreement public keys.
-
-Such a key agreement public key, Key_Agreement_TCertPub_Key, can be generated by the transaction certificate authority (TCA) using a method that is the same as that used to generate the Signature_Verification_TCertPub_Key, but using an index value of TCertIndex + 1 rather than TCertIndex, where TCertIndex is hidden within the TCert by the TCA for recovery by the TCert owner.
-
-Signature_Verification_TCertPub_Key is generated by the TCA as
-
->(EnrollPub_Key + Expansion Value G),
-
-where Expansion Value is determined as
-
->HMAC(Expansion_Key, TCertIndex)
-
-from TCertIndex and
-
->Expansion_Key = HMAC(TCertOwnerKDF_Key, “2”).
-
-The analogous expression
-
->(EnrollPriv_Key + ExpansionValue) modulo n
-
-enables the TCert owner to reconstruct Signature_Generation_TCertPriv_Key using TCertIndex, and Key_Agreement_TCertPriv_Key using TCertIndex + 1.
-
-#### 4.1.2 Supporting invocation access control without precluding privacy
-
-Resistance against traffic analysis, even relative to iterative invocations of the same deployment transaction by the same user, can be accomplished by using a different TCert per invocation. Under encryption for confidentiality, use the signature generation private key of a TCert that was included within the referenced deployment transaction’s access control list (ACL), which is distinct from the signature generation private key of the newly introduced TCert, in order to prove authorization to invoke. This method can apply whether or not chaincode within the deployment transaction and/or inputs for invocation require confidentiality.
-
-Whether or not encrypted for confidentiality so as to provide resistance against traffic analysis, the method above can be used to address the case that the TCert within the ACL has expired by the time that invocation occurs. The newly introduced TCert must be currently valid.
-
-In the case of access control that is not user-specific, but rather only requires, e.g., affiliation with a specific institution, there is no need to acquire TCerts of intended authorized invokers for incorporation into an ACL. This case easily lends itself to protecting against traffic analysis by having users present a different TCert each time, as long as each such TCert carries the appropriate access criterion/criteria, such as institution affiliation specified by the referenced deployment transaction.
-
-**Example 1:**
-
-Invocation Transaction: TCert<sub>new</sub>, Sign<sup>1</sup>(Ciphertext Transaction), Ciphertext Transaction
-
-where Plaintext Transaction includes, in particular, TCert<sub>acl</sub>, Sign<sup>2</sup>(Initial Plaintext || hash(TCert<sub>new</sub>)), and Initial Plaintext
-
-<sup>1</sup><sub>signature computed using private key corresponding to TCert<sub>new</sub></sub>
-
-<sup>2</sup><sub>signature computed using private key corresponding to TCert<sub>acl</sub>, where TCert<sub>acl</sub> is one of the TCerts from the referenced Deployment Transaction</sub>
-
-![Example 1](./images/sec-example-1.png)
-
-**Example 2:**
-
-Deployment Transaction specifies invocation criteria, e.g., affiliation with Institution A
-
-Invocation Transaction signed using TCert, where TCert specifies affiliation with Institution A. Another such TCert (from the same batch or a different batch) is used the next time, if any, the same user invokes.
-
-![Example 2](./images/sec-example-2.png)
-
-#### 4.1.3 Addressing reputation/risk management
-
-There is a significant escalation of potential risk undertaken by a system that does not have adequate safeguards in place as its use is expanded to become a more versatile platform, particularly when comparing limited loss of funds in a digital currency-only system vs. irreparable harm to reputation of users and/or corporations in a general purpose B2B system.
-
-In Open Blockchain, the (persistent) enrollment private key is used in two ways, namely to
-
-1. sign a request for a batch of TCerts, and
-2. derive the TCert-unique TCert private keys from the TCerts and from the value of the key derivation function / HMAC key, TCertOwnerKDF_Key, that is delivered by the TCA with each batch of TCerts.
-
-Countermeasure/containment against compromise or abuse of an enrollment private key: Multi-signature can be applied at the enrollment certificate level for TCert batch requests. In this case there would be two enrollment certificates associated with each such user (where one could be online-wallet-provider- specific, and one (that identifies the online wallet provider) could be user-specific), and TCert batch requests would be required to be signed twice independently, using the enrollment private key corresponding to each of the two enrollment public keys. This would not affect the issued TCerts if those are structured based on only one of the two enrollment certificates. However, the TCerts could be structured to enable enforcement of active involvement of both enrollment private keys on a per-transaction basis. One way to do this is to include two signature verification TCert public keys in each TCert (based on each of the two enrollment public keys, respectively). A replying party would then expect to see two signatures on each transaction that includes such a TCert, each verifiable using one of the two signature verification TCert public keys.
-
-#### 4.1.4 Enabling a system transactions capability
-
-Rather than relegating certain critical functions to be handled out-of-band of a particular blockchain, these can potentially be addressed via the use of “system transactions.” Whether such system transactions are deployed at initially unspecified points or within a genesis block, their deployment and subsequent invocation need not necessarily employ specialized access control mechanisms that address conditions of commitment to the blockchain. Analogously to colored coins, relying parties relative to these transactions can be equipped with the means to process these transactions within the appropriate context. Read-access of portions of these transactions that may remain opaque to all but a select group of entities can be (implicitly) controlled through the proper use of wrapping keys. Similarly, specific aspects of execution can be reserved for authorized entities without necessarily handling enforcement at the general validation level. For example, suppose that setting (i.e., expiration and/or initialization) of Validity Period is attempted through invocation of a system transaction. Correct assessment of current Validity Period is relied upon by validators that determine whether or not a Transaction Certificate (TCert) that is used for deployment or invocation should be considered to be currently legitimate. While it may be not be considered detrimental to commit an invocation transaction to the blockchain that purports to set Validity Period, if such invocation transaction was based entirely on a TCert it should be rejected as not affecting Validity Period. Even if transaction replay protection is adequately addressed at the general validation level, the transaction’s effect on setting Validity Period should only be accepted if it was signed using a suitable key, such as the private key of the Transaction Certificate Authority (TCA) that corresponds to the subject public key within a valid TCA Certificate rather than a private key that corresponds to a TCert public key. Similarly, an invocation transaction that attempts to update a particular type of certificate revocation list (CRL) should be rejected by relying parties unless the transaction has been signed using the private key that corresponds to the subject public key of an authority deemed responsible for such CRL. For example, the TCA relies on Enrollment Certificates of requesters of batches of TCerts. Consequently, updates to an Enrollment Certificate CRL should only be accepted by the TCA if they are signed by the ECA (using the private key corresponding to the subject public key of a currently valid ECA Certificate) or an entity explicitly delegated by the ECA for such purpose. Another potential use of (suitably encrypted) system transactions is the dissemination of properly sourced random inputs to be used during accounts processing, such as to disguise against eavesdropping which row(s) of a database are modified to actual effect by any given blockchain transaction (through innocuous transformation such as via random/pseudo-random permutation, account splitting, and/or noise injection).
-
-Secure handling of system transactions can be based, in part, on the fact that legitimate state updates of certain types follow a predictable pattern, such as monotone increasing version number. In such case, an inner signature on contract code of an invocation transaction generated by an appropriate entity may suffice, regardless of whether or not a TCert is used to (outer) sign the invocation transaction.
-
-#### 4.1.5 Flexibly accommodating usage of transaction certificates
-
-Synopsis: The design is capable of enabling auditability, and client reliability and portability –- where full TCerts (not just their hashes) of those users who are eligible to invoke are incorporated into deployment transactions, and TCerts include a field decryptable by auditors as well as a field decryptable by the particular TCert owner / user’s client.
-
-If a client retains or can retrieve or regenerate the hash of each of its issued TCerts, then it can do a compare against this list to determine if a given hashed TCert in an ACL belongs to that user. If knowledge of that TCert and its signature generation private key is required to invoke, then the actual TCert needs to be available to the client, either via locally accessible storage or via its inclusion within the deployment transaction. Given access to a TCert that appears on a blockchain, there are at least two ways for a client to determine whether or not that TCert belongs to a user of that client without the need to store a representation of each of its individual TCerts:
-
-1. The initial TCertIndex of each batch as retained after decrypting
-
-   AES_Encrypt<sub>TCertOwnerEncrypt_Key</sub>(TCertIndex) from the first TCert within the batch is sufficient to compute
-
-   AES_Encrypt<sub>TCertOwnerEncrypt_Key</sub>(TCertIndex) for all TCerts within the batch. TCertOwnerEncrypt_Key is derivable from TCertOwnerKDF_Key that is included with each batch, as [HMAC(TCertOwnerKDF_Key, “1”)]<sub>256-bit truncation</sub>
-2. TCertIndex can be augmented with a sufficient-length known padding/parity check vector in order to determine whether the client owns that TCert on behalf of that user by verifying the parity check after decrypting using that user’s TCertOwnerKDF_Key.
-
-If an additional TCert field, AES_EncryptK(enrollmentID), is generated by the TCA by encrypting using a key K, then any entity in possession of (or that can acquire) K can determine that TCert’s TCert owner. Note that unlinkability of such TCerts by unauthorized entities is preserved if K varies per TCert even for the same TCert owner. This can be accomplished by deriving K as HMAC(Pre-K, TCertID) for randomly generated TCertID included as a field of the TCert. Depending on the configuration of the batch of TCerts and the entity type accessing enrollmentID, access may be via K or Pre-K.  This is described more fully in section 4.2.
-
-#### 4.1.6 Expanding to support root CA functionality  
-
-Although the initial code utilizes self-signed certificates for entities such as the enrollment CA (ECA) and the transaction CA (TCA), it is ultimately desirable to implement a full PKI based on a root CA, and possibly intermediate CAs (such as a CA responsible for issuing certificates to multiple ECAs, and/or a CA responsible for issuing certificates to multiple TCAs). One benefit of a full PKI is the ability to handle revocation of entities (with the exception of the root CA itself). There can, furthermore, be cross-certification across chains with distinct root CAs.
+**Audit support.** Commercial systems are occasionally subjected to audits. Auditors in such cases should be given the means to check a certain transaction, or a certain group of transactions, the activity of a particular user of the system, or the operation of the system itself. Thus, such capabilities should be offered by any system featuring transactions containing contractual agreements between business partners.
 
 ### 4.2 User Privacy through Membership Services
 
