@@ -1679,7 +1679,7 @@ control policies and enforcement mechanisms.
 
 ##### 4.3.2.1 Confidentiality against users
 
-To support fine-grain confidentiality, i.e., restrict read-access to the
+To support fine-grained confidentiality control, i.e., restrict read-access to the
 plain-text of a chaincode to a subset of users that the chaincode creator
 defines, a chain is bound to a single long-term encryption key-pair
 (PK<sub>chain</sub>, SK<sub>chain</sub>).
@@ -2270,11 +2270,10 @@ to reach a design that allows for fine grain (invocation) access control enforce
 
 In its current form, confidentiality of transactions is offered solely at the chain-level, i.e., that the
 content of a transaction included in a ledger, is readable by all members of that chain, i.e., validators
-and users. At the same time, fine-grain auditing capabilities are provided for external auditors, i.e.,
-application auditors that are not member of the system, such that they can be given
-the means to perform auditing by passively observing the Blockchain data, and while
-guaranteeing that they is given access solely to the transactions related to the application under audit.
-State is encrypted in a way such that auditing requirements are satisfied, while not disrupting the
+and users. At the same time, application auditors that are not member of the system can be given
+the means to perform auditing by passively observing the Blockchain data, while
+guaranteeing that they are given access solely to the transactions related to the application under audit.
+State is encrypted in a way that such auditing requirements are satisfied, while not disrupting the
 proper operation of the underlying consensus network.
 
 More specifically, currently symmetric key encryption is supported in the process of offering transaction confidentiality.
@@ -2288,8 +2287,7 @@ semantically secure, and yet, identical if the plaintext state is the same.
 To overcome this challenge, Open Blockchain utilizes a key hierarchy that reduces the number of ciphertexts
 that are encrypted under the same key. At the same time, as some of these keys are used for the generation of IVs,
 this allows the validating parties to generate exactly the same ciphertext when executing the same transaction
-(this is necessary to remain agnostic to the underlying consensus algorithm) and offers the possibility of fine-grained
-auditing by disclosing to auditing entities only the most relevant keys.
+(this is necessary to remain agnostic to the underlying consensus algorithm) and offers the possibility of controlling audit by disclosing to auditing entities only the most relevant keys.
 
 
 **Method description:**
@@ -2357,7 +2355,7 @@ where c<sub>4</sub> is a constant number, and keeps a counter crt<sub>state</sub
 generates a new IV by computing it as the output of HMAC(K<sub>IV</sub>, crt<sub>state</sub>)
 and then increments the crt<sub>state</sub> by one.
 
-Another benefit that comes with the above key hierarchy is the ability to allow fine-grained auditing.
+Another benefit that comes with the above key hierarchy is the ability to enable controlled auditing.
 For example, while by releasing K<sub>chain</sub> one would provide read access to the whole chain,
 by releasing only K<sub>state</sub> for a given pair of transactions (dTx,iTx) access would be granted to a state
 updated by iTx, and so on.
